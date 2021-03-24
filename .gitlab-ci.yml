@@ -2,6 +2,7 @@ eslint:
   image: node:latest
   script:
     # Run ESLint
+    - npm install
     - npx eslint . --ext .js,.jsx,.ts,.tsx
 
 variables:
