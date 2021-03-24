@@ -1,10 +1,5 @@
-image: node:latest
-
-stages:
-  - lint
-
 eslint:
-  stage: lint
+  image: node:latest
   script:
     # Run ESLint
     - npx eslint . --ext .js,.jsx,.ts,.tsx
