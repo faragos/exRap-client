@@ -1,12 +1,10 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import userReducer from './user/reducers';
+import rootReducer from './rootReducer';
 // @ts-ignore
 export type RootState = ReturnType;
 
 const index = configureStore({
-  reducer: {
-    user: userReducer,
-  },
+  reducer: rootReducer,
 });
 
 export type AppDispatch = typeof index.dispatch;
