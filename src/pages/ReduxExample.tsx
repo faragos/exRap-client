@@ -4,7 +4,7 @@ import { fetchUserById, updateUser } from '../store/user/actions';
 import { User } from '../store/user/types';
 import { setUser } from '../store/user/reducers';
 
-function Dashboard() {
+function ReduxExample() {
   const user = useAppSelector((state) => state.user.user);
   const dispatch = useAppDispatch();
 
@@ -52,4 +52,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default ReduxExample;
