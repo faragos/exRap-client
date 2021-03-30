@@ -1,17 +1,18 @@
 import { createApi, fetchBaseQuery } from "@rtk-incubator/rtk-query";
 export const api = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: "https://localhost:5001/" }),
+  baseQuery: fetchBaseQuery({ baseUrl: "https://localhost:5001" }),
+  entityTypes: [],
   endpoints: (build) => ({
     dashboardsGetDashboards: build.query<
-        DashboardsGetDashboardsApiResponse,
-        DashboardsGetDashboardsApiArg
-        >({
+      DashboardsGetDashboardsApiResponse,
+      DashboardsGetDashboardsApiArg
+    >({
       query: () => ({ url: `/Dashboards` }),
     }),
     dashboardsCreateDashboard: build.mutation<
-        DashboardsCreateDashboardApiResponse,
-        DashboardsCreateDashboardApiArg
-        >({
+      DashboardsCreateDashboardApiResponse,
+      DashboardsCreateDashboardApiArg
+    >({
       query: (queryArg) => ({
         url: `/Dashboards`,
         method: "POST",
@@ -19,15 +20,15 @@ export const api = createApi({
       }),
     }),
     dashboardsGetDashboard: build.query<
-        DashboardsGetDashboardApiResponse,
-        DashboardsGetDashboardApiArg
-        >({
+      DashboardsGetDashboardApiResponse,
+      DashboardsGetDashboardApiArg
+    >({
       query: (queryArg) => ({ url: `/Dashboards/${queryArg.dashboardId}` }),
     }),
     dashboardsUpdateDashboard: build.mutation<
-        DashboardsUpdateDashboardApiResponse,
-        DashboardsUpdateDashboardApiArg
-        >({
+      DashboardsUpdateDashboardApiResponse,
+      DashboardsUpdateDashboardApiArg
+    >({
       query: (queryArg) => ({
         url: `/Dashboards/${queryArg.dashboardId}`,
         method: "PUT",
@@ -35,26 +36,26 @@ export const api = createApi({
       }),
     }),
     dashboardsDeleteDashboard: build.mutation<
-        DashboardsDeleteDashboardApiResponse,
-        DashboardsDeleteDashboardApiArg
-        >({
+      DashboardsDeleteDashboardApiResponse,
+      DashboardsDeleteDashboardApiArg
+    >({
       query: (queryArg) => ({
         url: `/Dashboards/${queryArg.dashboardId}`,
         method: "DELETE",
       }),
     }),
     dashboardsGetDashboardEntries: build.query<
-        DashboardsGetDashboardEntriesApiResponse,
-        DashboardsGetDashboardEntriesApiArg
-        >({
+      DashboardsGetDashboardEntriesApiResponse,
+      DashboardsGetDashboardEntriesApiArg
+    >({
       query: (queryArg) => ({
         url: `/Dashboards/${queryArg.dashboardId}/entries`,
       }),
     }),
     dashboardsAddDashboardEntry: build.mutation<
-        DashboardsAddDashboardEntryApiResponse,
-        DashboardsAddDashboardEntryApiArg
-        >({
+      DashboardsAddDashboardEntryApiResponse,
+      DashboardsAddDashboardEntryApiArg
+    >({
       query: (queryArg) => ({
         url: `/Dashboards/${queryArg.dashboardId}/entries`,
         method: "POST",
@@ -62,24 +63,24 @@ export const api = createApi({
       }),
     }),
     dashboardsDeleteDashboardEntry: build.mutation<
-        DashboardsDeleteDashboardEntryApiResponse,
-        DashboardsDeleteDashboardEntryApiArg
-        >({
+      DashboardsDeleteDashboardEntryApiResponse,
+      DashboardsDeleteDashboardEntryApiArg
+    >({
       query: (queryArg) => ({
         url: `/Dashboards/${queryArg.dashboardId}/entries/${queryArg.dashboardEntryId}`,
         method: "DELETE",
       }),
     }),
     groupDashboardsGetGroupDashboard: build.query<
-        GroupDashboardsGetGroupDashboardApiResponse,
-        GroupDashboardsGetGroupDashboardApiArg
-        >({
+      GroupDashboardsGetGroupDashboardApiResponse,
+      GroupDashboardsGetGroupDashboardApiArg
+    >({
       query: (queryArg) => ({ url: `/${queryArg.dashboardId}` }),
     }),
     groupDashboardsAddViewerToDashboard: build.mutation<
-        GroupDashboardsAddViewerToDashboardApiResponse,
-        GroupDashboardsAddViewerToDashboardApiArg
-        >({
+      GroupDashboardsAddViewerToDashboardApiResponse,
+      GroupDashboardsAddViewerToDashboardApiArg
+    >({
       query: (queryArg) => ({
         url: `/${queryArg.dashboardId}/viewer`,
         method: "POST",
@@ -87,9 +88,9 @@ export const api = createApi({
       }),
     }),
     groupDashboardsRemoveViewerFromDashboard: build.mutation<
-        GroupDashboardsRemoveViewerFromDashboardApiResponse,
-        GroupDashboardsRemoveViewerFromDashboardApiArg
-        >({
+      GroupDashboardsRemoveViewerFromDashboardApiResponse,
+      GroupDashboardsRemoveViewerFromDashboardApiArg
+    >({
       query: (queryArg) => ({
         url: `/${queryArg.dashboardId}/viewer/${queryArg.userName}`,
         method: "DELETE",
@@ -150,12 +151,12 @@ export type ExRapDashModelsDashboardEntry = {
   displayType?: string | null;
 };
 export type ExRapDashModelsGroupDashboard = {
+  viewerGroup?: ExRapDashModelsUser[] | null;
   id?: number;
   title?: string | null;
   description?: string | null;
   owner?: ExRapDashModelsUser;
   dashboardEntries?: ExRapDashModelsDashboardEntry[] | null;
-  viewerGroup?: ExRapDashModelsUser[] | null;
 };
 export type ExRapDashModelsUser = {
   userName?: string | null;
@@ -169,7 +170,7 @@ export type ExRapDashModelsDashboard = {
   owner?: ExRapDashModelsUser;
   dashboardEntries?: ExRapDashModelsDashboardEntry[] | null;
 };
-export type ExRapDashDTODashboardTypes = number;
+export type ExRapDashDTODashboardTypes = "UserDashboard" | "GroupDashboard";
 export type ExRapDashDTODashboard = {
   title?: string | null;
   description?: string | null;

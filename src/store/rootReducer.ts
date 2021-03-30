@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import userReducer from './user/reducers';
-import { api as dashboardApi } from '../service/dashboards.api';
+import { api as dashboardApi } from '../service/dashboard.api';
 
 const rootReducer = combineReducers({
   user: userReducer,

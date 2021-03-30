@@ -575,8 +575,11 @@
         "additionalProperties": false
       },
       "ExRapDashDTODashboardTypes": {
-        "type": "integer",
-        "format": "int32"
+        "enum": [
+          "UserDashboard",
+          "GroupDashboard"
+        ],
+        "type": "string"
       },
       "ExRapDashDTOUser": {
         "type": "object",
@@ -637,6 +640,13 @@
       "ExRapDashModelsGroupDashboard": {
         "type": "object",
         "properties": {
+          "viewerGroup": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExRapDashModelsUser"
+            },
+            "nullable": true
+          },
           "id": {
             "type": "integer",
             "format": "int32"
@@ -656,13 +666,6 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ExRapDashModelsDashboardEntry"
-            },
-            "nullable": true
-          },
-          "viewerGroup": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ExRapDashModelsUser"
             },
             "nullable": true
           }
