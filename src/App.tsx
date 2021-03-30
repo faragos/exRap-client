@@ -4,10 +4,15 @@ import './App.css';
 import Calendar from './components/Calendar';
 import ReduxExample from './pages/ReduxExample';
 import OpenAPI from './pages/OpenAPI';
+import ButtonGroup from './components/ButtonGroup';
+import Button from './components/Button';
 
 function App() {
   return (
     <div className="App">
+      <ButtonGroup />
+      <Button />
+
       <Calendar />
       <ReduxExample />
       <OpenAPI />
