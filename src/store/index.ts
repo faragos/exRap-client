@@ -1,6 +1,6 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import rootReducer from './rootReducer';
-import { api as dashboardApi } from '../service/dashboards.api';
+import { api as dashboardApi } from '../service/dashboard.api';
 // @ts-ignore
 export type RootState = ReturnType;
 

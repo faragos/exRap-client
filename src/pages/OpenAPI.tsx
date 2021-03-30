@@ -2,8 +2,8 @@ import * as React from 'react';
 import {
   useDashboardsGetDashboardsQuery,
   useDashboardsCreateDashboardMutation,
-} from '../service/dashboards.api';
-import { DashboardsCreateDashboardApiArg, ExRapDashDTODashboard } from '../gen/dashboards.api.generated';
+} from '../service/dashboard.api';
+import { DashboardsCreateDashboardApiArg, ExRapDashDTODashboard } from '../gen/dashboard.api.generated';
 
 function Dashboard() {
   const result = useDashboardsGetDashboardsQuery({});
@@ -16,7 +16,7 @@ function Dashboard() {
   const arg = {
     title: 'string',
     description: 'string',
-    type: 0,
+    type: "UserDashboard",
   } as ExRapDashDTODashboard;
 
   const param = { exRapDashDtoDashboard: arg } as DashboardsCreateDashboardApiArg;

@@ -1,4 +1,4 @@
-import { api as generatedApi } from '../gen/dashboards.api.generated';
+import { api as generatedApi } from '../gen/dashboard.api.generated';
 
 export const api = generatedApi.enhanceEndpoints({
   addEntityTypes: ['Dashboard'],
