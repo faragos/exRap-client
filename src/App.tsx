@@ -4,10 +4,12 @@ import './App.css';
 import Calendar from './components/Calendar';
 import ReduxExample from './pages/ReduxExample';
 import OpenAPI from './pages/OpenAPI';
+import Login from './components/Login';
 
 function App() {
   return (
     <div className="App">
+      <Login />
       <Calendar />
       <ReduxExample />
       <OpenAPI />
