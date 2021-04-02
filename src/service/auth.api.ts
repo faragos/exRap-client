@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-cycle
 import { api as generatedApi } from '../gen/auth.api.generated';
 
 export const api = generatedApi.enhanceEndpoints({
@@ -7,9 +8,20 @@ export const api = generatedApi.enhanceEndpoints({
     loginLogin: {
       invalidates: ['Login'],
     },
+    rolesGetRoles: {
+      provides: ['Login'],
+    },
   },
 });
 
 export const {
   useLoginLoginMutation,
+  useRolesGetRolesQuery,
+  useRolesGetRoleQuery,
+  useUsersGetUsersQuery,
+  useUsersCreateUserMutation,
+  useUsersGetUserQuery,
+  useUsersUpdateUserMutation,
+  useUsersAddCredentialMutation,
+  useUsersAddRoleMutation,
 } = api;
