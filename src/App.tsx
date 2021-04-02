@@ -2,8 +2,6 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Calendar from './components/Calendar';
-import ReduxExample from './pages/ReduxExample';
-import OpenAPI from './pages/OpenAPI';
 import Login from './components/Login';
 
 function App() {
@@ -11,8 +9,6 @@ function App() {
     <div className="App">
       <Login />
       <Calendar />
-      <ReduxExample />
-      <OpenAPI />
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
