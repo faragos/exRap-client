@@ -1,24 +1,79 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useLoginLoginMutation } from '../service/auth.api';
-import { ExRapAuthDTOCredential, LoginLoginApiArg } from '../gen/auth.api.generated';
+import { LoginLoginApiArg } from '../gen/auth.api.generated';
+import { setCredentials, logoutUser } from '../store/user/reducers';
+import { FormUser } from '../store/user/types';
+import { useAppSelector } from '../hooks';
+import Roles from './Roles';
 
 function Login() {
+  const dispatch = useDispatch();
+  const currentUser = useAppSelector((state) => state.user);
+  const [formState, setFormState] = useState({
+    loginName: '',
+    password: '',
+  });
   const [
     login, // This is the mutation trigger
   ] = useLoginLoginMutation();
 
-  const arg = {
-    loginName: 'asd',
-    password: 'asd',
-    passwordHint: 'sad',
-  } as ExRapAuthDTOCredential;
+  const handleChange = ({
+    target: { name, value },
+  }: React.ChangeEvent<HTMLInputElement>) => setFormState((prev) => ({ ...prev, [name]: value }));
 
-  const param = { exRapAuthDtoCredential: arg } as LoginLoginApiArg;
+  const handleSubmit = async (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
+    try {
+      const param = { exRapAuthDtoCredential: formState } as LoginLoginApiArg;
+      const token = await login(param).unwrap();
+      const user = {
+        username: formState.loginName,
+        password: formState.password,
+        token,
+        isAuthenticated: true,
+      } as FormUser;
+      dispatch(setCredentials(user));
+    } catch (err) {
+      console.log(err);
+    }
+    /*    fetch('https://localhost:5001/api/Roles',
+      {
+        headers: new Headers(
+          {
+            authorization: `Bearer ${result}`,
+            'content-type': 'application/json',
+          },
+        ),
+      }).then((x) => console.log(x)); */
+
+    // InitAdmin -> InitAdminPass
+  };
+  const handleLogout = () => {
+    dispatch(logoutUser());
+  };
 
   return (
     <div>
-      <h1>login</h1>
-      <button type="button" onClick={() => login(param)}> Login </button>
+      <h1> login </h1>
+      <p>
+        Hallo
+        {' '}
+        { currentUser.username}
+      </p>
+      <form onSubmit={handleSubmit}>
+        <label htmlFor="loginName">
+          username
+          <input id="loginName" name="loginName" type="text" onChange={handleChange} />
+        </label>
+        <label htmlFor="password">
+          password
+          <input id="password" name="password" type="password" onChange={handleChange} />
+        </label>
+        <input type="submit" value="Login" />
+      </form>
+      <button type="button" onClick={handleLogout}>Logout</button>
+      <Roles />
     </div>
   );
 }
