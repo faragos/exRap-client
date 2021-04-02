@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Sidebar from './components/Sidebar';
 import Calendar from './components/Calendar';
 import ReduxExample from './pages/ReduxExample';
 import OpenAPI from './pages/OpenAPI';
@@ -8,6 +9,8 @@ import OpenAPI from './pages/OpenAPI';
 function App() {
   return (
     <div className="App">
+      <Sidebar />
+
       <Calendar />
       <ReduxExample />
       <OpenAPI />
