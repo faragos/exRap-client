@@ -1,6 +1,5 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
-import ButtonGroup from '@material-ui/core/ButtonGroup';
+import { Button, ButtonGroup, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
@@ -17,7 +16,7 @@ export default function GroupOrientation() {
 
   return (
     <div className={classes.root}>
-      <h1>exRap</h1>
+      <Typography variant="h1"> ExRap </Typography>
       <ButtonGroup
         orientation="vertical"
         color="primary"
