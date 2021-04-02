@@ -17,7 +17,7 @@ export default function GroupOrientation() {
 
   return (
     <div className={classes.root}>
-      <h2>exRap</h2>
+      <h1>exRap</h1>
       <ButtonGroup
         orientation="vertical"
         color="primary"
@@ -36,7 +36,6 @@ export default function GroupOrientation() {
       >
         <Button>Ausloggen</Button>
       </ButtonGroup>
-      <Button color="primary" variant="outlined" disableElevation>Test</Button>
     </div>
   );
 }
