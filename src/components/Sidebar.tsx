@@ -20,7 +20,6 @@ export default function GroupOrientation() {
       <ButtonGroup
         orientation="vertical"
         color="primary"
-        aria-label="vertical outlined primary button group"
       >
         <Button>Mein Dashboard</Button>
         <Button>Meine Zeiterfassung</Button>
@@ -31,7 +30,6 @@ export default function GroupOrientation() {
       <ButtonGroup
         orientation="vertical"
         color="primary"
-        aria-label="vertical outlined primary button group"
       >
         <Button>Ausloggen</Button>
       </ButtonGroup>
