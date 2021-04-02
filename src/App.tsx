@@ -1,12 +1,10 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Sidebar from './components/Sidebar';
 import Calendar from './components/Calendar';
 import ReduxExample from './pages/ReduxExample';
 import OpenAPI from './pages/OpenAPI';
-// import ButtonGroup from './components/ButtonGroup';
-// import Button from './components/Button';
-import Sidebar from './components/Sidebar';
 
 function App() {
   return (
