@@ -6,3 +6,10 @@ export type User = {
   firstName: string;
   lastName: string;
 };
+
+export type FormUser = {
+  username: string;
+  password: string;
+  token: string;
+  isAuthenticated: boolean;
+};
