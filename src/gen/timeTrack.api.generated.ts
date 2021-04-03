@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@rtk-incubator/rtk-query";
 export const api = createApi({
+  reducerPath: "timeTrackApi",
   baseQuery: fetchBaseQuery({ baseUrl: "https://localhost:5001" }),
   entityTypes: [],
   endpoints: (build) => ({

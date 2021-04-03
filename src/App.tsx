@@ -7,22 +7,25 @@ import {
   Redirect,
 } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
-import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import Projects from './pages/Projects';
 import Administration from './pages/Administration';
 import TimeTracking from './pages/TimeTracking';
+import Login from './pages/Login';
+import Signout from './pages/Signout';
+import { useAppSelector } from './hooks';
 
 function App() {
-  const isAuthenticated = true;
+  const currentUser = useAppSelector((state) => state.user);
 
   return (
     <Router>
-      {isAuthenticated && <Sidebar />}
+      { currentUser.isAuthenticated && <Sidebar />}
       <Switch>
         <Redirect exact from="/" to="/dashboard" />
         <Route path="/login" component={Login} />
+        <Route path="/signout" component={Signout} />
 
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PrivateRoute path="/timetracking" component={TimeTracking} />

@@ -1,10 +1,12 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
+import { useAppSelector } from '../hooks';
 
 // @ts-ignore
 function PrivateRoute({ component, path }) {
-  const isAuthenticated = true;
-  if (isAuthenticated) {
+  const currentUser = useAppSelector((state) => state.user);
+
+  if (currentUser.isAuthenticated) {
     // if the user is authenticated, just render the component
     return (
       <Route
