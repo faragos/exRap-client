@@ -39,6 +39,25 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
+
+### `yarn run generate-api`
+Generates the all APIs for local usage.
+
+#### `yarn run generate-time-track-api`
+Generates the timeTrack-API local usage.
+
+#### `yarn run generate-dashboard-api`
+Generates the dashboard-API local usage.
+
+#### `yarn run generate-auth-api`
+Generates the auth-API local usage.
+
+### `yarn run generate-api-production`
+Generates the API for production usage. Should only be used when building for a release.
+
+### `yarn run generate-example-api`
+Generates an example API for testing purposes.
+
 ## Learn More
 
 You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
