@@ -2,10 +2,10 @@ import React, { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import { fetchUserById, updateUser } from '../store/user/actions';
 import { User } from '../store/user/types';
-import { setUser } from '../store/user/reducers';
+import { setUser } from '../store/user/reducersExample';
 
 function ReduxExample() {
-  const user = useAppSelector((state) => state.user.user);
+  const user = useAppSelector((state) => state.userExample.user);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
