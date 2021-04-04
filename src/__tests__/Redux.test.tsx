@@ -30,8 +30,14 @@ test('logoutUser', () => {
     token: 'asdfewrabaer5t24q5g',
     isAuthenticated: true,
   };
+  const emptyUser = {
+    username: '',
+    password: '',
+    token: '',
+    isAuthenticated: false,
+  };
   index.dispatch(setCredentials(testUser));
   index.dispatch(logoutUser());
   const { user } = index.getState();
-  expect(user.isAuthenticated).toBeFalsy();
+  expect(user).toMatchObject(emptyUser);
 });
