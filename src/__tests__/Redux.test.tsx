@@ -6,6 +6,7 @@ import {
 } from '../store/user/reducers';
 
 afterEach(cleanup);
+
 test('set user credantials to redux store', () => {
   const testUser = {
     username: 'TestUser',
@@ -15,14 +16,15 @@ test('set user credantials to redux store', () => {
   };
   const expectedUser = {
     username: 'TestUser',
-    token: 'asdfewrabaer5t24q5g',
     password: '',
+    token: 'asdfewrabaer5t24q5g',
     isAuthenticated: true,
   };
   index.dispatch(setCredentials(testUser));
   const { user } = index.getState();
   expect(user).toMatchObject(expectedUser);
 });
+
 test('logoutUser', () => {
   const testUser = {
     username: 'TestUser',

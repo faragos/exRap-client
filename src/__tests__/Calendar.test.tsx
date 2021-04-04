@@ -4,7 +4,7 @@ import { cleanup } from '@testing-library/react';
 import Calendar from '../components/Calendar';
 
 afterEach(cleanup);
-it('renders without crashing', () => {
+test('renders without crashing', () => {
   const div = document.createElement('div');
   ReactDOM.render(<Calendar />, div);
 });
