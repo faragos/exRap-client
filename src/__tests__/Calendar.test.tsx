@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { cleanup } from '@testing-library/react';
-import Calendar from '../Calendar';
+import Calendar from '../components/Calendar';
 
 afterEach(cleanup);
 it('renders without crashing', () => {
