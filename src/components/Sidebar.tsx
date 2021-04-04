@@ -31,7 +31,7 @@ export default function GroupOrientation() {
         orientation="vertical"
         color="primary"
       >
-        <Button>Ausloggen</Button>
+        <Button data-testid="buttonLogout">Ausloggen</Button>
       </ButtonGroup>
     </div>
   );
