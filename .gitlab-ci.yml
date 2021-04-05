@@ -1,5 +1,16 @@
+stages:
+  - lint
+  - analyze
+  - build
+  - deploy
+
+cache:
+  paths:
+    - node_modules/
+
 eslint:
   image: node:latest
+  stage: lint
   script:
     # Run ESLint
     - npm install
@@ -11,6 +22,7 @@ variables:
 
 analyze-master:
   image: sonarsource/sonar-scanner-cli
+  stage: analyze
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
@@ -25,6 +37,7 @@ analyze-master:
 
 analyze:
   image: sonarsource/sonar-scanner-cli
+  stage: analyze
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
@@ -36,3 +49,21 @@ analyze:
     - sonar-scanner -Dsonar.projectKey="${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_REF_SLUG}" -Dsonar.projectName="${CI_PROJECT_TITLE} (${CI_COMMIT_REF_SLUG})" -Dsonar.login="${SONAR_LOGIN_TOKEN}" -Dsonar.host.url="${SONAR_URL}"
   except:
     - master
+
+build:
+  image: node:latest
+  stage: build
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - build
+
+deploy:
+  image: docker:latest
+  stage: deploy
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:    
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
