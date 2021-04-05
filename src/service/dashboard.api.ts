@@ -19,37 +19,28 @@ export const api = generatedApi.enhanceEndpoints({
     dashboardsDeleteDashboard: {
       invalidates: ['Dashboard'],
     },
-    dashboardsGetDashboardEntries: {
+    dashboardEntriesGetDashboardEntries: {
       provides: ['Dashboard'],
     },
-    dashboardsAddDashboardEntry: {
+    dashboardEntriesAddDashboardEntry: {
       invalidates: ['Dashboard'],
     },
-    dashboardsDeleteDashboardEntry: {
-      invalidates: ['Dashboard'],
-    },
-    groupDashboardsGetGroupDashboard: {
-      provides: ['Dashboard'],
-    },
-    groupDashboardsAddViewerToDashboard: {
-      invalidates: ['Dashboard'],
-    },
-    groupDashboardsRemoveViewerFromDashboard: {
+    dashboardEntriesDeleteDashboardEntry: {
       invalidates: ['Dashboard'],
     },
   },
 });
 
 export const {
+  useDashboardEntriesGetDashboardEntriesQuery,
+  useDashboardEntriesAddDashboardEntryMutation,
+  useDashboardEntriesDeleteDashboardEntryMutation,
   useDashboardsGetDashboardsQuery,
   useDashboardsCreateDashboardMutation,
   useDashboardsGetDashboardQuery,
   useDashboardsUpdateDashboardMutation,
   useDashboardsDeleteDashboardMutation,
-  useDashboardsGetDashboardEntriesQuery,
-  useDashboardsAddDashboardEntryMutation,
-  useDashboardsDeleteDashboardEntryMutation,
-  useGroupDashboardsGetGroupDashboardQuery,
-  useGroupDashboardsAddViewerToDashboardMutation,
-  useGroupDashboardsRemoveViewerFromDashboardMutation,
+  useDashboardUsersGetDashboardViewerQuery,
+  useDashboardUsersAddViewerToDashboardMutation,
+  useDashboardUsersRemoveViewerFromDashboardMutation,
 } = api;
