@@ -32,7 +32,7 @@ export default function GroupOrientation() {
         orientation="vertical"
         color="primary"
       >
-        <Button component={Link} to="/signout" data-testid="buttonLogout">Ausloggen</Button>
+        <Button component={Link} to="/signout">Ausloggen</Button>
       </ButtonGroup>
     </div>
   );
