@@ -25,3 +25,5 @@ yarn-error.log*
 .idea
 
 /src/gen/*
+# exception: keep gen folder
+!/src/gen/.gitkeep
