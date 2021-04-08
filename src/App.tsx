@@ -13,11 +13,14 @@ import Projects from './pages/Projects';
 import Administration from './pages/Administration';
 import TimeTracking from './pages/TimeTracking';
 import Login from './pages/Login';
-import Signout from './pages/Signout';
 import { useAppSelector } from './hooks';
+import validateToken from './utils/validateToken';
 
 function App() {
   const currentUser = useAppSelector((state) => state.user);
+  const token = sessionStorage.getItem('token');
+
+  validateToken(token);
 
   return (
     <Router>
@@ -25,7 +28,6 @@ function App() {
       <Switch>
         <Redirect exact from="/" to="/dashboard" />
         <Route path="/login" component={Login} />
-        <Route path="/signout" component={Signout} />
 
         <PrivateRoute path="/dashboard" component={Dashboard} />
         <PrivateRoute path="/timetracking" component={TimeTracking} />
