@@ -25,11 +25,11 @@ function Login() {
     event.preventDefault();
     try {
       const param = { exRapAuthDtoCredential: formState } as LoginLoginApiArg;
-      const token = await login(param).unwrap();
+      const response :any = await login(param).unwrap(); // TODO: use right type after API is ready
       const user = {
         username: formState.loginName,
         password: formState.password,
-        token,
+        token: response.token,
         isAuthenticated: true,
       } as FormUser;
       dispatch(setCredentials(user));
