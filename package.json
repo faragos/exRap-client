@@ -29,6 +29,7 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
+    "prepare": "git config core.hooksPath ./git-hooks",
     "pre-push": "npm run lint && cross-env CI=true npm run test",
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -70,6 +71,5 @@
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.8",
     "jest-sonar-reporter": "^2.0.0"
-  },
-  "prepare": "git config core.hooksPath ./git-hooks"
+  }
 }
