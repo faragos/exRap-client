@@ -29,10 +29,12 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
+    "pre-commit": "npm run lint && npm run test",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
     "generate-example-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file generated.api.ts --hooks https://petstore3.swagger.io/api/v3/openapi.json --baseUrl https://petstore3.swagger.io/api/v3",
     "generate-time-track-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/timeTrack.api.generated.ts --hooks ./api/TimeTrackAPI.json --reducerPath timeTrackApi",
     "generate-dashboard-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/dashboard.api.generated.ts --hooks ./api/DashApi.json --reducerPath dashboardApi",
@@ -66,5 +68,6 @@
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^4.0.8",
     "jest-sonar-reporter": "^2.0.0"
-  }
+  },
+  "prepare": "git config core.hooksPath ./git-hooks"
 }
