@@ -1,24 +1,13 @@
-import { createApi, fetchBaseQuery } from "@rtk-incubator/rtk-query";
-import {RootState} from '../store/index'
-
+import { createApi } from "@rtk-incubator/rtk-query";
+import { apiBaseQuery } from "..\\service\\apiBaseQuery";
 export const api = createApi({
-  baseQuery: fetchBaseQuery({
-    baseUrl: "https://localhost:5001",
-    prepareHeaders: (headers, {getState}) => {
-      // By default, if we have a token in the store, let's use that for authenticated requests
-      const token = (getState() as RootState).user.token;
-      if (token) {
-        headers.set("authorization", `Bearer ${token}`);
-      }
-      return headers;
-    }
-  }),
+  reducerPath: "authApi",
+  baseQuery: apiBaseQuery({ baseUrl: "https://localhost/dash" }),
   entityTypes: [],
   endpoints: (build) => ({
     loginLogin: build.mutation<LoginLoginApiResponse, LoginLoginApiArg>({
       query: (queryArg) => ({
         url: `/api/Login`,
-        responseHandler: 'text',
         method: "POST",
         body: queryArg.exRapAuthDtoCredential,
       }),

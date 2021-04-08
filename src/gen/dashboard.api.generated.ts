@@ -1,7 +1,8 @@
-import { createApi, fetchBaseQuery } from "@rtk-incubator/rtk-query";
+import { createApi } from "@rtk-incubator/rtk-query";
+import { apiBaseQuery } from "..\\service\\apiBaseQuery";
 export const api = createApi({
   reducerPath: "dashboardApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "https://localhost:5001" }),
+  baseQuery: apiBaseQuery({ baseUrl: "https://localhost/auth" }),
   entityTypes: [],
   endpoints: (build) => ({
     dashboardsGetDashboards: build.query<
