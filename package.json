@@ -30,7 +30,7 @@
   },
   "scripts": {
     "prepare": "git config core.hooksPath ./git-hooks",
-    "pre-push": "yarn run lint && cross-env CI=true yarn run test",
+    "pre-push": "npm run lint && cross-env CI=true npm run test",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -40,8 +40,8 @@
     "generate-time-track-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/timeTrack.api.generated.ts --baseQuery ./src/service/apiBaseQuery.ts:apiBaseQuery --hooks ./api/TimeTrackAPI.json --reducerPath timeTrackApi",
     "generate-dashboard-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/dashboard.api.generated.ts --baseQuery ./src/service/apiBaseQuery.ts:apiBaseQuery --hooks ./api/DashAPI.json --reducerPath dashboardApi",
     "generate-auth-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/auth.api.generated.ts --baseQuery ./src/service/apiBaseQuery.ts:apiBaseQuery --hooks ./api/AuthAPI.json --reducerPath authApi",
-    "generate-api": "yarn run generate-time-track-api -- --baseUrl https://localhost/time && yarn run generate-dashboard-api -- --baseUrl https://localhost/auth && yarn run generate-auth-api -- --baseUrl https://localhost/dash",
-    "generate-api-production": "yarn run generate-time-track-api -- --baseUrl https://petstore3.swagger.io/api/v3 && yarn run generate-dashboard-api -- --baseUrl https://petstore3.swagger.io/api/v3 && yarn run generate-auth-api -- --baseUrl https://petstore3.swagger.io/api/v3"
+    "generate-api": "npm run generate-time-track-api -- --baseUrl https://localhost/time && npm run generate-dashboard-api -- --baseUrl https://localhost/auth && npm run generate-auth-api -- --baseUrl https://localhost/dash",
+    "generate-api-production": "npm run generate-time-track-api -- --baseUrl https://petstore3.swagger.io/api/v3 && npm run generate-dashboard-api -- --baseUrl https://petstore3.swagger.io/api/v3 && npm run generate-auth-api -- --baseUrl https://petstore3.swagger.io/api/v3"
   },
   "eslintConfig": {
     "extends": [
