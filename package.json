@@ -35,7 +35,7 @@
     "eject": "react-scripts eject",
     "generate-example-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file generated.api.ts --hooks https://petstore3.swagger.io/api/v3/openapi.json --baseUrl https://petstore3.swagger.io/api/v3",
     "generate-time-track-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/timeTrack.api.generated.ts --baseQuery ./src/service/apiBaseQuery.ts:apiBaseQuery --hooks ./api/TimeTrackAPI.json --reducerPath timeTrackApi",
-    "generate-dashboard-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/dashboard.api.generated.ts --baseQuery ./src/service/apiBaseQuery.ts:apiBaseQuery --hooks ./api/DashApi.json --reducerPath dashboardApi",
+    "generate-dashboard-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/dashboard.api.generated.ts --baseQuery ./src/service/apiBaseQuery.ts:apiBaseQuery --hooks ./api/DashAPI.json --reducerPath dashboardApi",
     "generate-auth-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/auth.api.generated.ts --baseQuery ./src/service/apiBaseQuery.ts:apiBaseQuery --hooks ./api/AuthAPI.json --reducerPath authApi",
     "generate-api": "npm run generate-time-track-api -- --baseUrl https://localhost/time && npm run generate-dashboard-api -- --baseUrl https://localhost/auth && npm run generate-auth-api -- --baseUrl https://localhost/dash",
     "generate-api-production": "npm run generate-time-track-api -- --baseUrl https://petstore3.swagger.io/api/v3 && npm run generate-dashboard-api -- --baseUrl https://petstore3.swagger.io/api/v3 && npm run generate-auth-api -- --baseUrl https://petstore3.swagger.io/api/v3"
