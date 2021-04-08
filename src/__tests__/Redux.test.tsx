@@ -1,5 +1,5 @@
 import { cleanup } from '@testing-library/react';
-import index from '../store/index';
+import store from '../store/store';
 import {
   setCredentials,
   logoutUser,
@@ -20,8 +20,8 @@ test('set user credantials to redux store', () => {
     token: 'asdfewrabaer5t24q5g',
     isAuthenticated: true,
   };
-  index.dispatch(setCredentials(testUser));
-  const { user } = index.getState();
+  store.dispatch(setCredentials(testUser));
+  const { user } = store.getState();
   expect(user).toMatchObject(expectedUser);
 });
 
@@ -38,8 +38,8 @@ test('logoutUser', () => {
     token: '',
     isAuthenticated: false,
   };
-  index.dispatch(setCredentials(testUser));
-  index.dispatch(logoutUser());
-  const { user } = index.getState();
+  store.dispatch(setCredentials(testUser));
+  store.dispatch(logoutUser());
+  const { user } = store.getState();
   expect(user).toMatchObject(emptyUser);
 });

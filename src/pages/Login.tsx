@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useLoginLoginMutation } from '../service/auth.api';
 import { LoginLoginApiArg } from '../gen/auth.api.generated';
 import { setCredentials, logoutUser } from '../store/user/reducers';
-import { FormUser } from '../store/user/types';
+import { User } from '../store/user/types';
 import { useAppSelector } from '../hooks';
 
 function Login() {
@@ -31,7 +31,7 @@ function Login() {
         password: formState.password,
         token: response.token,
         isAuthenticated: true,
-      } as FormUser;
+      } as User;
       dispatch(setCredentials(user));
     } catch (err) {
       console.log(err);

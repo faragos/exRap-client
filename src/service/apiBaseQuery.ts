@@ -1,5 +1,5 @@
 import { BaseQueryFn, fetchBaseQuery } from '@rtk-incubator/rtk-query';
-import type { RootState } from '../store';
+import type { RootState } from '../store/store';
 
 const baseQuery = (baseUrl: string) => fetchBaseQuery({
   baseUrl,
