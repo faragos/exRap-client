@@ -1,18 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FormUser } from './types';
+import { User } from './types';
 
 const initialState = {
   username: '',
   password: '',
   token: '',
   isAuthenticated: false,
-} as FormUser;
+} as User;
 
 const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setCredentials: (state, { payload: { username, token } }: PayloadAction<FormUser>) => {
+    setCredentials: (state, { payload: { username, token } }: PayloadAction<User>) => {
       state.username = username;
       state.token = token;
       state.isAuthenticated = true;

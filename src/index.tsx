@@ -6,7 +6,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import theme from './theme';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import store from './store/index';
+import store from './store/store';
 
 ReactDOM.render(
   <React.StrictMode>
