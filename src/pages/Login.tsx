@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import {
+  Grid, Paper, TextField, FormControlLabel, Checkbox, Button,
+} from '@material-ui/core';
 import { useLoginLoginMutation } from '../service/auth.api';
 import { LoginLoginApiArg } from '../gen/auth.api.generated';
 import { setCredentials, logoutUser } from '../store/user/reducers';
@@ -41,27 +44,46 @@ function Login() {
     dispatch(logoutUser());
   };
 
+  const paperStyle = {
+    padding: 20,
+    height: '50vh',
+    width: 280,
+    margin: '200px auto',
+  };
+
   return (
-    <div>
-      <h1>login</h1>
-      <p>
-        Hallo
-        {' '}
-        { currentUser.username }
-      </p>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="loginName">
-          username
-          <input id="loginName" name="loginName" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="password">
-          password
-          <input id="password" name="password" type="password" onChange={handleChange} />
-        </label>
-        <input type="submit" value="Login" />
-      </form>
-      <button type="button" onClick={handleLogout}>Logout</button>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <Grid>
+        <p>
+          Hallo
+          {' '}
+          { currentUser.username }
+        </p>
+        <Paper elevation={10} style={paperStyle}>
+          <Grid>
+            <h1> ExRap </h1>
+          </Grid>
+          <TextField id="loginName" label="Username" placeholder="Enter Username" fullWidth required type="text" onChange={handleChange} />
+          <TextField id="password" label="Password" placeholder="Enter Password" fullWidth required type="password" onChange={handleChange} />
+          <FormControlLabel
+            control={(
+              <Checkbox
+                name="checkedB"
+                color="primary"
+              />
+                )}
+            label="Stay logged in"
+          />
+          <Button type="submit" color="primary" variant="contained" fullWidth>
+            Login
+          </Button>
+          <p />
+          <Button type="button" color="primary" variant="contained" fullWidth onClick={handleLogout}>
+            Logout
+          </Button>
+        </Paper>
+      </Grid>
+    </form>
   );
 }
 export default Login;
