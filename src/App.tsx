@@ -6,7 +6,7 @@ import {
   Switch,
   Redirect,
 } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
+// import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import Projects from './pages/Projects';
@@ -15,13 +15,14 @@ import TimeTracking from './pages/TimeTracking';
 import Login from './pages/Login';
 import Signout from './pages/Signout';
 import { useAppSelector } from './hooks';
+import Drawer from './components/Drawer';
 
 function App() {
   const currentUser = useAppSelector((state) => state.user);
 
   return (
     <Router>
-      { currentUser.isAuthenticated && <Sidebar />}
+      { currentUser.isAuthenticated && <Drawer />}
       <Switch>
         <Redirect exact from="/" to="/dashboard" />
         <Route path="/login" component={Login} />
