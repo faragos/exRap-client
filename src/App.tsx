@@ -14,13 +14,15 @@ import Administration from './pages/Administration';
 import TimeTracking from './pages/TimeTracking';
 import Login from './pages/Login';
 import { useAppSelector } from './hooks';
-import validateToken from './utils/validateToken';
+import updateStore from './utils/validateToken';
 
 function App() {
   const currentUser = useAppSelector((state) => state.user);
   const token = sessionStorage.getItem('token');
 
-  validateToken(token);
+  if (token) {
+    updateStore(token);
+  }
 
   return (
     <Router>
