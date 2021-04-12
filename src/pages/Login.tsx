@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { useLoginLoginMutation } from '../service/auth.api';
 import { LoginLoginApiArg } from '../gen/auth.api.generated';
-import { setCredentials, logoutUser } from '../store/user/reducers';
+import { setCredentials } from '../store/user/reducers';
 import { User } from '../store/user/types';
-import { useAppSelector } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 
 function Login() {
-  const dispatch = useDispatch();
+  const history = useHistory();
+  const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.user);
   const [formState, setFormState] = useState({
     loginName: '',
@@ -26,19 +27,17 @@ function Login() {
     try {
       const param = { exRapAuthDtoCredential: formState } as LoginLoginApiArg;
       const response :any = await login(param).unwrap(); // TODO: use right type after API is ready
-      const user = {
+      const user: User = {
         username: formState.loginName,
-        password: formState.password,
         token: response.token,
         isAuthenticated: true,
-      } as User;
+      };
       dispatch(setCredentials(user));
+      sessionStorage.setItem('token', response.token);
+      history.push('/');
     } catch (err) {
       console.log(err);
     }
-  };
-  const handleLogout = () => {
-    dispatch(logoutUser());
   };
 
   return (
@@ -60,7 +59,6 @@ function Login() {
         </label>
         <input type="submit" value="Login" />
       </form>
-      <button type="button" onClick={handleLogout}>Logout</button>
     </div>
   );
 }
