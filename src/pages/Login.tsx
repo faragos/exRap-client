@@ -7,12 +7,11 @@ import { useLoginLoginMutation } from '../service/auth.api';
 import { LoginLoginApiArg } from '../gen/auth.api.generated';
 import { setCredentials } from '../store/user/reducers';
 import { User } from '../store/user/types';
-import { useAppDispatch, useAppSelector } from '../hooks';
+import { useAppDispatch } from '../hooks';
 
 function Login() {
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const currentUser = useAppSelector((state) => state.user);
   const [formState, setFormState] = useState({
     loginName: '',
     password: '',
@@ -53,11 +52,6 @@ function Login() {
   return (
     <form onSubmit={handleSubmit}>
       <Grid>
-        <p>
-          Hallo
-          {' '}
-          { currentUser.username }
-        </p>
         <Paper elevation={10} style={paperStyle}>
           <Grid>
             <h1> ExRap </h1>
@@ -77,9 +71,6 @@ function Login() {
             Login
           </Button>
           <p />
-          <Button type="button" color="primary" variant="contained" fullWidth onClick={handleLogout}>
-            Logout
-          </Button>
         </Paper>
       </Grid>
     </form>
