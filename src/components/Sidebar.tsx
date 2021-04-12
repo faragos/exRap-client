@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button, ButtonGroup, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { useAppDispatch } from '../hooks';
+import { clearUser } from '../store/user/reducers';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,6 +16,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function GroupOrientation() {
   const classes = useStyles();
+  const history = useHistory();
+  const dispatch = useAppDispatch();
+
+  const handleSignout = () => {
+    dispatch(clearUser());
+    history.push('/login');
+  };
 
   return (
     <div className={classes.root}>
@@ -32,7 +41,7 @@ export default function GroupOrientation() {
         orientation="vertical"
         color="primary"
       >
-        <Button component={Link} to="/signout">Ausloggen</Button>
+        <Button onClick={handleSignout}>Ausloggen</Button>
       </ButtonGroup>
     </div>
   );

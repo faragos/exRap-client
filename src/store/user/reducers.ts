@@ -17,18 +17,18 @@ const userSlice = createSlice({
       state.token = token;
       state.isAuthenticated = true;
     },
-    logoutUser: (state) => {
+    clearUser: (state) => {
       state.username = '';
-      state.password = '';
       state.token = '';
       state.isAuthenticated = false;
+      sessionStorage.clear();
     },
   },
 });
 
 export const {
   setCredentials,
-  logoutUser,
+  clearUser,
 } = userSlice.actions;
 
 export default userSlice.reducer;

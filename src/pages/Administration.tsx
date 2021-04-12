@@ -33,7 +33,7 @@ function Administration() {
   const { data } = useUsersGetUsersQuery({});
   let users;
   if (data) {
-    users = data.map((user) => <li>{user.userName}</li>);
+    users = data.map((user) => <li key={user.id}>{user.userName}</li>);
   }
 
   return (
