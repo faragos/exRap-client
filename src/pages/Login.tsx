@@ -63,8 +63,8 @@ function Login() {
           <Grid>
             <h1> ExRap </h1>
           </Grid>
-          <TextField id="loginName" label="Username" placeholder="Enter Username" fullWidth required type="text" onChange={handleChange} />
-          <TextField id="password" label="Password" placeholder="Enter Password" fullWidth required type="password" onChange={handleChange} />
+          <TextField id="loginName" name="loginName" label="Username" type="text" fullWidth required onChange={handleChange} />
+          <TextField id="password" name="password" label="Password" type="password" fullWidth required onChange={handleChange} />
           <FormControlLabel
             control={(
               <Checkbox
