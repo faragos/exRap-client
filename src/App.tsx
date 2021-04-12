@@ -15,14 +15,14 @@ import TimeTracking from './pages/TimeTracking';
 import Login from './pages/Login';
 import Signout from './pages/Signout';
 import { useAppSelector } from './hooks';
-import Drawer from './components/Drawer';
+import Sidebar from './components/Sidebar';
 
 function App() {
   const currentUser = useAppSelector((state) => state.user);
 
   return (
     <Router>
-      { currentUser.isAuthenticated && <Drawer />}
+      { currentUser.isAuthenticated && <Sidebar />}
       <Switch>
         <Redirect exact from="/" to="/dashboard" />
         <Route path="/login" component={Login} />
