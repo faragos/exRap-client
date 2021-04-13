@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { ComponentClass } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useAppSelector } from '../hooks';
+import { User } from '../store/user/types';
 
-// @ts-ignore
-function PrivateRoute({ component, path }) {
-  const currentUser = useAppSelector((state) => state.user);
+interface PrivateRouteProps {
+  component: ComponentClass;
+  path: string
+}
+
+const PrivateRoute : React.FC<PrivateRouteProps> = ({ component, path }) => {
+  const currentUser: User = useAppSelector((state) => state.user);
 
   if (currentUser.isAuthenticated) {
     // if the user is authenticated, just render the component
@@ -26,6 +31,6 @@ function PrivateRoute({ component, path }) {
       )}
     />
   );
-}
+};
 
 export default PrivateRoute;

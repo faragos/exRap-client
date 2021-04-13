@@ -9,7 +9,7 @@ import { setCredentials } from '../store/user/reducers';
 import { User } from '../store/user/types';
 import { useAppDispatch } from '../hooks';
 
-function Login() {
+const Login : React.FC = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const [formState, setFormState] = useState({
@@ -27,7 +27,7 @@ function Login() {
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     try {
-      const param = { exRapAuthDtoCredential: formState } as LoginLoginApiArg;
+      const param: LoginLoginApiArg = { exRapAuthDtoCredential: formState };
       const response :any = await login(param).unwrap(); // TODO: use right type after API is ready
       const user: User = {
         username: formState.loginName,
@@ -75,5 +75,5 @@ function Login() {
       </Grid>
     </form>
   );
-}
+};
 export default Login;
