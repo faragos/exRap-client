@@ -1,10 +1,10 @@
-import React, { ComponentClass } from 'react';
+import React, { ComponentType } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useAppSelector } from '../hooks';
 import { User } from '../store/user/types';
 
 interface PrivateRouteProps {
-  component: ComponentClass;
+  component: ComponentType;
   path: string
 }
 
