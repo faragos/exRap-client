@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useUsersCreateUserMutation, useUsersGetUsersQuery } from '../service/auth.api';
 import { ExRapAuthDTOUser, UsersCreateUserApiArg } from '../gen/auth.api.generated';
 
-function Administration() {
+const Administration : React.FC = () => {
   const dtoUser: ExRapAuthDTOUser = {
     userName: '',
     name: '',
@@ -72,6 +72,6 @@ function Administration() {
       </form>
     </div>
   );
-}
+};
 
 export default Administration;

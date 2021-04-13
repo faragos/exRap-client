@@ -6,7 +6,7 @@ import { setCredentials } from '../store/user/reducers';
 import { User } from '../store/user/types';
 import { useAppDispatch, useAppSelector } from '../hooks';
 
-function Login() {
+const Login : React.FC = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.user);
@@ -61,5 +61,5 @@ function Login() {
       </form>
     </div>
   );
-}
+};
 export default Login;
