@@ -54,16 +54,16 @@ function Projects() {
 
   const tableEntries = [
     {
+      _id: '1',
       projectName: 'project1',
       projectNameShort: 'prj1',
       projectDescription: 'prj1 description',
-      actions: 'Actions',
     },
     {
+      _id: '2',
       projectName: 'project2',
       projectNameShort: 'prj2',
       projectDescription: 'prj2 description',
-      actions: 'Actions',
     },
   ];
 
