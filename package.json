@@ -38,13 +38,15 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx",
-    "generate-example-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file generated.api.ts --hooks https://petstore3.swagger.io/api/v3/openapi.json --baseUrl https://petstore3.swagger.io/api/v3",
-    "generate-time-track-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/timeTrack.api.generated.ts --hooks ${baseUrl:-http://localhost}/time/swagger/v1/swagger.json --reducerPath timeTrackApi",
-    "generate-dashboard-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/dashboard.api.generated.ts --hooks ${baseUrl:-http://localhost}/dash/swagger/v1/swagger.json --reducerPath dashboardApi",
-    "generate-auth-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/auth.api.generated.ts --hooks --hooks ${baseUrl:-http://localhost}/auth/swagger/v1/swagger.json --reducerPath authApi",
-    "generate-api": "npm run generate-time-track-api -- --baseUrl ${baseUrl:-http://localhost}/time && npm run generate-dashboard-api -- --baseUrl ${baseUrl:-http://localhost}/dash && npm run generate-auth-api -- --baseUrl ${baseUrl:-http://localhost}/auth",
-    "generate-api-production": "npm run generate-time-track-api -- --baseUrl https://petstore3.swagger.io/api/v3 && npm run generate-dashboard-api -- --baseUrl https://petstore3.swagger.io/api/v3 && npm run generate-auth-api -- --baseUrl https://petstore3.swagger.io/api/v3"
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    
+    "generate-time-track-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/timeTrack.api.generated.ts --hooks ${hookUrl}/time/swagger/v1/swagger.json --reducerPath timeTrackApi --baseUrl ${baseUrl}/time",
+    "generate-dashboard-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/dashboard.api.generated.ts --hooks ${hookUrl}/dash/swagger/v1/swagger.json --reducerPath dashboardApi --baseUrl ${baseUrl}/dash",
+    "generate-auth-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/auth.api.generated.ts --hooks --hooks ${hookUrl}/auth/swagger/v1/swagger.json --reducerPath authApi --baseUrl ${baseUrl}/auth",
+    
+    "generate-api": "export hookUrl=${hookUrl:-https://epj.audifire.ch} && npm run generate-time-track-api && npm run generate-dashboard-api && npm run generate-auth-api",
+    "generate-api:dev": "export hookUrl=https://dev.epj.audifire.ch && npm run generate-api",
+    "generate-api:local-dev": "export baseUrl=http://localhost:3000 && npm run generate-api"
   },
   "eslintConfig": {
     "extends": [
