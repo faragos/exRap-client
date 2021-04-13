@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function GroupOrientation() {
+const GroupOrientation : React.FC = () => {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -45,4 +45,6 @@ export default function GroupOrientation() {
       </ButtonGroup>
     </div>
   );
-}
+};
+
+export default GroupOrientation;

@@ -6,20 +6,19 @@ import {
 import { DashboardsCreateDashboardApiArg, ExRapDashDTODashboard } from '../gen/dashboard.api.generated';
 
 function Dashboard() {
-  const result = useDashboardsGetDashboardsQuery({});
-  const { data, error, isLoading } = result;
+  const { data, error, isLoading } = useDashboardsGetDashboardsQuery({});
 
   const [
     createDashboard, // This is the mutation trigger
   ] = useDashboardsCreateDashboardMutation();
 
-  const arg = {
+  const arg: ExRapDashDTODashboard = {
     title: 'string',
     description: 'string',
     type: 'UserDashboard',
-  } as ExRapDashDTODashboard;
+  };
 
-  const param = { exRapDashDtoDashboard: arg } as DashboardsCreateDashboardApiArg;
+  const param: DashboardsCreateDashboardApiArg = { exRapDashDtoDashboard: arg };
 
   const handleUpdate = () => createDashboard(param);
 

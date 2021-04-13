@@ -25,7 +25,7 @@ function Login() {
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     try {
-      const param = { exRapAuthDtoCredential: formState } as LoginLoginApiArg;
+      const param: LoginLoginApiArg = { exRapAuthDtoCredential: formState };
       const response :any = await login(param).unwrap(); // TODO: use right type after API is ready
       const user: User = {
         username: formState.loginName,

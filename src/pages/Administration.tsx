@@ -3,14 +3,15 @@ import { useUsersCreateUserMutation, useUsersGetUsersQuery } from '../service/au
 import { ExRapAuthDTOUser, UsersCreateUserApiArg } from '../gen/auth.api.generated';
 
 function Administration() {
-  const [formState, setFormState] = useState({
+  const dtoUser: ExRapAuthDTOUser = {
     userName: '',
     name: '',
     firstName: '',
     initial: '',
     mailAddress: '',
     status: 'Restricted',
-  } as ExRapAuthDTOUser);
+  };
+  const [formState, setFormState] = useState(dtoUser);
 
   const [
     createUser, // This is the mutation trigger
@@ -23,7 +24,7 @@ function Administration() {
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     try {
-      const param = { exRapAuthDtoUser: formState } as UsersCreateUserApiArg;
+      const param: UsersCreateUserApiArg = { exRapAuthDtoUser: formState };
       createUser(param);
     } catch (err) {
       console.log(err);
