@@ -9,7 +9,7 @@ import {
   InputAdornment,
   Grid,
   Paper,
-  Button, IconButton,
+  Button, IconButton, FormControlLabel, Checkbox,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
@@ -35,6 +35,10 @@ const useStyles = makeStyles((theme) => ({
   newProjectButton: {
     position: 'absolute',
     right: '10px',
+  },
+  finishedCheckBox: {
+    position: 'absolute',
+    right: '300px',
   },
 }));
 
@@ -65,8 +69,8 @@ function Projects() {
 
   return (
     <Grid>
+      <h1> Projects </h1>
       <Paper elevation={10} style={paperStyle}>
-        <h1> Projects </h1>
         <Toolbar>
           <TextField
             name="Suche"
@@ -79,6 +83,16 @@ function Projects() {
                 </InputAdornment>
               ),
             }}
+          />
+          <FormControlLabel
+            className={classes.finishedCheckBox}
+            control={(
+              <Checkbox
+                name="checkedB"
+                color="primary"
+              />
+              )}
+            label="Beendet"
           />
           <Button variant="outlined" color="primary" className={classes.newProjectButton}>
             Neues Projekt erfassen
