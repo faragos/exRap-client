@@ -1,6 +1,6 @@
 import React from 'react';
 import { cleanup } from '@testing-library/react';
-import { render, screen } from './test-utils';
+import { render, screen } from '../test-utils/test-utils';
 import Calendar from '../components/Calendar';
 
 afterEach(cleanup);
