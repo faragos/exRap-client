@@ -3,6 +3,7 @@ stages:
   - build
   - analyze
   - deploy
+  - deploy:live
 
 cache:
   key: "$CI_COMMIT_REF_SLUG"
@@ -99,5 +100,28 @@ deploy:
   script:    
     - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
     - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+    - |
+      curl -X PUT \
+        -H "PRIVATE-TOKEN: ${DEPLOYMENT_ACCESS_TOKEN}" \
+        -F "value=${CI_COMMIT_REF_SLUG}" \
+        https://gitlab.ost.ch/api/v4/projects/1946/variables/EXRAP_DASHBOARD_IMAGE_TAG?environment_scope=development
+  except:
+    - master
+
+deploy-master:live:
+  stage: deploy:live
+  variables:
+    ENVIRONMENT: productive
+  trigger: epj/2021-FS/g06_exrap/deployment-exrap
+  needs: ["deploy-master"]
+  only:
+    - master
+
+deploy:live:
+  stage: deploy:live
+  variables:
+    ENVIRONMENT: development
+  trigger: epj/2021-FS/g06_exrap/deployment-exrap
+  needs: ["deploy"]
   except:
     - master
