@@ -6,7 +6,6 @@ import {
   Switch,
   Redirect,
 } from 'react-router-dom';
-// import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import Projects from './pages/Projects';
