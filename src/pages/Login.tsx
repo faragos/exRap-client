@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import {
+  Grid, Paper, TextField, FormControlLabel, Checkbox, Button,
+} from '@material-ui/core';
 import { useLoginLoginMutation } from '../service/auth.api';
 import { LoginLoginApiArg } from '../gen/auth.api.generated';
 import { setCredentials } from '../store/user/reducers';
 import { User } from '../store/user/types';
-import { useAppDispatch, useAppSelector } from '../hooks';
+import { useAppDispatch } from '../hooks';
 
 function Login() {
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const currentUser = useAppSelector((state) => state.user);
   const [formState, setFormState] = useState({
     loginName: '',
     password: '',
@@ -40,26 +42,38 @@ function Login() {
     }
   };
 
+  const paperStyle = {
+    padding: 20,
+    height: '50vh',
+    width: 280,
+    margin: '200px auto',
+  };
+
   return (
-    <div>
-      <h1>login</h1>
-      <p>
-        Hallo
-        {' '}
-        { currentUser.username }
-      </p>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="loginName">
-          username
-          <input id="loginName" name="loginName" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="password">
-          password
-          <input id="password" name="password" type="password" onChange={handleChange} />
-        </label>
-        <input type="submit" value="Login" />
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <Grid>
+        <Paper elevation={10} style={paperStyle}>
+          <Grid>
+            <h1> ExRap </h1>
+          </Grid>
+          <TextField id="loginName" name="loginName" label="Username" type="text" fullWidth required onChange={handleChange} />
+          <TextField id="password" name="password" label="Password" type="password" fullWidth required onChange={handleChange} />
+          <FormControlLabel
+            control={(
+              <Checkbox
+                name="checkedB"
+                color="primary"
+              />
+                )}
+            label="Stay logged in"
+          />
+          <Button type="submit" color="primary" variant="contained" fullWidth>
+            Login
+          </Button>
+          <p />
+        </Paper>
+      </Grid>
+    </form>
   );
 }
 export default Login;

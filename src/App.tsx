@@ -6,7 +6,6 @@ import {
   Switch,
   Redirect,
 } from 'react-router-dom';
-import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import Projects from './pages/Projects';
@@ -14,6 +13,7 @@ import Administration from './pages/Administration';
 import TimeTracking from './pages/TimeTracking';
 import Login from './pages/Login';
 import { useAppSelector } from './hooks';
+import Sidebar from './components/Sidebar';
 import updateStore from './utils/validateToken';
 
 function App() {
