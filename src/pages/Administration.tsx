@@ -1,6 +1,23 @@
 import React, { useState } from 'react';
-import { useUsersCreateUserMutation, useUsersGetUsersQuery } from '../service/auth.api';
+import {
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  Toolbar,
+  TextField,
+  InputAdornment,
+  Grid,
+  Paper,
+  Button,
+  IconButton,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+import SearchIcon from '@material-ui/icons/Search';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { ExRapAuthDTOUser, UsersCreateUserApiArg } from '../gen/auth.api.generated';
+import { useUsersCreateUserMutation, useUsersGetUsersQuery } from '../service/auth.api';
 
 const Administration : React.FC = () => {
   const dtoUser: ExRapAuthDTOUser = {
@@ -37,8 +54,52 @@ const Administration : React.FC = () => {
     users = data.map((user) => <li key={user.id}>{user.userName}</li>);
   }
 
+  const useStyles = makeStyles((theme) => ({
+    table: {
+      marginTop: theme.spacing(3),
+      '& tbody td': {
+        fontWeight: '300',
+      },
+      '& tbody tr:hover': {
+        backgroundColor: '#fffbf2',
+        cursor: 'pointed',
+      },
+      '& tbody td:nth-child(4)': {
+        width: '25%',
+      },
+    },
+    newUserButton: {
+      position: 'absolute',
+      right: '10px',
+    },
+  }));
+
+  const paperStyle = {
+    padding: 20,
+    height: '50vh',
+    width: 900,
+    margin: '20px auto',
+  };
+
+  const classes = useStyles();
+
+  const tableEntries = [
+    {
+      _id: '1',
+      userFullName: 'Lukas Schlunegger',
+      userShortName: 'lsc',
+      userPosition: 'System Engineer',
+    },
+    {
+      _id: '2',
+      userFullName: 'Armend Lesi',
+      userShortName: 'ale',
+      userPosition: 'Projektleiter',
+    },
+  ];
+
   return (
-    <div>
+    <Grid>
       <h1> Administration </h1>
       <h2>Alle Benutzer</h2>
       {users}
@@ -70,7 +131,49 @@ const Administration : React.FC = () => {
         </label>
         <input type="submit" value="add" />
       </form>
-    </div>
+
+      <Paper elevation={10} style={paperStyle}>
+        <Toolbar>
+          <TextField
+            name="Suche"
+            label="Suche"
+            type="text"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button variant="outlined" color="primary" className={classes.newUserButton}>
+            Neuer Mitarbeiter erfassen
+          </Button>
+        </Toolbar>
+        <Table className={classes.table}>
+          <TableBody>
+            {
+            tableEntries.map((item) => (
+              <TableRow>
+                <TableCell>{item.userFullName}</TableCell>
+                <TableCell>{item.userShortName}</TableCell>
+                <TableCell>{item.userPosition}</TableCell>
+                <TableCell>
+                  <IconButton>
+                    <EditIcon />
+                  </IconButton>
+                  <IconButton>
+                    <DeleteIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))
+          }
+          </TableBody>
+        </Table>
+      </Paper>
+    </Grid>
+
   );
 };
 
