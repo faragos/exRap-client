@@ -1,23 +1,63 @@
-eslint:
-  image: node:latest
-  script:
-    # Run ESLint
-    - npm install
-    - npx eslint . --ext .js,.jsx,.ts,.tsx
+stages:
+  - lint
+  - build
+  - analyze
+  - deploy
+  - deploy:live
+
+cache:
+  key: "$CI_COMMIT_REF_SLUG"
+  paths:
+    - node_modules/
 
 variables:
   SONAR_URL: https://sonar.epj.audifire.ch/
   GIT_DEPTH: "0"
 
+eslint:
+  image: node:latest
+  stage: lint
+  script:
+    - npm install
+    - npx eslint . --ext .js,.jsx,.ts,.tsx
+
+build-master:
+  image: node:latest
+  stage: build
+  script:
+    - npm install
+    - npm run generate-api
+    - npm run build
+  artifacts:
+    paths:
+      - build/
+      - src/gen/
+  only:
+    - master
+
+build:
+  image: node:latest
+  stage: build
+  script:
+    - npm install
+    - npm run generate-api
+    - npm run build
+  artifacts:
+    paths:
+      - build/
+      - src/gen/
+  except:
+    - master
+
 analyze-master:
   image: sonarsource/sonar-scanner-cli
+  stage: analyze
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
       - /opt/sonar-scanner/.sonar/cache/
   script:
     - npm install
-    - npm run generate-api-production
     - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
     - sonar-scanner -Dsonar.projectKey="${CI_PROJECT_PATH_SLUG}" -Dsonar.projectName="${CI_PROJECT_TITLE}" -Dsonar.login="${SONAR_LOGIN_TOKEN}" -Dsonar.host.url="${SONAR_URL}"
   only:
@@ -25,14 +65,64 @@ analyze-master:
 
 analyze:
   image: sonarsource/sonar-scanner-cli
+  stage: analyze
   cache:
     key: "$CI_COMMIT_REF_SLUG"
     paths:
       - /opt/sonar-scanner/.sonar/cache/
   script:
     - npm install
-    - npm run generate-api-production
     - npm test -- --coverage --testResultsProcessor=jest-sonar-reporter
     - sonar-scanner -Dsonar.projectKey="${CI_PROJECT_PATH_SLUG}-${CI_COMMIT_REF_SLUG}" -Dsonar.projectName="${CI_PROJECT_TITLE} (${CI_COMMIT_REF_SLUG})" -Dsonar.login="${SONAR_LOGIN_TOKEN}" -Dsonar.host.url="${SONAR_URL}"
+  except:
+    - master
+
+deploy-master:
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: deploy
+  before_script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:    
+    - docker build --pull -t "$CI_REGISTRY_IMAGE" .
+    - docker push "$CI_REGISTRY_IMAGE"
+  only:
+    - master
+
+deploy:
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: deploy
+  before_script:
+    - apk add curl
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+  script:    
+    - docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG" .
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+    - |
+      curl -X PUT \
+        -H "PRIVATE-TOKEN: ${DEPLOYMENT_ACCESS_TOKEN}" \
+        -F "value=${CI_COMMIT_REF_SLUG}" \
+        https://gitlab.ost.ch/api/v4/projects/1946/variables/EXRAP_FRONTENT_IMAGE_TAG?environment_scope=development
+  except:
+    - master
+
+deploy-master:live:
+  stage: deploy:live
+  variables:
+    ENVIRONMENT: productive
+  trigger: epj/2021-FS/g06_exrap/deployment-exrap
+  needs: ["deploy-master"]
+  only:
+    - master
+
+deploy:live:
+  stage: deploy:live
+  variables:
+    ENVIRONMENT: development
+  trigger: epj/2021-FS/g06_exrap/deployment-exrap
+  needs: ["deploy"]
   except:
     - master
