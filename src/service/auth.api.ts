@@ -21,8 +21,11 @@ export const api = generatedApi.enhanceEndpoints({
 
 export const {
   useLoginLoginMutation,
+  useLoginRenewTokenQuery,
   useRolesGetRolesQuery,
   useRolesGetRoleQuery,
+  useUserCredentialsAddCredentialMutation,
+  useUserRolesAddRoleMutation,
   useUsersGetUsersQuery,
   useUsersCreateUserMutation,
   useUsersGetUserQuery,
