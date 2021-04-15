@@ -3,39 +3,39 @@ import store from '../store/store';
 import {
   setCredentials,
   clearUser,
-} from '../store/user/reducers';
+} from '../store/authInfo/reducers';
 
 afterEach(cleanup);
 
 test('set user credantials to redux store', () => {
-  const testUser = {
+  const testAuthInfo = {
     username: 'TestUser',
     token: 'asdfewrabaer5t24q5g',
     isAuthenticated: true,
   };
-  const expectedUser = {
+  const expectedAuthInfo = {
     username: 'TestUser',
     token: 'asdfewrabaer5t24q5g',
     isAuthenticated: true,
   };
-  store.dispatch(setCredentials(testUser));
-  const { user } = store.getState();
-  expect(user).toMatchObject(expectedUser);
+  store.dispatch(setCredentials(testAuthInfo));
+  const { authInfo } = store.getState();
+  expect(authInfo).toMatchObject(expectedAuthInfo);
 });
 
 test('logoutUser', () => {
-  const testUser = {
+  const testAuthInfo = {
     username: 'TestUser',
     token: 'asdfewrabaer5t24q5g',
     isAuthenticated: true,
   };
-  const emptyUser = {
+  const emptyAuthInfo = {
     username: '',
     token: '',
     isAuthenticated: false,
   };
-  store.dispatch(setCredentials(testUser));
+  store.dispatch(setCredentials(testAuthInfo));
   store.dispatch(clearUser());
-  const { user } = store.getState();
-  expect(user).toMatchObject(emptyUser);
+  const { authInfo } = store.getState();
+  expect(authInfo).toMatchObject(emptyAuthInfo);
 });

@@ -17,7 +17,7 @@ import Sidebar from './components/Sidebar';
 import updateStore from './utils/validateToken';
 
 function App() {
-  const currentUser = useAppSelector((state) => state.user);
+  const authInfo = useAppSelector((state) => state.authInfo);
   const token = sessionStorage.getItem('token');
 
   if (token) {
@@ -26,7 +26,7 @@ function App() {
 
   return (
     <Router>
-      { currentUser.isAuthenticated && <Sidebar />}
+      { authInfo.isAuthenticated && <Sidebar />}
       <Switch>
         <Redirect exact from="/" to="/dashboard" />
         <Route path="/login" component={Login} />

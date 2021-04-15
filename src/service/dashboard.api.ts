@@ -19,15 +19,6 @@ export const api = generatedApi.enhanceEndpoints({
     dashboardsDeleteDashboard: {
       invalidates: ['Dashboard'],
     },
-    dashboardEntriesGetDashboardEntries: {
-      provides: ['Dashboard'],
-    },
-    dashboardEntriesAddDashboardEntry: {
-      invalidates: ['Dashboard'],
-    },
-    dashboardEntriesDeleteDashboardEntry: {
-      invalidates: ['Dashboard'],
-    },
   },
 });
 
