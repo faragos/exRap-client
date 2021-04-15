@@ -27,6 +27,4 @@ export const {
   useUsersCreateUserMutation,
   useUsersGetUserQuery,
   useUsersUpdateUserMutation,
-  useUsersAddCredentialMutation,
-  useUsersAddRoleMutation,
 } = api;
