@@ -1859,15 +1859,15 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@rtk-incubator/rtk-query-codegen-openapi@^0.2.4":
-  version "0.2.5"
-  resolved "https://registry.yarnpkg.com/@rtk-incubator/rtk-query-codegen-openapi/-/rtk-query-codegen-openapi-0.2.5.tgz#5907f6ef1c088ac707ca88d43378571d546c1193"
-  integrity sha512-Xfh4qhvJsh03VcBJNXHAuqLtDDDfAybbqtjsqvwU4+puVkf4Lr1B3X2NRfvhvAxeGOl2vItLKdmy659y/NaokA==
+"@rtk-incubator/rtk-query-codegen-openapi@0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@rtk-incubator/rtk-query-codegen-openapi/-/rtk-query-codegen-openapi-0.2.4.tgz#5eca9bf58475aa6834006957f6493941d3026995"
+  integrity sha512-Riu/mORLVjG1ywv4A1MCYKi4xINh1eN4YspCPKgzXwzdgSw1CpNS/QHdV0Fu58jeo4QfO6DXMBN8HatMOHfDhg==
   dependencies:
     "@apidevtools/swagger-parser" "^10.0.2"
     commander "^6.2.0"
     glob-to-regexp "^0.4.1"
-    oazapfts "npm:@phryneas/experimental-oazapfts@^0.1.2-1"
+    oazapfts "npm:@phryneas/experimental-oazapfts@^0.1.1-0"
     prettier "^2.2.1"
     swagger2openapi "^7.0.4"
     ts-morph "^9.1.0"
@@ -4561,9 +4561,9 @@ data-urls@^2.0.0:
     whatwg-url "^8.0.0"
 
 date-fns@^2.20.3:
-  version "2.21.0"
-  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.21.0.tgz#4672b8e926d1b37d5353dc14da44b883481ac927"
-  integrity sha512-lbAFpaKz7QuVxm6m1rmioh4BB2gmLx1r1JMYXU2A/ufT5ly4zEG7HYH4fvS/QfbdyC5rkYyiS30mYz4Q7XCO+w==
+  version "2.21.1"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.21.1.tgz#679a4ccaa584c0706ea70b3fa92262ac3009d2b0"
+  integrity sha512-m1WR0xGiC6j6jNFAyW4Nvh4WxAi4JF4w9jRJwSI8nBmNcyZXPcP9VUQG+6gHQXAmqaGEKDKhOqAtENDC941UkA==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.0, debug@^2.6.9:
   version "2.6.9"
@@ -8649,10 +8649,10 @@ oauth-sign@~0.9.0:
   resolved "https://registry.yarnpkg.com/oauth-sign/-/oauth-sign-0.9.0.tgz#47a7b016baa68b5fa0ecf3dee08a85c679ac6455"
   integrity sha512-fexhUFFPTGV8ybAtSIGbV6gOkSv8UtRbDBnAyLQw4QPKkgNlsH2ByPGtMUqdWkos6YCRmAqViwgZrJc/mRDzZQ==
 
-"oazapfts@npm:@phryneas/experimental-oazapfts@^0.1.2-1":
-  version "0.1.2-1"
-  resolved "https://registry.yarnpkg.com/@phryneas/experimental-oazapfts/-/experimental-oazapfts-0.1.2-1.tgz#015d741b166f745bce6bed712d2980eea9a166f4"
-  integrity sha512-FKT3RDFtCZScN/Ii3oI+y6oUleYkeG0qIzhsNsR/qaR7NX0QW/QQe5ZxVQ93VTZcI7W7yFGSYoLHEOx+c143eQ==
+"oazapfts@npm:@phryneas/experimental-oazapfts@^0.1.1-0":
+  version "0.1.1-0"
+  resolved "https://registry.yarnpkg.com/@phryneas/experimental-oazapfts/-/experimental-oazapfts-0.1.1-0.tgz#c3395f50a7522dcd6de5b45873ca540e6a8898e9"
+  integrity sha512-iNLP2fbflZtKmS/4KXGAo6yvg94FVX/VtLMkqhVKKpFYk6kvy4qDe0ovPE2qjXLnnAQfza+/o5qo9wCJkt1DNA==
   dependencies:
     "@apidevtools/swagger-parser" "^9.0.1"
     lodash "^4.17.20"
