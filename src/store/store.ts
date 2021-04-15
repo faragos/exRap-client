@@ -1,10 +1,10 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { api as dashboardApi } from '../service/dashboard.api';
 import { api as authApi } from '../service/auth.api';
-import userReducer from './user/reducers';
+import authInfoReducer from './authInfo/reducers';
 
 const rootReducer = combineReducers({
-  user: userReducer,
+  authInfo: authInfoReducer,
   [dashboardApi.reducerPath]: dashboardApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
 });

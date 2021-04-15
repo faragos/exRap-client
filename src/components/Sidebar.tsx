@@ -3,7 +3,7 @@ import { Button, ButtonGroup, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Link, useHistory } from 'react-router-dom';
 import { useAppDispatch } from '../hooks';
-import { clearUser } from '../store/user/reducers';
+import { clearUser } from '../store/authInfo/reducers';
 
 const useStyles = makeStyles((theme) => ({
   root: {

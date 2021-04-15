@@ -16,10 +16,6 @@ For the generation we use: [rtk-query-codegen](https://github.com/rtk-incubator/
 
 *`rtk-query-codegen` is part of the `rtk-query` Tool.*
 
-### `/api/*.json`
-Here are all the OpenAPI specifications. In the `package.json` are commands which turn these specifications into code.
-For a description of the task see the `README.md`.
-
 ### `/src/gen/*`
 Here are all the generated files based on the specified *.json. For each API there is one file.\
 **IMPORTANT: Do not modify these files, because they are generated.**
@@ -33,9 +29,6 @@ Because we use rkt-query we don't need to define all "slices" by ourselves.
 Every endpoint only need to be registered in the `rootReducer.ts` and in the `index.ts` as a middleware and all reducers and actions are done by rtk-query.
 
 If we need a custom "slice" we define them with a new folder with the **entity**-Name and add them in de `rootReducer.ts`
-
-### `/src/store/[entity]/actions.ts`
-Here are all actions defined for the entity
 
 ### `/src/store/[entity]/reducers.ts`
 Here are all reducers defined for the entity
