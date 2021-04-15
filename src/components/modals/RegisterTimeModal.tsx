@@ -20,6 +20,9 @@ const projects = [
   {
     name: 'Projekt 2',
   },
+  {
+    name: 'Projekt 3',
+  },
 ];
 
 const RegisterTimeModal : React.FC = () => {
