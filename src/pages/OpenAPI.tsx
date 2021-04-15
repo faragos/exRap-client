@@ -15,7 +15,6 @@ function Dashboard() {
   const arg: ExRapDashDTODashboard = {
     title: 'string',
     description: 'string',
-    type: 'UserDashboard',
   };
 
   const param: DashboardsCreateDashboardApiArg = { exRapDashDtoDashboard: arg };
