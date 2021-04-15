@@ -1,7 +1,7 @@
 stages:
   - lint
-  - build
   - analyze
+  - build
   - deploy
   - deploy:live
 
@@ -40,7 +40,7 @@ build:
   stage: build
   script:
     - npm install
-    - npm run generate-api:dev
+    - npm run generate-api
     - npm run build
   artifacts:
     paths:
