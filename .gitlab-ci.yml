@@ -16,6 +16,7 @@ variables:
 
 eslint:
   image: node:14.16.1
+  stage: lint
   script:
     - npm install
     - npx eslint . --ext .js,.jsx,.ts,.tsx
