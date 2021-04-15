@@ -54,7 +54,7 @@ const RegisterTimeModal : React.FC = () => {
             getOptionLabel={(option: any) => option.name}
             /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
             /* eslint-disable-next-line react/jsx-props-no-spreading */
-            renderInput={(params) => <TextField {...params} label="Projects" variant="outlined" />}
+            renderInput={(params: any) => <TextField {...params} label="Projects" variant="outlined" />}
           />
           <LocalizationProvider dateAdapter={AdapterDateFns} locale={deLocale}>
             <TimePicker
