@@ -3,19 +3,22 @@ import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { useAppDispatch } from '../hooks';
-import { updateTimeModal } from '../store/timeTrack/reducers';
 
-const Calendar: React.FC = () => {
-  const dispatch = useAppDispatch();
+type ChildComponentProps = {
+  setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  setStartTime: React.Dispatch<React.SetStateAction<string>>,
+  setEndTime: React.Dispatch<React.SetStateAction<string>>,
+};
 
+const Calendar: React.FC<ChildComponentProps> = ({
+  setIsModalOpen,
+  setStartTime,
+  setEndTime,
+}: ChildComponentProps) => {
   const handleSelect = (event: any) => {
-    const timeTrack = {
-      isModalOpen: true,
-      start: event.start.toString(),
-      end: event.end.toString(),
-    };
-    dispatch(updateTimeModal(timeTrack));
+    setIsModalOpen(true);
+    setStartTime(event.start.toString());
+    setEndTime(event.end.toString());
   };
 
   const handleClick = () => {
