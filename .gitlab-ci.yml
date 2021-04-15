@@ -1,5 +1,5 @@
 eslint:
-  image: node:latest
+  image: node:14.16.1
   script:
     # Run ESLint
     - npm install
