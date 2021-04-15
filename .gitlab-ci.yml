@@ -15,7 +15,7 @@ variables:
   GIT_DEPTH: "0"
 
 eslint:
-  image: node:14.16.1
+  image: node:latest
   script:
     - npm install
     - npx eslint . --ext .js,.jsx,.ts,.tsx
