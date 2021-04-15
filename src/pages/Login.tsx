@@ -5,8 +5,8 @@ import {
 } from '@material-ui/core';
 import { useLoginLoginMutation } from '../service/auth.api';
 import { LoginLoginApiArg } from '../gen/auth.api.generated';
-import { setCredentials } from '../store/user/reducers';
-import { User } from '../store/user/types';
+import { setCredentials } from '../store/authInfo/reducers';
+import { AuthInfo } from '../store/authInfo/types';
 import { useAppDispatch } from '../hooks';
 
 const Login : React.FC = () => {
@@ -29,12 +29,12 @@ const Login : React.FC = () => {
     try {
       const param: LoginLoginApiArg = { exRapAuthDtoCredential: formState };
       const response :any = await login(param).unwrap(); // TODO: use right type after API is ready
-      const user: User = {
+      const authInfo: AuthInfo = {
         username: formState.loginName,
         token: response.token,
         isAuthenticated: true,
       };
-      dispatch(setCredentials(user));
+      dispatch(setCredentials(authInfo));
       sessionStorage.setItem('token', response.token);
       history.push('/');
     } catch (err) {

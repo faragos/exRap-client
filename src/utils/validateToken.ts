@@ -1,7 +1,7 @@
 import jwt_decode from 'jwt-decode';
 import { JWTTokenData } from '../types/types';
-import { clearUser, setCredentials } from '../store/user/reducers';
-import { User } from '../store/user/types';
+import { clearUser, setCredentials } from '../store/authInfo/reducers';
+import { AuthInfo } from '../store/authInfo/types';
 import { useAppDispatch } from '../hooks';
 
 export function isTokenValid(token: string): boolean {
@@ -18,12 +18,12 @@ function updateStore(token: string) {
   const decodedToken: JWTTokenData = jwt_decode(token);
 
   if (result) {
-    const user: User = {
+    const authInfo: AuthInfo = {
       username: decodedToken.name,
       token,
       isAuthenticated: true,
     };
-    dispatch(setCredentials(user));
+    dispatch(setCredentials(authInfo));
   } else {
     dispatch(clearUser());
   }
