@@ -56,8 +56,8 @@ const Login : React.FC = () => {
           <Grid>
             <h1> ExRap </h1>
           </Grid>
-          <TextField id="loginName" name="loginName" label="Username" type="text" fullWidth required onChange={handleChange} />
-          <TextField id="password" name="password" label="Password" type="password" fullWidth required onChange={handleChange} />
+          <TextField id="loginName" name="loginName" label="Username" type="text" fullWidth variant="standard" required onChange={handleChange} />
+          <TextField id="password" name="password" label="Password" type="password" fullWidth variant="standard" required onChange={handleChange} />
           <FormControlLabel
             control={(
               <Checkbox
