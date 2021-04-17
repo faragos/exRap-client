@@ -1,5 +1,5 @@
 # Architecture
-In this document is the architecture of the client-rexrap defined:
+In this document is the architecture of the client-rexrap briefly defined:
 
 ## General
 
