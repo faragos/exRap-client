@@ -3,7 +3,7 @@ import {
   useDashboardsGetDashboardsQuery,
   useDashboardsCreateDashboardMutation,
 } from '../service/dashboard.api';
-import { DashboardsCreateDashboardApiArg, ExRapDashDTODashboard } from '../gen/dashboard.api.generated';
+import { DashboardsCreateDashboardApiArg, ManageDashboardRequest } from '../gen/dashboard.api.generated';
 
 function Dashboard() {
   const { data, error, isLoading } = useDashboardsGetDashboardsQuery({});
@@ -12,12 +12,12 @@ function Dashboard() {
     createDashboard, // This is the mutation trigger
   ] = useDashboardsCreateDashboardMutation();
 
-  const arg: ExRapDashDTODashboard = {
+  const arg: ManageDashboardRequest = {
     title: 'string',
     description: 'string',
   };
 
-  const param: DashboardsCreateDashboardApiArg = { exRapDashDtoDashboard: arg };
+  const param: DashboardsCreateDashboardApiArg = { manageDashboardRequest: arg };
 
   const handleUpdate = () => createDashboard(param);
 

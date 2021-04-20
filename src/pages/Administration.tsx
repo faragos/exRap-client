@@ -16,15 +16,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { ExRapAuthDTOUser, UsersCreateUserApiArg } from '../gen/auth.api.generated';
+import { ManageUserRequest, UsersCreateUserApiArg } from '../gen/auth.api.generated';
 import { useUsersCreateUserMutation, useUsersGetUsersQuery } from '../service/auth.api';
 
 const Administration : React.FC = () => {
-  const dtoUser: ExRapAuthDTOUser = {
+  const dtoUser: ManageUserRequest = {
     userName: '',
     name: '',
     firstName: '',
-    initial: '',
     mailAddress: '',
     status: 'Restricted',
   };
@@ -41,7 +40,7 @@ const Administration : React.FC = () => {
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     try {
-      const param: UsersCreateUserApiArg = { exRapAuthDtoUser: formState };
+      const param: UsersCreateUserApiArg = { manageUserRequest: formState };
       createUser(param);
     } catch (err) {
       console.log(err);
