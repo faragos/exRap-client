@@ -76,14 +76,14 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
               onChange={handleStartChange}
                 /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
                 /* eslint-disable-next-line react/jsx-props-no-spreading */
-              renderInput={(params) => <TextField {...params} margin="normal" />}
+              renderInput={(params: any) => <TextField {...params} margin="normal" />}
             />
             <TimePicker
               value={new Date(endTime)}
               onChange={handleEndChange}
                 /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
                 /* eslint-disable-next-line react/jsx-props-no-spreading */
-              renderInput={(params) => <TextField {...params} margin="normal" />}
+              renderInput={(params: any) => <TextField {...params} margin="normal" />}
             />
           </LocalizationProvider>
           <TextField
