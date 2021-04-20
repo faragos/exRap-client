@@ -54,13 +54,13 @@ function Projects() {
 
   const tableEntries = [
     {
-      _id: '1',
+      id: '1',
       projectName: 'project1',
       projectNameShort: 'prj1',
       projectDescription: 'prj1 description',
     },
     {
-      _id: '2',
+      id: '2',
       projectName: 'project2',
       projectNameShort: 'prj2',
       projectDescription: 'prj2 description',
@@ -102,7 +102,7 @@ function Projects() {
           <TableBody>
             {
               tableEntries.map((item) => (
-                <TableRow>
+                <TableRow key={item.id}>
                   <TableCell>{item.projectName}</TableCell>
                   <TableCell>{item.projectNameShort}</TableCell>
                   <TableCell>{item.projectDescription}</TableCell>
