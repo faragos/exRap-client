@@ -84,13 +84,13 @@ const Administration : React.FC = () => {
 
   const tableEntries = [
     {
-      _id: '1',
+      id: '1',
       userFullName: 'Lukas Schlunegger',
       userShortName: 'lsc',
       userPosition: 'System Engineer',
     },
     {
-      _id: '2',
+      id: '2',
       userFullName: 'Armend Lesi',
       userShortName: 'ale',
       userPosition: 'Projektleiter',
@@ -153,7 +153,7 @@ const Administration : React.FC = () => {
           <TableBody>
             {
             tableEntries.map((item) => (
-              <TableRow>
+              <TableRow key={item.id}>
                 <TableCell>{item.userFullName}</TableCell>
                 <TableCell>{item.userShortName}</TableCell>
                 <TableCell>{item.userPosition}</TableCell>

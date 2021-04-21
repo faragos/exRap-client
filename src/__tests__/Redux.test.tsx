@@ -7,6 +7,7 @@ import {
 
 afterEach(cleanup);
 
+// TODO: move this tests to page tests like a user input
 test('set user credantials to redux store', () => {
   const testAuthInfo = {
     username: 'TestUser',

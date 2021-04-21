@@ -13,7 +13,7 @@ function generateToken(nbf: number, exp: number) {
     iat: now,
   }, 'secret');
 }
-
+// TODO: move this tests to page tests like a user input
 test('check valid token', () => {
   const token = generateToken((Date.now() / 1000), (Date.now() / 1000 + (60 * 30)));
   expect(isTokenValid(token)).toBeTruthy();
