@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -9,7 +9,10 @@ import {
   InputAdornment,
   Grid,
   Paper,
-  Button, IconButton, FormControlLabel, Checkbox,
+  Button,
+  IconButton,
+  FormControlLabel,
+  Checkbox,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
@@ -17,6 +20,7 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
+import AddNewProjectModal from '../components/modals/AddNewProject';
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -49,7 +53,7 @@ const paperStyle = {
   margin: '20px auto',
 };
 
-function Projects() {
+const Projects : React.FC = () => {
   const classes = useStyles();
 
   const tableEntries = [
@@ -67,40 +71,46 @@ function Projects() {
     },
   ];
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const addNewProjectHandler = () => {
+    setIsModalOpen(true);
+  };
+
   return (
-    <Grid>
-      <h1> Projects </h1>
-      <Paper elevation={10} style={paperStyle}>
-        <Toolbar>
-          <TextField
-            name="Suche"
-            label="Suche"
-            type="text"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <FormControlLabel
-            className={classes.finishedCheckBox}
-            control={(
-              <Checkbox
-                name="checkedB"
-                color="primary"
-              />
+    <div>
+      <Grid>
+        <h1> Projects </h1>
+        <Paper elevation={10} style={paperStyle}>
+          <Toolbar>
+            <TextField
+              name="Suche"
+              label="Suche"
+              type="text"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <FormControlLabel
+              className={classes.finishedCheckBox}
+              control={(
+                <Checkbox
+                  name="checkedB"
+                  color="primary"
+                />
               )}
-            label="Beendet"
-          />
-          <Button variant="outlined" color="primary" className={classes.newProjectButton}>
-            Neues Projekt erfassen
-          </Button>
-        </Toolbar>
-        <Table className={classes.table}>
-          <TableBody>
-            {
+              label="Beendet"
+            />
+            <Button variant="outlined" color="primary" className={classes.newProjectButton} onClick={addNewProjectHandler}>
+              Neues Projekt erfassen
+            </Button>
+          </Toolbar>
+          <Table className={classes.table}>
+            <TableBody>
+              {
               tableEntries.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>{item.projectName}</TableCell>
@@ -123,11 +133,13 @@ function Projects() {
                 </TableRow>
               ))
             }
-          </TableBody>
-        </Table>
-      </Paper>
-    </Grid>
+            </TableBody>
+          </Table>
+        </Paper>
+      </Grid>
+      <AddNewProjectModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+    </div>
   );
-}
+};
 
 export default Projects;
