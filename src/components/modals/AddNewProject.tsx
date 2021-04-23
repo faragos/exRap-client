@@ -41,7 +41,7 @@ const AddNewProjectModal : React.FC<ChildComponentProps> = ({
   return (
     <div>
       <Dialog open={isModalOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title">Projekt</DialogTitle>
+        <DialogTitle id="form-dialog-title">Neues Projekt erfassen</DialogTitle>
         <DialogContent className={classes.root}>
           <TextField
             autoFocus
