@@ -18,6 +18,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
   Link,
+  Route,
   Redirect, Switch, useHistory,
 } from 'react-router-dom';
 import { ReactElement } from 'react';
@@ -29,6 +30,7 @@ import TimeTracking from '../pages/TimeTracking';
 import Projects from '../pages/Projects';
 import Administration from '../pages/Administration';
 import logo from '../assets/exRap-logo.svg';
+import NotFound from '../pages/NotFound';
 
 const drawerWidth = 240;
 
@@ -184,6 +186,7 @@ export default function ResponsiveDrawer() {
           <PrivateRoute path="/timetracking" component={TimeTracking} />
           <PrivateRoute path="/projects" component={Projects} />
           <PrivateRoute path="/administration" component={Administration} />
+          <Route path="*" component={NotFound} />
         </Switch>
       </main>
     </div>
