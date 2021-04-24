@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Login.scss';
 import { useHistory } from 'react-router-dom';
 import {
   Grid, Paper, TextField, FormControlLabel, Checkbox, Button,
@@ -8,6 +9,7 @@ import { LoginLoginApiArg } from '../gen/auth.api.generated';
 import { setCredentials } from '../store/authInfo/reducers';
 import { AuthInfo } from '../store/authInfo/types';
 import { useAppDispatch } from '../hooks';
+import logo from '../assets/exRap-logo.svg';
 
 const Login : React.FC = () => {
   const history = useHistory();
@@ -43,8 +45,8 @@ const Login : React.FC = () => {
   };
 
   const paperStyle = {
-    padding: 20,
-    height: '50vh',
+    padding: 50,
+    height: 'auto',
     width: 280,
     margin: '200px auto',
   };
@@ -54,7 +56,7 @@ const Login : React.FC = () => {
       <Grid>
         <Paper elevation={10} style={paperStyle}>
           <Grid>
-            <h1> ExRap </h1>
+            <img src={logo} alt="Logo exRap" className="logo" />
           </Grid>
           <TextField id="loginName" name="loginName" label="Username" type="text" fullWidth variant="standard" required onChange={handleChange} />
           <TextField id="password" name="password" label="Password" type="password" fullWidth variant="standard" required onChange={handleChange} />

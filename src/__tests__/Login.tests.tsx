@@ -25,12 +25,10 @@ beforeEach(() => {
   render(<Provider store={store}><Router history={history}><Login /></Router></Provider>);
 });
 test('test if all elements are rendered', () => {
-  const titel = screen.getByText(/ExRap/i);
   const username = screen.getByLabelText(/Username/);
   const password = screen.getByLabelText(/Password/);
   const login = screen.getByText(/Login/i);
   const checkbox = screen.getByText(/Stay logged in/);
-  expect(titel).toBeInTheDocument();
   expect(username).toBeInTheDocument();
   expect(password).toBeInTheDocument();
   expect(login).toBeInTheDocument();

@@ -1,16 +1,9 @@
 import React from 'react';
 import './App.css';
 import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  Redirect,
+  BrowserRouter as Router, Redirect,
+  Route, Switch,
 } from 'react-router-dom';
-import Dashboard from './pages/Dashboard';
-import PrivateRoute from './components/PrivateRoute';
-import Projects from './pages/Projects';
-import Administration from './pages/Administration';
-import TimeTracking from './pages/TimeTracking';
 import Login from './pages/Login';
 import { useAppSelector } from './hooks';
 import Sidebar from './components/Sidebar';
@@ -24,17 +17,17 @@ function App() {
     updateStore(token);
   }
 
+  let comp;
+  if (authInfo.isAuthenticated) {
+    comp = <Sidebar />;
+  } else {
+    comp = <Redirect to="/login" />;
+  }
   return (
     <Router>
-      { authInfo.isAuthenticated && <Sidebar />}
+      {comp}
       <Switch>
-        <Redirect exact from="/" to="/dashboard" />
         <Route path="/login" component={Login} />
-
-        <PrivateRoute path="/dashboard" component={Dashboard} />
-        <PrivateRoute path="/timetracking" component={TimeTracking} />
-        <PrivateRoute path="/projects" component={Projects} />
-        <PrivateRoute path="/administration" component={Administration} />
       </Switch>
     </Router>
   );

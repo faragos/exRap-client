@@ -8,7 +8,6 @@ import {
   TextField,
   InputAdornment,
   Grid,
-  Paper,
   Button,
   IconButton,
 } from '@material-ui/core';
@@ -73,13 +72,6 @@ const Administration : React.FC = () => {
     },
   }));
 
-  const paperStyle = {
-    padding: 20,
-    height: '50vh',
-    width: 900,
-    margin: '20px auto',
-  };
-
   const classes = useStyles();
 
   const tableEntries = [
@@ -131,27 +123,26 @@ const Administration : React.FC = () => {
         <input type="submit" value="add" />
       </form>
 
-      <Paper elevation={10} style={paperStyle}>
-        <Toolbar>
-          <TextField
-            name="Suche"
-            label="Suche"
-            type="text"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Button variant="outlined" color="primary" className={classes.newUserButton}>
-            Neuer Mitarbeiter erfassen
-          </Button>
-        </Toolbar>
-        <Table className={classes.table}>
-          <TableBody>
-            {
+      <Toolbar>
+        <TextField
+          name="Suche"
+          label="Suche"
+          type="text"
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          }}
+        />
+        <Button variant="outlined" color="primary" className={classes.newUserButton}>
+          Neuer Mitarbeiter erfassen
+        </Button>
+      </Toolbar>
+      <Table className={classes.table}>
+        <TableBody>
+          {
             tableEntries.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.userFullName}</TableCell>
@@ -168,9 +159,8 @@ const Administration : React.FC = () => {
               </TableRow>
             ))
           }
-          </TableBody>
-        </Table>
-      </Paper>
+        </TableBody>
+      </Table>
     </Grid>
 
   );
