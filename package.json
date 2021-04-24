@@ -24,6 +24,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/react-redux": "^7.1.16",
     "@types/react-router-dom": "^5.1.7",
+    "async": "^3.2.0",
     "date-fns": "^2.20.3",
     "jwt-decode": "^3.1.2",
     "node-sass": "^5.0.0",
@@ -33,6 +34,7 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "ts-node": "^9.1.1",
     "typescript": "~4.1.5",
     "web-vitals": "^1.0.1"
   },
@@ -44,12 +46,9 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
-    "generate-time-track-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/timeTrack.api.generated.ts --baseQuery ./src/service/apiBaseQuery.ts:apiBaseQuery --hooks ${hookUrl}/time/swagger/v1/swagger.json --reducerPath timeTrackApi --baseUrl ${baseUrl}/time",
-    "generate-dashboard-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/dashboard.api.generated.ts --baseQuery ./src/service/apiBaseQuery.ts:apiBaseQuery --hooks ${hookUrl}/dash/swagger/v1/swagger.json --reducerPath dashboardApi --baseUrl ${baseUrl}/dash",
-    "generate-auth-api": "npx @rtk-incubator/rtk-query-codegen-openapi --file ./src/gen/auth.api.generated.ts --baseQuery ./src/service/apiBaseQuery.ts:apiBaseQuery --hooks ${hookUrl}/auth/swagger/v1/swagger.json --reducerPath authApi --baseUrl ${baseUrl}/auth",
-    "generate-api": "export hookUrl=${hookUrl:-https://epj.audifire.ch} && npm run generate-time-track-api && npm run generate-dashboard-api && npm run generate-auth-api",
-    "generate-api:dev": "export hookUrl=https://dev.epj.audifire.ch && npm run generate-api",
-    "generate-api:local-dev": "export baseUrl=http://localhost && npm run generate-api"
+    "generate-api": "npx ts-node ./scripts/build-api.ts",
+    "generate-api:dev": "cross-env hookUrl=https://dev.epj.audifire.ch npm run generate-api",
+    "generate-api:local-dev": "cross-env baseUrl=http://localhost npm run generate-api"
   },
   "eslintConfig": {
     "extends": [
@@ -71,6 +70,7 @@
   },
   "devDependencies": {
     "@rtk-incubator/rtk-query-codegen-openapi": "0.2.4",
+    "@types/async": "^3.2.6",
     "@types/jsonwebtoken": "^8.5.1",
     "@typescript-eslint/eslint-plugin": "~4.17.0",
     "cross-env": "^7.0.3",
