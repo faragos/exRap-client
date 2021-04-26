@@ -17,6 +17,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { ManageUserRequest, UsersCreateUserApiArg } from '../gen/auth.api.generated';
 import { useUsersCreateUserMutation, useUsersGetUsersQuery } from '../service/auth.api';
+import AddNewUserModal from '../components/modals/AddNewUserModal';
 
 const Administration : React.FC = () => {
   const dtoUser: ManageUserRequest = {
@@ -89,60 +90,66 @@ const Administration : React.FC = () => {
     },
   ];
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const addNewUserHandler = () => {
+    setIsModalOpen(true);
+  };
+
   return (
-    <Grid>
-      <h1> Administration </h1>
-      <h2>Alle Benutzer</h2>
-      {users}
+    <div>
+      <Grid>
+        <h1> Administration </h1>
+        <h2>Alle Benutzer</h2>
+        {users}
 
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="username">
-          username
-          <input id="username" name="username" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="name">
-          name
-          <input id="name" name="name" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="firstName">
-          firstName
-          <input id="firstName" name="firstName" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="initial">
-          initial
-          <input id="initial" name="initial" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="mailAddress">
-          mailAddress
-          <input id="mailAddress" name="mailAddress" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="status">
-          status
-          <input id="status" name="status" type="text" onChange={handleChange} />
-        </label>
-        <input type="submit" value="add" />
-      </form>
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="username">
+            username
+            <input id="username" name="username" type="text" onChange={handleChange} />
+          </label>
+          <label htmlFor="name">
+            name
+            <input id="name" name="name" type="text" onChange={handleChange} />
+          </label>
+          <label htmlFor="firstName">
+            firstName
+            <input id="firstName" name="firstName" type="text" onChange={handleChange} />
+          </label>
+          <label htmlFor="initial">
+            initial
+            <input id="initial" name="initial" type="text" onChange={handleChange} />
+          </label>
+          <label htmlFor="mailAddress">
+            mailAddress
+            <input id="mailAddress" name="mailAddress" type="text" onChange={handleChange} />
+          </label>
+          <label htmlFor="status">
+            status
+            <input id="status" name="status" type="text" onChange={handleChange} />
+          </label>
+          <input type="submit" value="add" />
+        </form>
 
-      <Toolbar>
-        <TextField
-          name="Suche"
-          label="Suche"
-          type="text"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Button variant="outlined" color="primary" className={classes.newUserButton}>
-          Neuer Mitarbeiter erfassen
-        </Button>
-      </Toolbar>
-      <Table className={classes.table}>
-        <TableBody>
-          {
+        <Toolbar>
+          <TextField
+            name="Suche"
+            label="Suche"
+            type="text"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button variant="outlined" color="primary" className={classes.newUserButton} onClick={addNewUserHandler}>
+            Neuer Mitarbeiter erfassen
+          </Button>
+        </Toolbar>
+        <Table className={classes.table}>
+          <TableBody>
+            {
             tableEntries.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>{item.userFullName}</TableCell>
@@ -159,10 +166,11 @@ const Administration : React.FC = () => {
               </TableRow>
             ))
           }
-        </TableBody>
-      </Table>
-    </Grid>
-
+          </TableBody>
+        </Table>
+      </Grid>
+      <AddNewUserModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+    </div>
   );
 };
 
