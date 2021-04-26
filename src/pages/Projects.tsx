@@ -8,11 +8,7 @@ import {
   TextField,
   InputAdornment,
   Grid,
-  Paper,
-  Button,
-  IconButton,
-  FormControlLabel,
-  Checkbox,
+  Button, IconButton, FormControlLabel, Checkbox,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
@@ -46,13 +42,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const paperStyle = {
-  padding: 20,
-  height: '50vh',
-  width: 900,
-  margin: '20px auto',
-};
-
 const Projects : React.FC = () => {
   const classes = useStyles();
 
@@ -80,62 +69,60 @@ const Projects : React.FC = () => {
     <div>
       <Grid>
         <h1> Projects </h1>
-        <Paper elevation={10} style={paperStyle}>
-          <Toolbar>
-            <TextField
-              name="Suche"
-              label="Suche"
-              type="text"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <FormControlLabel
-              className={classes.finishedCheckBox}
-              control={(
-                <Checkbox
-                  name="checkedB"
-                  color="primary"
-                />
-              )}
-              label="Beendet"
-            />
-            <Button variant="outlined" color="primary" className={classes.newProjectButton} onClick={addNewProjectHandler}>
-              Neues Projekt erfassen
-            </Button>
-          </Toolbar>
-          <Table className={classes.table}>
-            <TableBody>
-              {
-              tableEntries.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.projectName}</TableCell>
-                  <TableCell>{item.projectNameShort}</TableCell>
-                  <TableCell>{item.projectDescription}</TableCell>
-                  <TableCell>
-                    <IconButton>
-                      <EqualizerIcon />
-                    </IconButton>
-                    <IconButton>
-                      <PersonAddIcon />
-                    </IconButton>
-                    <IconButton>
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton>
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
-            }
-            </TableBody>
-          </Table>
-        </Paper>
+        <Toolbar>
+          <TextField
+            name="Suche"
+            label="Suche"
+            type="text"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <FormControlLabel
+            className={classes.finishedCheckBox}
+            control={(
+              <Checkbox
+                name="checkedB"
+                color="primary"
+              />
+                )}
+            label="Beendet"
+          />
+          <Button variant="outlined" color="primary" className={classes.newProjectButton} onClick={addNewProjectHandler}>
+            Neues Projekt erfassen
+          </Button>
+        </Toolbar>
+        <Table className={classes.table}>
+          <TableBody>
+            {
+                tableEntries.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.projectName}</TableCell>
+                    <TableCell>{item.projectNameShort}</TableCell>
+                    <TableCell>{item.projectDescription}</TableCell>
+                    <TableCell>
+                      <IconButton>
+                        <EqualizerIcon />
+                      </IconButton>
+                      <IconButton>
+                        <PersonAddIcon />
+                      </IconButton>
+                      <IconButton>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
+              }
+          </TableBody>
+        </Table>
       </Grid>
       <AddNewProjectModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
     </div>
