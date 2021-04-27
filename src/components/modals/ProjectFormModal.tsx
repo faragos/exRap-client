@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -7,9 +7,14 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {
-  useProjectsCreateProjectMutation,
+  useProjectsCreateProjectMutation, useProjectsUpdateProjectMutation,
 } from '../../service/timeTrack.api';
-import { ManageProjectRequest, ProjectsCreateProjectApiArg } from '../../gen/timeTrack.api.generated';
+import {
+  ManageProjectRequest,
+  ProjectOverview,
+  ProjectsCreateProjectApiArg,
+  ProjectsUpdateProjectApiArg,
+} from '../../gen/timeTrack.api.generated';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -22,42 +27,58 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 type ChildComponentProps = {
   isModalOpen: boolean,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  project: ProjectOverview,
 };
 
-const AddNewProjectModal : React.FC<ChildComponentProps> = ({
+const ProjectFormModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   isModalOpen,
+  project,
 }: ChildComponentProps) => {
-  const emptyProjectForm = {
-    projectName: '',
-    shortName: '',
-    comment: '',
-  };
-  const [newProjectForm, setNewProjectForm] = useState(emptyProjectForm);
+  const [newProjectForm, setNewProjectForm] = useState(project);
   const [
     createProject,
   ] = useProjectsCreateProjectMutation();
+
+  const [
+    updateProject,
+  ] = useProjectsUpdateProjectMutation();
+
+  useEffect(() => {
+    setNewProjectForm(project);
+  }, [project]);
 
   const handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
     setNewProjectForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleClose = () => {
+    setNewProjectForm(project);
     setIsModalOpen(false);
   };
 
-  const handleSave = async (event: any) => {
-    console.log(event.form.isValid);
-    const args: ManageProjectRequest = {
-      name: newProjectForm.projectName,
-      initial: newProjectForm.shortName,
-      description: newProjectForm.comment,
+  const handleSave = async () => {
+    if (newProjectForm.id) {
+      const param: ProjectsUpdateProjectApiArg = {
+        projectId: newProjectForm.id,
+        manageProjectRequest: newProjectForm as ManageProjectRequest,
+      };
+      await updateProject(param);
+    } else {
+      const args: ManageProjectRequest = {
+        name: newProjectForm.name || '',
+        initial: newProjectForm.initial || '',
+        description: newProjectForm.description,
+      };
+      const param: ProjectsCreateProjectApiArg = { manageProjectRequest: args };
+      await createProject(param);
+    }
+    const initProjectForm: ProjectOverview = {
+      name: '',
+      initial: '',
+      description: '',
     };
-    console.log(args);
-    const param: ProjectsCreateProjectApiArg = { manageProjectRequest: args };
-    await createProject(param);
-
-    setNewProjectForm(emptyProjectForm);
+    setNewProjectForm(initProjectForm);
     setIsModalOpen(false);
   };
 
@@ -72,26 +93,28 @@ const AddNewProjectModal : React.FC<ChildComponentProps> = ({
             <TextField
               autoFocus
               margin="dense"
-              name="projectName"
+              name="name"
               id="projectName"
               label="Projektname"
               variant="standard"
               fullWidth
               onChange={handleChange}
+              value={newProjectForm.name}
               required
             />
             <TextField
-              name="shortName"
+              name="initial"
               margin="dense"
               id="projectAbbreviation"
               label="Projektkürzel"
               variant="standard"
               fullWidth
               onChange={handleChange}
+              value={newProjectForm.initial}
               required
             />
             <TextField
-              name="comment"
+              name="description"
               margin="dense"
               id="comment"
               label="Kommentar"
@@ -100,6 +123,7 @@ const AddNewProjectModal : React.FC<ChildComponentProps> = ({
               rows={4}
               variant="filled"
               onChange={handleChange}
+              value={newProjectForm.description}
             />
           </DialogContent>
           <DialogActions>
@@ -116,4 +140,4 @@ const AddNewProjectModal : React.FC<ChildComponentProps> = ({
   );
 };
 
-export default AddNewProjectModal;
+export default ProjectFormModal;

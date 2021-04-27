@@ -16,8 +16,9 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
-import AddNewProjectModal from '../components/modals/AddNewProject';
+import ProjectFormModal from '../components/modals/ProjectFormModal';
 import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
+import { ProjectOverview } from '../gen/timeTrack.api.generated';
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -47,7 +48,20 @@ const Projects : React.FC = () => {
   const classes = useStyles();
   const { data } = useProjectsGetProjectsQuery({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const initProjectForm: ProjectOverview = {
+    name: '',
+    initial: '',
+    description: '',
+  };
+  const [currentProject, setCurrentProject] = useState(initProjectForm);
+
   const addNewProjectHandler = () => {
+    setCurrentProject(initProjectForm);
+    setIsModalOpen(true);
+  };
+
+  const handleEditProject = (project: ProjectOverview) => {
+    setCurrentProject(project);
     setIsModalOpen(true);
   };
 
@@ -102,7 +116,7 @@ const Projects : React.FC = () => {
                       <IconButton>
                         <PersonAddIcon />
                       </IconButton>
-                      <IconButton>
+                      <IconButton onClick={() => handleEditProject(item)}>
                         <EditIcon />
                       </IconButton>
                       <IconButton>
@@ -115,7 +129,11 @@ const Projects : React.FC = () => {
           </TableBody>
         </Table>
       </Grid>
-      <AddNewProjectModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+      <ProjectFormModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        project={currentProject}
+      />
     </div>
   );
 };

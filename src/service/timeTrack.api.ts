@@ -10,6 +10,9 @@ export const api = generatedApi.enhanceEndpoints({
     projectsCreateProject: {
       invalidates: ['Project'],
     },
+    projectsUpdateProject: {
+      invalidates: ['Project'],
+    },
   },
 });
 
