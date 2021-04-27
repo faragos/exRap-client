@@ -48,7 +48,7 @@
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "generate-api": "npx ts-node ./scripts/build-api.ts",
     "generate-api:dev": "cross-env hookUrl=https://dev.epj.audifire.ch npm run generate-api",
-    "generate-api:local-dev": "cross-env baseUrl=http://localhost npm run generate-api"
+    "generate-api:local-dev": "cross-env baseUrl=http://localhost npm run generate-api:dev"
   },
   "eslintConfig": {
     "extends": [
