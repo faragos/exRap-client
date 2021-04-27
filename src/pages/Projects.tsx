@@ -18,6 +18,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import ProjectFormModal from '../components/modals/ProjectFormModal';
 import DeleteDialog from '../components/modals/DeleteDialog';
+import AddUserToProjectModal from '../components/modals/AddUserToProjectModal';
+import ShowProjectTime from '../components/modals/ShowProjectTimeModal';
 import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
 import { ProjectOverview } from '../gen/timeTrack.api.generated';
 
@@ -51,6 +53,8 @@ const Projects : React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteDialogModalOpen, setIsDeleteDialogModalOpen] = useState(false);
   const [isFilterEnabled, setIsFilterEnabled] = useState(false);
+  const [isAddUserToProjectModalOpen, setIsAddUserToProjectModalOpen] = useState(false);
+  const [isShowProjectTimeModalOpen, setIsShowProjectTimeModalOpen] = useState(false);
   const initProjectForm: ProjectOverview = {
     name: '',
     initial: '',
@@ -71,6 +75,14 @@ const Projects : React.FC = () => {
   const deleteDialogHandler = (project: ProjectOverview) => {
     setCurrentProject(project);
     setIsDeleteDialogModalOpen(true);
+  };
+
+  const addUserToProjectHandler = () => {
+    setIsAddUserToProjectModalOpen(true);
+  };
+
+  const showProjectTimeHandler = () => {
+    setIsShowProjectTimeModalOpen(true);
   };
 
   const filterHelper = () => {
@@ -126,10 +138,10 @@ const Projects : React.FC = () => {
                       <TableCell>{item.initial}</TableCell>
                       <TableCell>{item.description}</TableCell>
                       <TableCell>
-                        <IconButton>
+                        <IconButton onClick={showProjectTimeHandler}>
                           <EqualizerIcon />
                         </IconButton>
-                        <IconButton disabled={item.projectStatus !== 'Active'}>
+                        <IconButton onClick={addUserToProjectHandler} disabled={item.projectStatus !== 'Active'}>
                           <PersonAddIcon />
                         </IconButton>
                         <IconButton onClick={() => handleEditProject(item)} disabled={item.projectStatus !== 'Active'}>
@@ -154,6 +166,14 @@ const Projects : React.FC = () => {
         isModalOpen={isDeleteDialogModalOpen}
         setIsModalOpen={setIsDeleteDialogModalOpen}
         project={currentProject}
+      />
+      <AddUserToProjectModal
+        isModalOpen={isAddUserToProjectModalOpen}
+        setIsModalOpen={setIsAddUserToProjectModalOpen}
+      />
+      <ShowProjectTime
+        isModalOpen={isShowProjectTimeModalOpen}
+        setIsModalOpen={setIsShowProjectTimeModalOpen}
       />
     </div>
   );
