@@ -15,43 +15,36 @@ import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { ManageUserRequest, UsersCreateUserApiArg } from '../gen/auth.api.generated';
-import { useUsersCreateUserMutation, useUsersGetUsersQuery } from '../service/auth.api';
+import {
+  UserOverview, UsersGetUsersApiArg,
+} from '../gen/auth.api.generated';
+import { useUsersGetUsersQuery } from '../service/auth.api';
 import AddNewUserModal from '../components/modals/AddNewUserModal';
 
 const Administration : React.FC = () => {
-  const dtoUser: ManageUserRequest = {
+  const dtoUser: UserOverview = {
     userName: '',
     name: '',
     firstName: '',
     mailAddress: '',
     status: 'Restricted',
   };
-  const [formState, setFormState] = useState(dtoUser);
 
-  const [
-    createUser, // This is the mutation trigger
-  ] = useUsersCreateUserMutation();
+  const [currentUser, setCurrentUser] = useState(dtoUser);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleChange = ({
-    target: { name, value },
-  }: React.ChangeEvent<HTMLInputElement>) => setFormState((prev) => ({ ...prev, [name]: value }));
+  const usersArg: UsersGetUsersApiArg = {};
+  const { data: users = [] } = useUsersGetUsersQuery(usersArg);
 
-  const handleSubmit = async (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-    try {
-      const param: UsersCreateUserApiArg = { manageUserRequest: formState };
-      createUser(param);
-    } catch (err) {
-      console.log(err);
-    }
+  const addNewUserHandler = () => {
+    setCurrentUser(dtoUser);
+    setIsModalOpen(true);
   };
 
-  const { data } = useUsersGetUsersQuery({});
-  let users;
-  if (data) {
-    users = data.map((user) => <li key={user.id}>{user.userName}</li>);
-  }
+  const editUser = (user: UserOverview) => {
+    setCurrentUser(user);
+    setIsModalOpen(true);
+  };
 
   const useStyles = makeStyles((theme) => ({
     table: {
@@ -74,61 +67,10 @@ const Administration : React.FC = () => {
   }));
 
   const classes = useStyles();
-
-  const tableEntries = [
-    {
-      id: '1',
-      userFullName: 'Lukas Schlunegger',
-      userShortName: 'lsc',
-      userPosition: 'System Engineer',
-    },
-    {
-      id: '2',
-      userFullName: 'Armend Lesi',
-      userShortName: 'ale',
-      userPosition: 'Projektleiter',
-    },
-  ];
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const addNewUserHandler = () => {
-    setIsModalOpen(true);
-  };
-
   return (
     <div>
       <Grid>
         <h1> Administration </h1>
-        <h2>Alle Benutzer</h2>
-        {users}
-
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="username">
-            username
-            <input id="username" name="username" type="text" onChange={handleChange} />
-          </label>
-          <label htmlFor="name">
-            name
-            <input id="name" name="name" type="text" onChange={handleChange} />
-          </label>
-          <label htmlFor="firstName">
-            firstName
-            <input id="firstName" name="firstName" type="text" onChange={handleChange} />
-          </label>
-          <label htmlFor="initial">
-            initial
-            <input id="initial" name="initial" type="text" onChange={handleChange} />
-          </label>
-          <label htmlFor="mailAddress">
-            mailAddress
-            <input id="mailAddress" name="mailAddress" type="text" onChange={handleChange} />
-          </label>
-          <label htmlFor="status">
-            status
-            <input id="status" name="status" type="text" onChange={handleChange} />
-          </label>
-          <input type="submit" value="add" />
-        </form>
 
         <Toolbar>
           <TextField
@@ -143,35 +85,42 @@ const Administration : React.FC = () => {
               ),
             }}
           />
-          <Button variant="outlined" color="primary" className={classes.newUserButton} onClick={addNewUserHandler}>
+          <Button variant="contained" color="primary" className={classes.newUserButton} onClick={addNewUserHandler}>
             Neuer Mitarbeiter erfassen
           </Button>
         </Toolbar>
         <Table className={classes.table}>
           <TableBody>
             {
-            tableEntries.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>{item.userFullName}</TableCell>
-                <TableCell>{item.userShortName}</TableCell>
-                <TableCell>{item.userPosition}</TableCell>
-                <TableCell>
-                  <IconButton>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))
+              users.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    {item.firstName}
+                    {' '}
+                    {item.name}
+                  </TableCell>
+                  <TableCell>{item.userName}</TableCell>
+                  <TableCell>item.roles</TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => editUser(item)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
           }
           </TableBody>
         </Table>
       </Grid>
-      <AddNewUserModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+      <AddNewUserModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        user={currentUser}
+      />
     </div>
   );
 };
-
 export default Administration;
