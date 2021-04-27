@@ -63,8 +63,6 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-    // eslint-disable-next-line no-debugger
-    debugger;
     if (formState.id) {
       try {
         const param: UsersUpdateUserApiArg = {
