@@ -15,14 +15,14 @@ variables:
   GIT_DEPTH: "0"
 
 eslint:
-  image: node:latest
+  image: node:15.14
   stage: lint
   script:
     - npm install
     - npx eslint . --ext .js,.jsx,.ts,.tsx
 
 build-master:
-  image: node:latest
+  image: node:15.14
   stage: build
   script:
     - npm install
@@ -36,7 +36,7 @@ build-master:
     - master
 
 build:
-  image: node:latest
+  image: node:15.14
   stage: build
   script:
     - npm install
