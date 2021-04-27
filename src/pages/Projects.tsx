@@ -17,6 +17,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import AddNewProjectModal from '../components/modals/AddNewProject';
+import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -44,22 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Projects : React.FC = () => {
   const classes = useStyles();
-
-  const tableEntries = [
-    {
-      id: '1',
-      projectName: 'project1',
-      projectNameShort: 'prj1',
-      projectDescription: 'prj1 description',
-    },
-    {
-      id: '2',
-      projectName: 'project2',
-      projectNameShort: 'prj2',
-      projectDescription: 'prj2 description',
-    },
-  ];
-
+  const { data } = useProjectsGetProjectsQuery({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const addNewProjectHandler = () => {
     setIsModalOpen(true);
@@ -92,18 +78,23 @@ const Projects : React.FC = () => {
                 )}
             label="Beendet"
           />
-          <Button variant="outlined" color="primary" className={classes.newProjectButton} onClick={addNewProjectHandler}>
+          <Button
+            variant="outlined"
+            color="primary"
+            className={classes.newProjectButton}
+            onClick={addNewProjectHandler}
+          >
             Neues Projekt erfassen
           </Button>
         </Toolbar>
         <Table className={classes.table}>
           <TableBody>
             {
-                tableEntries.map((item) => (
+                data?.map((item) => (
                   <TableRow key={item.id}>
-                    <TableCell>{item.projectName}</TableCell>
-                    <TableCell>{item.projectNameShort}</TableCell>
-                    <TableCell>{item.projectDescription}</TableCell>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.initial}</TableCell>
+                    <TableCell>{item.description}</TableCell>
                     <TableCell>
                       <IconButton>
                         <EqualizerIcon />
