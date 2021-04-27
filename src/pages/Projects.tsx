@@ -17,6 +17,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import ProjectFormModal from '../components/modals/ProjectFormModal';
+import DeleteDialog from '../components/modals/DeleteDialog';
 import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
 import { ProjectOverview } from '../gen/timeTrack.api.generated';
 
@@ -48,6 +49,8 @@ const Projects : React.FC = () => {
   const classes = useStyles();
   const { data } = useProjectsGetProjectsQuery({});
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteDialogModalOpen, setIsDeleteDialogModalOpen] = useState(false);
+  const [isFilterEnabled, setIsFilterEnabled] = useState(false);
   const initProjectForm: ProjectOverview = {
     name: '',
     initial: '',
@@ -63,6 +66,16 @@ const Projects : React.FC = () => {
   const handleEditProject = (project: ProjectOverview) => {
     setCurrentProject(project);
     setIsModalOpen(true);
+  };
+
+  const deleteDialogHandler = (project: ProjectOverview) => {
+    setCurrentProject(project);
+    setIsDeleteDialogModalOpen(true);
+  };
+
+  const filterHelper = () => {
+    if (isFilterEnabled) return ['Active', 'Finished'];
+    return ['Active'];
   };
 
   return (
@@ -88,6 +101,7 @@ const Projects : React.FC = () => {
               <Checkbox
                 name="checkedB"
                 color="primary"
+                onChange={() => setIsFilterEnabled(!isFilterEnabled)}
               />
                 )}
             label="Beendet"
@@ -104,27 +118,29 @@ const Projects : React.FC = () => {
         <Table className={classes.table}>
           <TableBody>
             {
-                data?.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.initial}</TableCell>
-                    <TableCell>{item.description}</TableCell>
-                    <TableCell>
-                      <IconButton>
-                        <EqualizerIcon />
-                      </IconButton>
-                      <IconButton>
-                        <PersonAddIcon />
-                      </IconButton>
-                      <IconButton onClick={() => handleEditProject(item)}>
-                        <EditIcon />
-                      </IconButton>
-                      <IconButton>
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))
+                data
+                  ?.filter((item) => filterHelper().includes(item.projectStatus || ''))
+                  .map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.initial}</TableCell>
+                      <TableCell>{item.description}</TableCell>
+                      <TableCell>
+                        <IconButton>
+                          <EqualizerIcon />
+                        </IconButton>
+                        <IconButton disabled={item.projectStatus !== 'Active'}>
+                          <PersonAddIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleEditProject(item)} disabled={item.projectStatus !== 'Active'}>
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => deleteDialogHandler(item)} disabled={item.projectStatus !== 'Active'}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
               }
           </TableBody>
         </Table>
@@ -132,6 +148,11 @@ const Projects : React.FC = () => {
       <ProjectFormModal
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
+        project={currentProject}
+      />
+      <DeleteDialog
+        isModalOpen={isDeleteDialogModalOpen}
+        setIsModalOpen={setIsDeleteDialogModalOpen}
         project={currentProject}
       />
     </div>
