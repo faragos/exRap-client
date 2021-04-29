@@ -15,14 +15,18 @@ import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import {
   UserOverview, UsersGetUsersApiArg,
 } from '../gen/auth.api.generated';
 import { useUsersGetUsersQuery } from '../service/auth.api';
 import AddNewUserModal from '../components/modals/AddNewUserModal';
+import AlertDialog from '../components/AlertDialog';
+import ChangeCredentialsModal from '../components/modals/ChangeCredentialsModal';
 
 const Administration : React.FC = () => {
   const dtoUser: UserOverview = {
+    id: 0,
     userName: '',
     name: '',
     firstName: '',
@@ -31,19 +35,31 @@ const Administration : React.FC = () => {
   };
 
   const [currentUser, setCurrentUser] = useState(dtoUser);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [isCredentialsModalOpen, setIsCredentialsModalOpen] = useState(false);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
 
   const usersArg: UsersGetUsersApiArg = {};
   const { data: users = [] } = useUsersGetUsersQuery(usersArg);
 
   const addNewUserHandler = () => {
     setCurrentUser(dtoUser);
-    setIsModalOpen(true);
+    setIsUserModalOpen(true);
   };
 
   const editUser = (user: UserOverview) => {
     setCurrentUser(user);
-    setIsModalOpen(true);
+    setIsUserModalOpen(true);
+  };
+
+  const editCredentials = (user: UserOverview) => {
+    setCurrentUser(user);
+    setIsCredentialsModalOpen(true);
+  };
+
+  const deleteUser = (user: UserOverview) => {
+    setCurrentUser(user);
+    setIsDeleteAlertOpen(true);
   };
 
   const useStyles = makeStyles((theme) => ({
@@ -105,7 +121,10 @@ const Administration : React.FC = () => {
                     <IconButton onClick={() => editUser(item)}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton>
+                    <IconButton onClick={() => editCredentials(item)}>
+                      <VpnKeyIcon />
+                    </IconButton>
+                    <IconButton onClick={() => deleteUser(item)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
@@ -116,9 +135,20 @@ const Administration : React.FC = () => {
         </Table>
       </Grid>
       <AddNewUserModal
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
+        isModalOpen={isUserModalOpen}
+        setIsModalOpen={setIsUserModalOpen}
         user={currentUser}
+      />
+      <ChangeCredentialsModal
+        isModalOpen={isCredentialsModalOpen}
+        setIsModalOpen={setIsCredentialsModalOpen}
+        user={currentUser}
+      />
+
+      <AlertDialog
+        isOpen={isDeleteAlertOpen}
+        setIsOpen={setIsDeleteAlertOpen}
+        handleConfirm={() => console.log('works')}
       />
     </div>
   );

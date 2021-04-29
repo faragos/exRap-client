@@ -7,11 +7,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import {
   UserOverview,
-  UsersCreateUserApiArg,
-  useUsersUpdateUserMutation,
-  UsersUpdateUserApiArg,
+  useUserCredentialsAddCredentialMutation, UserCredentialsAddCredentialApiArg,
 } from '../../gen/auth.api.generated';
-import { useUsersCreateUserMutation } from '../../service/auth.api';
 
 type PasswordComponentProps = {
   handleCredentialsChange: (event: ChangeEvent<HTMLInputElement>) => void,
@@ -51,12 +48,13 @@ type ChildComponentProps = {
   user: UserOverview,
 };
 
-const AddNewUserModal : React.FC<ChildComponentProps> = ({
+const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   isModalOpen,
   user,
 }: ChildComponentProps) => {
   const [formState, setFormState] = useState(user);
+  const [credentials, setCredentials] = useState({ password: '', passwordHint: '' });
 
   React.useEffect(() => {
     setFormState(user);
@@ -65,22 +63,12 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   // const { data } = useRolesGetRolesQuery({});
 
   const [
-    createUser, // This is the mutation trigger
-  ] = useUsersCreateUserMutation();
-
-  const [
-    updateUser, // This is the mutation trigger
-  ] = useUsersUpdateUserMutation();
+    updateCredentials, // This is the mutation trigger
+  ] = useUserCredentialsAddCredentialMutation();
 
   const handleChange = ({
     target: { name, value },
-  }: React.ChangeEvent<HTMLInputElement>) => setFormState((prev) => ({ ...prev, [name]: value }));
-
-  const handleCredentialsChange = ({
-    target: { name, value },
-  }: React.ChangeEvent<HTMLInputElement>) => {
-    setFormState((prev) => ({ ...prev, credentials: { [name]: value } }));
-  };
+  }: React.ChangeEvent<HTMLInputElement>) => setCredentials((prev) => ({ ...prev, [name]: value }));
 
   const handleClose = () => {
     setIsModalOpen(false);
@@ -88,64 +76,20 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-    if (formState.id) {
-      try {
-        const param: UsersUpdateUserApiArg = {
-          userId: formState.id,
-          manageUserRequest: formState,
-        };
-        updateUser(param);
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      try {
-        const param: UsersCreateUserApiArg = { createUserRequest: formState };
-        createUser(param);
-      } catch (err) {
-        console.log(err);
-      }
-    }
+    const param: UserCredentialsAddCredentialApiArg = {
+      userId: formState.id,
+      manageCredentialRequest: credentials,
+    };
+    updateCredentials(param);
     setIsModalOpen(false);
   };
 
   return (
     <Dialog open={isModalOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
       <form onSubmit={handleSubmit}>
-        <DialogTitle id="form-dialog-title">Neuer Mitarbeiter erfassen</DialogTitle>
+        <DialogTitle id="form-dialog-title">Passwort ändern</DialogTitle>
         <DialogContent>
-          <TextField
-            autoFocus
-            id="firstName"
-            name="firstName"
-            label="Vorname"
-            variant="standard"
-            placeholder="Max"
-            value={formState.firstName}
-            onChange={handleChange}
-          />
-          <TextField
-            autoFocus
-            id="name"
-            name="name"
-            label="Nachname"
-            variant="standard"
-            placeholder="Muster"
-            value={formState.name}
-            onChange={handleChange}
-          />
-          <TextField
-            autoFocus
-            id="userName"
-            name="userName"
-            label="Kürzel"
-            variant="standard"
-            placeholder="abc"
-            value={formState.userName}
-            onChange={handleChange}
-            fullWidth
-          />
-          {!formState.id && <PasswordFields handleCredentialsChange={handleCredentialsChange} />}
+          <PasswordFields handleCredentialsChange={handleChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>
@@ -160,4 +104,4 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   );
 };
 
-export default AddNewUserModal;
+export default ChangeCredentialsModal;
