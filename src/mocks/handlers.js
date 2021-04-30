@@ -5,7 +5,7 @@ const userData = [];
 
 const handlers = [
   rest.post('/auth/api/Login', (req, res, ctx) => {
-    if (req.body.loginName === 'test-user' && req.body.password === 'test-password') {
+    if (req.body.userName === 'test-user' && req.body.password === 'test-password') {
       return res(
         ctx.status(200),
         ctx.json({
@@ -20,7 +20,7 @@ const handlers = [
   rest.post('/auth/api/Users', (req, res, xtc) => {
     userData.push({
       id: Math.random(),
-      userName: req.body.username,
+      userName: req.body.userName,
     });
     return res(
       xtc.status(200),
