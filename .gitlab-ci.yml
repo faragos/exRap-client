@@ -35,7 +35,7 @@ build-master:
   only:
     - master
 
-check-merge-master:
+build-premerge-master:
   image: node:15.14
   stage: build
   script:
