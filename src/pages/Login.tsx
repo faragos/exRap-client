@@ -58,7 +58,7 @@ const Login : React.FC = () => {
           <Grid>
             <img src={logo} alt="Logo exRap" className="logo" />
           </Grid>
-          <TextField id="loginName" name="loginName" label="Username" type="text" fullWidth variant="standard" required onChange={handleChange} />
+          <TextField id="loginName" name="userName" label="Username" type="text" fullWidth variant="standard" required onChange={handleChange} />
           <TextField id="password" name="password" label="Password" type="password" fullWidth variant="standard" required onChange={handleChange} />
           <FormControlLabel
             control={(

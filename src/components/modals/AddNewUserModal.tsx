@@ -32,8 +32,8 @@ const PasswordFields : React.FC<PasswordComponentProps> = (
     />
 
     <TextField
-      name="passwordRepeat"
-      id="passwordRepeat"
+      name="passwordHint"
+      id="passwordHint"
       label="Passwort wiederholen"
       variant="standard"
       type="password"
@@ -56,20 +56,26 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   isModalOpen,
   user,
 }: ChildComponentProps) => {
-  const [formState, setFormState] = useState(user);
+  const enrichUser = (initialUser: UserOverview) => ({
+    ...initialUser,
+    credentials: {
+      password: '',
+      passwordHint: '',
+    },
+  });
+
+  const [formState, setFormState] = useState(enrichUser(user));
 
   React.useEffect(() => {
-    setFormState(user);
+    setFormState(enrichUser(user));
   }, [user]);
 
-  // const { data } = useRolesGetRolesQuery({});
-
   const [
-    createUser, // This is the mutation trigger
+    createUser,
   ] = useUsersCreateUserMutation();
 
   const [
-    updateUser, // This is the mutation trigger
+    updateUser,
   ] = useUsersUpdateUserMutation();
 
   const handleChange = ({
@@ -79,7 +85,7 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   const handleCredentialsChange = ({
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>) => {
-    setFormState((prev) => ({ ...prev, credentials: { [name]: value } }));
+    setFormState((prev) => ({ ...prev, credentials: { ...prev.credentials, [name]: value } }));
   };
 
   const handleClose = () => {
@@ -88,7 +94,7 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-    if (formState.id) {
+    if (formState?.id) {
       try {
         const param: UsersUpdateUserApiArg = {
           userId: formState.id,
@@ -142,6 +148,17 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
             variant="standard"
             placeholder="abc"
             value={formState.userName}
+            onChange={handleChange}
+            fullWidth
+          />
+          <TextField
+            autoFocus
+            id="mailAddress"
+            name="mailAddress"
+            label="Mail"
+            variant="standard"
+            placeholder="example@test.ch"
+            value={formState.mailAddress}
             onChange={handleChange}
             fullWidth
           />

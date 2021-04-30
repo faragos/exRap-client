@@ -17,7 +17,8 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import {
-  UserOverview, UsersGetUsersApiArg,
+  UserOverview, UsersGetUsersApiArg, UsersUpdateUserApiArg, useUsersUpdateUserMutation,
+  UserStatus,
 } from '../gen/auth.api.generated';
 import { useUsersGetUsersQuery } from '../service/auth.api';
 import AddNewUserModal from '../components/modals/AddNewUserModal';
@@ -41,6 +42,9 @@ const Administration : React.FC = () => {
 
   const usersArg: UsersGetUsersApiArg = {};
   const { data: users = [] } = useUsersGetUsersQuery(usersArg);
+  const [
+    updateUser,
+  ] = useUsersUpdateUserMutation();
 
   const addNewUserHandler = () => {
     setCurrentUser(dtoUser);
@@ -60,6 +64,22 @@ const Administration : React.FC = () => {
   const deleteUser = (user: UserOverview) => {
     setCurrentUser(user);
     setIsDeleteAlertOpen(true);
+  };
+
+  const confirmDeleteUser = async () => {
+    const userStatus: UserStatus = 'Deleted';
+    const user = { ...currentUser, status: userStatus };
+    try {
+      const param: UsersUpdateUserApiArg = {
+        userId: user.id,
+        manageUserRequest: user,
+      };
+      updateUser(param);
+    } catch (err) {
+      console.log(err);
+    }
+    setCurrentUser(user);
+    setIsDeleteAlertOpen(false);
   };
 
   const useStyles = makeStyles((theme) => ({
@@ -116,7 +136,7 @@ const Administration : React.FC = () => {
                     {item.name}
                   </TableCell>
                   <TableCell>{item.userName}</TableCell>
-                  <TableCell>item.roles</TableCell>
+                  <TableCell>{item.roles?.join(', ')}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => editUser(item)}>
                       <EditIcon />
@@ -148,7 +168,7 @@ const Administration : React.FC = () => {
       <AlertDialog
         isOpen={isDeleteAlertOpen}
         setIsOpen={setIsDeleteAlertOpen}
-        handleConfirm={() => console.log('works')}
+        handleConfirm={confirmDeleteUser}
       />
     </div>
   );
