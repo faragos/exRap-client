@@ -10,7 +10,6 @@ import {
   useProjectsCreateProjectMutation, useProjectsUpdateProjectMutation,
 } from '../../service/timeTrack.api';
 import {
-  ManageProjectRequest,
   ProjectOverview,
   ProjectsCreateProjectApiArg,
   ProjectsUpdateProjectApiArg,
@@ -35,7 +34,7 @@ const ProjectFormModal : React.FC<ChildComponentProps> = ({
   isModalOpen,
   project,
 }: ChildComponentProps) => {
-  const [newProjectForm, setNewProjectForm] = useState(project);
+  const [projectForm, setProjectForm] = useState(project);
   const [
     createProject,
   ] = useProjectsCreateProjectMutation();
@@ -45,40 +44,38 @@ const ProjectFormModal : React.FC<ChildComponentProps> = ({
   ] = useProjectsUpdateProjectMutation();
 
   useEffect(() => {
-    setNewProjectForm(project);
+    setProjectForm(project);
   }, [project]);
 
   const handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
-    setNewProjectForm((prev) => ({ ...prev, [name]: value }));
+    setProjectForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleClose = () => {
-    setNewProjectForm(project);
+    setProjectForm(project);
     setIsModalOpen(false);
   };
 
-  const handleSave = async () => {
-    if (newProjectForm.id) {
-      const param: ProjectsUpdateProjectApiArg = {
-        projectId: newProjectForm.id,
-        manageProjectRequest: newProjectForm as ManageProjectRequest,
-      };
-      await updateProject(param);
+  const handleSave = async (event: { preventDefault: () => void; }) => {
+    event.preventDefault();
+    if (projectForm.id) {
+      try {
+        const param: ProjectsUpdateProjectApiArg = {
+          projectId: projectForm.id,
+          manageProjectRequest: projectForm,
+        };
+        updateProject(param);
+      } catch (err) {
+        console.log(err);
+      }
     } else {
-      const args: ManageProjectRequest = {
-        name: newProjectForm.name || '',
-        initial: newProjectForm.initial || '',
-        description: newProjectForm.description,
-      };
-      const param: ProjectsCreateProjectApiArg = { manageProjectRequest: args };
-      await createProject(param);
+      try {
+        const param: ProjectsCreateProjectApiArg = { manageProjectRequest: projectForm };
+        createProject(param);
+      } catch (err) {
+        console.log(err);
+      }
     }
-    const initProjectForm: ProjectOverview = {
-      name: '',
-      initial: '',
-      description: '',
-    };
-    setNewProjectForm(initProjectForm);
     setIsModalOpen(false);
   };
 
@@ -99,7 +96,7 @@ const ProjectFormModal : React.FC<ChildComponentProps> = ({
               variant="standard"
               fullWidth
               onChange={handleChange}
-              value={newProjectForm.name}
+              value={projectForm.name}
               required
             />
             <TextField
@@ -110,7 +107,7 @@ const ProjectFormModal : React.FC<ChildComponentProps> = ({
               variant="standard"
               fullWidth
               onChange={handleChange}
-              value={newProjectForm.initial}
+              value={projectForm.initial}
               required
             />
             <TextField
@@ -123,7 +120,7 @@ const ProjectFormModal : React.FC<ChildComponentProps> = ({
               rows={4}
               variant="filled"
               onChange={handleChange}
-              value={newProjectForm.description}
+              value={projectForm.description}
             />
           </DialogContent>
           <DialogActions>

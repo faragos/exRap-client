@@ -17,11 +17,11 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import ProjectFormModal from '../components/modals/ProjectFormModal';
-import DeleteDialog from '../components/modals/DeleteDialog';
 import AddUserToProjectModal from '../components/modals/AddUserToProjectModal';
 import ShowProjectTime from '../components/modals/ShowProjectTimeModal';
-import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
-import { ProjectOverview } from '../gen/timeTrack.api.generated';
+import { useProjectsGetProjectsQuery, useProjectsUpdateProjectMutation } from '../service/timeTrack.api';
+import { ProjectOverview, ProjectStatus, ProjectsUpdateProjectApiArg } from '../gen/timeTrack.api.generated';
+import AlertDialog from '../components/AlertDialog';
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -51,19 +51,26 @@ const Projects : React.FC = () => {
   const classes = useStyles();
   const { data } = useProjectsGetProjectsQuery({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteDialogModalOpen, setIsDeleteDialogModalOpen] = useState(false);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isFilterEnabled, setIsFilterEnabled] = useState(false);
   const [isAddUserToProjectModalOpen, setIsAddUserToProjectModalOpen] = useState(false);
   const [isShowProjectTimeModalOpen, setIsShowProjectTimeModalOpen] = useState(false);
-  const initProjectForm: ProjectOverview = {
+  const dtoProject: ProjectOverview = {
+    id: 0,
     name: '',
     initial: '',
     description: '',
+    timeBudget: 0,
+    projectStatus: 'Active',
   };
-  const [currentProject, setCurrentProject] = useState(initProjectForm);
+
+  const deleteDialogTitle = 'Projekt beenden';
+  const deleteDialogContent = 'Wollen Sie das Projekt wirklich beenden?';
+
+  const [currentProject, setCurrentProject] = useState(dtoProject);
 
   const addNewProjectHandler = () => {
-    setCurrentProject(initProjectForm);
+    setCurrentProject(dtoProject);
     setIsModalOpen(true);
   };
 
@@ -72,9 +79,30 @@ const Projects : React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const deleteDialogHandler = (project: ProjectOverview) => {
+  const deleteProject = (project: ProjectOverview) => {
     setCurrentProject(project);
-    setIsDeleteDialogModalOpen(true);
+    setIsDeleteAlertOpen(true);
+  };
+
+  const [
+    updateProject,
+  ] = useProjectsUpdateProjectMutation();
+
+  const confirmDeleteProject = () => {
+    const projectStatus: ProjectStatus = 'Finished';
+    const project = { ...currentProject, status: projectStatus };
+    try {
+      const param: ProjectsUpdateProjectApiArg = {
+        projectId: project.id,
+        manageProjectRequest: project,
+      };
+      updateProject(param);
+    } catch (err) {
+      console.log(err);
+    }
+
+    setCurrentProject(project);
+    setIsDeleteAlertOpen(false);
   };
 
   const addUserToProjectHandler = () => {
@@ -147,7 +175,7 @@ const Projects : React.FC = () => {
                         <IconButton onClick={() => handleEditProject(item)} disabled={item.projectStatus !== 'Active'}>
                           <EditIcon />
                         </IconButton>
-                        <IconButton onClick={() => deleteDialogHandler(item)} disabled={item.projectStatus !== 'Active'}>
+                        <IconButton onClick={() => deleteProject(item)} disabled={item.projectStatus !== 'Active'}>
                           <DeleteIcon />
                         </IconButton>
                       </TableCell>
@@ -162,11 +190,6 @@ const Projects : React.FC = () => {
         setIsModalOpen={setIsModalOpen}
         project={currentProject}
       />
-      <DeleteDialog
-        isModalOpen={isDeleteDialogModalOpen}
-        setIsModalOpen={setIsDeleteDialogModalOpen}
-        project={currentProject}
-      />
       <AddUserToProjectModal
         isModalOpen={isAddUserToProjectModalOpen}
         setIsModalOpen={setIsAddUserToProjectModalOpen}
@@ -174,6 +197,13 @@ const Projects : React.FC = () => {
       <ShowProjectTime
         isModalOpen={isShowProjectTimeModalOpen}
         setIsModalOpen={setIsShowProjectTimeModalOpen}
+      />
+      <AlertDialog
+        isOpen={isDeleteAlertOpen}
+        setIsOpen={setIsDeleteAlertOpen}
+        handleConfirm={confirmDeleteProject}
+        title={deleteDialogTitle}
+        content={deleteDialogContent}
       />
     </div>
   );
