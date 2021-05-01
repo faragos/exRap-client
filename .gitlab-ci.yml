@@ -57,7 +57,7 @@ build:
   stage: build
   script:
     - npm install
-    - npm run generate-api
+    - npm run generate-api:dev
     - npm run build
   artifacts:
     paths:
