@@ -1,7 +1,7 @@
 import { api as generatedApi } from '../gen/timeTrack.api.generated';
 
 export const api = generatedApi.enhanceEndpoints({
-  addEntityTypes: ['Project'],
+  addEntityTypes: ['Project', 'Contributors'],
   endpoints: {
     // basic notation: just specify properties to be overridden
     projectsGetProjects: {
@@ -12,6 +12,15 @@ export const api = generatedApi.enhanceEndpoints({
     },
     projectsUpdateProject: {
       invalidates: ['Project'],
+    },
+    projectContributorsGetContributors: {
+      provides: ['Contributors'],
+    },
+    projectContributorsAddContributor: {
+      invalidates: ['Contributors'],
+    },
+    projectContributorsRemoveContributor: {
+      invalidates: ['Contributors'],
     },
   },
 });

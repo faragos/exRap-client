@@ -105,7 +105,8 @@ const Projects : React.FC = () => {
     setIsDeleteAlertOpen(false);
   };
 
-  const addUserToProjectHandler = () => {
+  const addUserToProjectHandler = (project: ProjectOverview) => {
+    setCurrentProject(project);
     setIsAddUserToProjectModalOpen(true);
   };
 
@@ -169,7 +170,7 @@ const Projects : React.FC = () => {
                         <IconButton onClick={showProjectTimeHandler}>
                           <EqualizerIcon />
                         </IconButton>
-                        <IconButton onClick={addUserToProjectHandler} disabled={item.projectStatus !== 'Active'}>
+                        <IconButton onClick={() => addUserToProjectHandler(item)} disabled={item.projectStatus !== 'Active'}>
                           <PersonAddIcon />
                         </IconButton>
                         <IconButton onClick={() => handleEditProject(item)} disabled={item.projectStatus !== 'Active'}>
@@ -190,10 +191,14 @@ const Projects : React.FC = () => {
         setIsModalOpen={setIsModalOpen}
         project={currentProject}
       />
+      {isAddUserToProjectModalOpen
+      && (
       <AddUserToProjectModal
         isModalOpen={isAddUserToProjectModalOpen}
         setIsModalOpen={setIsAddUserToProjectModalOpen}
+        project={currentProject}
       />
+      )}
       <ShowProjectTime
         isModalOpen={isShowProjectTimeModalOpen}
         setIsModalOpen={setIsShowProjectTimeModalOpen}
