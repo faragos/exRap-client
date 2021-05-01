@@ -15,42 +15,72 @@ import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { ManageUserRequest, UsersCreateUserApiArg } from '../gen/auth.api.generated';
-import { useUsersCreateUserMutation, useUsersGetUsersQuery } from '../service/auth.api';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import {
+  UserOverview, UsersGetUsersApiArg, UsersUpdateUserApiArg, useUsersUpdateUserMutation,
+  UserStatus,
+} from '../gen/auth.api.generated';
+import { useUsersGetUsersQuery } from '../service/auth.api';
+import AddNewUserModal from '../components/modals/AddNewUserModal';
+import AlertDialog from '../components/AlertDialog';
+import ChangeCredentialsModal from '../components/modals/ChangeCredentialsModal';
 
 const Administration : React.FC = () => {
-  const dtoUser: ManageUserRequest = {
+  const dtoUser: UserOverview = {
+    id: 0,
     userName: '',
     name: '',
     firstName: '',
     mailAddress: '',
     status: 'Restricted',
   };
-  const [formState, setFormState] = useState(dtoUser);
 
+  const [currentUser, setCurrentUser] = useState(dtoUser);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [isCredentialsModalOpen, setIsCredentialsModalOpen] = useState(false);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+
+  const usersArg: UsersGetUsersApiArg = {};
+  const { data: users = [] } = useUsersGetUsersQuery(usersArg);
   const [
-    createUser, // This is the mutation trigger
-  ] = useUsersCreateUserMutation();
+    updateUser,
+  ] = useUsersUpdateUserMutation();
 
-  const handleChange = ({
-    target: { name, value },
-  }: React.ChangeEvent<HTMLInputElement>) => setFormState((prev) => ({ ...prev, [name]: value }));
+  const addNewUserHandler = () => {
+    setCurrentUser(dtoUser);
+    setIsUserModalOpen(true);
+  };
 
-  const handleSubmit = async (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
+  const editUser = (user: UserOverview) => {
+    setCurrentUser(user);
+    setIsUserModalOpen(true);
+  };
+
+  const editCredentials = (user: UserOverview) => {
+    setCurrentUser(user);
+    setIsCredentialsModalOpen(true);
+  };
+
+  const deleteUser = (user: UserOverview) => {
+    setCurrentUser(user);
+    setIsDeleteAlertOpen(true);
+  };
+
+  const confirmDeleteUser = async () => {
+    const userStatus: UserStatus = 'Deleted';
+    const user = { ...currentUser, status: userStatus };
     try {
-      const param: UsersCreateUserApiArg = { manageUserRequest: formState };
-      createUser(param);
+      const param: UsersUpdateUserApiArg = {
+        userId: user.id,
+        manageUserRequest: user,
+      };
+      updateUser(param);
     } catch (err) {
       console.log(err);
     }
+    setCurrentUser(user);
+    setIsDeleteAlertOpen(false);
   };
-
-  const { data } = useUsersGetUsersQuery({});
-  let users;
-  if (data) {
-    users = data.map((user) => <li key={user.id}>{user.userName}</li>);
-  }
 
   const useStyles = makeStyles((theme) => ({
     table: {
@@ -73,97 +103,74 @@ const Administration : React.FC = () => {
   }));
 
   const classes = useStyles();
-
-  const tableEntries = [
-    {
-      id: '1',
-      userFullName: 'Lukas Schlunegger',
-      userShortName: 'lsc',
-      userPosition: 'System Engineer',
-    },
-    {
-      id: '2',
-      userFullName: 'Armend Lesi',
-      userShortName: 'ale',
-      userPosition: 'Projektleiter',
-    },
-  ];
-
   return (
-    <Grid>
-      <h1> Administration </h1>
-      <h2>Alle Benutzer</h2>
-      {users}
+    <div>
+      <Grid>
+        <h1> Administration </h1>
 
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="username">
-          username
-          <input id="username" name="username" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="name">
-          name
-          <input id="name" name="name" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="firstName">
-          firstName
-          <input id="firstName" name="firstName" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="initial">
-          initial
-          <input id="initial" name="initial" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="mailAddress">
-          mailAddress
-          <input id="mailAddress" name="mailAddress" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="status">
-          status
-          <input id="status" name="status" type="text" onChange={handleChange} />
-        </label>
-        <input type="submit" value="add" />
-      </form>
-
-      <Toolbar>
-        <TextField
-          name="Suche"
-          label="Suche"
-          type="text"
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-        <Button variant="outlined" color="primary" className={classes.newUserButton}>
-          Neuer Mitarbeiter erfassen
-        </Button>
-      </Toolbar>
-      <Table className={classes.table}>
-        <TableBody>
-          {
-            tableEntries.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>{item.userFullName}</TableCell>
-                <TableCell>{item.userShortName}</TableCell>
-                <TableCell>{item.userPosition}</TableCell>
-                <TableCell>
-                  <IconButton>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))
+        <Toolbar>
+          <TextField
+            name="Suche"
+            label="Suche"
+            type="text"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button variant="contained" color="primary" className={classes.newUserButton} onClick={addNewUserHandler}>
+            Neuer Mitarbeiter erfassen
+          </Button>
+        </Toolbar>
+        <Table className={classes.table}>
+          <TableBody>
+            {
+              users.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    {item.firstName}
+                    {' '}
+                    {item.name}
+                  </TableCell>
+                  <TableCell>{item.userName}</TableCell>
+                  <TableCell>{item.roles?.join(', ')}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={() => editUser(item)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton onClick={() => editCredentials(item)}>
+                      <VpnKeyIcon />
+                    </IconButton>
+                    <IconButton onClick={() => deleteUser(item)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
           }
-        </TableBody>
-      </Table>
-    </Grid>
+          </TableBody>
+        </Table>
+      </Grid>
+      <AddNewUserModal
+        isModalOpen={isUserModalOpen}
+        setIsModalOpen={setIsUserModalOpen}
+        user={currentUser}
+      />
+      <ChangeCredentialsModal
+        isModalOpen={isCredentialsModalOpen}
+        setIsModalOpen={setIsCredentialsModalOpen}
+        user={currentUser}
+      />
 
+      <AlertDialog
+        isOpen={isDeleteAlertOpen}
+        setIsOpen={setIsDeleteAlertOpen}
+        handleConfirm={confirmDeleteUser}
+      />
+    </div>
   );
 };
-
 export default Administration;

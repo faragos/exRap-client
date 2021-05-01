@@ -1,7 +1,7 @@
 import { api as generatedApi } from '../gen/auth.api.generated';
 
 export const api = generatedApi.enhanceEndpoints({
-  addEntityTypes: ['Login', 'User'],
+  addEntityTypes: ['Login', 'User', 'Password'],
   endpoints: {
     // basic notation: just specify properties to be overridden
     loginLogin: {
@@ -15,6 +15,12 @@ export const api = generatedApi.enhanceEndpoints({
     },
     usersCreateUser: {
       invalidates: ['User'],
+    },
+    usersUpdateUser: {
+      invalidates: ['User'],
+    },
+    userCredentialsAddCredential: {
+      invalidates: ['Password'],
     },
   },
 });

@@ -5,7 +5,7 @@ import {
   Grid, Paper, TextField, FormControlLabel, Checkbox, Button,
 } from '@material-ui/core';
 import { useLoginLoginMutation } from '../service/auth.api';
-import { LoginLoginApiArg } from '../gen/auth.api.generated';
+import { LoginLoginApiArg, LoginResponse } from '../gen/auth.api.generated';
 import { setCredentials } from '../store/authInfo/reducers';
 import { AuthInfo } from '../store/authInfo/types';
 import { useAppDispatch } from '../hooks';
@@ -15,7 +15,7 @@ const Login : React.FC = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const [formState, setFormState] = useState({
-    loginName: '',
+    userName: '',
     password: '',
   });
   const [
@@ -30,9 +30,9 @@ const Login : React.FC = () => {
     event.preventDefault();
     try {
       const param: LoginLoginApiArg = { loginRequest: formState };
-      const response :any = await login(param).unwrap(); // TODO: use right type after API is ready
+      const response : LoginResponse = await login(param).unwrap();
       const authInfo: AuthInfo = {
-        username: formState.loginName,
+        username: formState.userName,
         token: response.token,
         isAuthenticated: true,
       };
@@ -58,7 +58,7 @@ const Login : React.FC = () => {
           <Grid>
             <img src={logo} alt="Logo exRap" className="logo" />
           </Grid>
-          <TextField id="loginName" name="loginName" label="Username" type="text" fullWidth variant="standard" required onChange={handleChange} />
+          <TextField id="loginName" name="userName" label="Username" type="text" fullWidth variant="standard" required onChange={handleChange} />
           <TextField id="password" name="password" label="Password" type="password" fullWidth variant="standard" required onChange={handleChange} />
           <FormControlLabel
             control={(
