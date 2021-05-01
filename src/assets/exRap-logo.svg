@@ -29,7 +29,7 @@
      inkscape:cx="110.8949"
      inkscape:cy="-36.185748"
      inkscape:document-units="mm"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="text817"
      showgrid="false"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
@@ -53,18 +53,30 @@
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-0.18918843,-0.25920225)">
-    <text
-       xml:space="preserve"
+    <g
+       aria-label="exRap"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Kaushan Script';-inkscape-font-specification:'Kaushan Script, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
-       x="-0.73156154"
-       y="8.0485353"
-       id="text817"
-       inkscape:export-xdpi="100000"
-       inkscape:export-ydpi="100000"><tspan
-         sodipodi:role="line"
-         id="tspan815"
-         x="-0.73156154"
-         y="8.0485353"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:'Kaushan Script';-inkscape-font-specification:'Kaushan Script, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1">exRap</tspan></text>
+       id="text817">
+      <path
+         d="M 4.083855,3.6670355 C 3.798105,3.3072022 3.4911883,3.1061188 3.1736883,3.0637855 c -1.3969999,0 -2.98449987,2.0425833 -2.98449987,3.7782499 0,0.8466666 0.57149998,1.5134166 1.54516667,1.6192499 C 2.401105,8.3131187 3.2160217,7.7098687 3.8510217,6.8737854 3.798105,6.8102854 3.7451883,6.7573687 3.671105,6.6938687 c -0.4445,0.47625 -1.17475,1.23825 -1.9367499,1.23825 -0.4021667,0 -0.4868334,-0.4868333 -0.4868334,-0.8466667 0,-0.09525 0.010583,-0.1905 0.010583,-0.2751666 C 3.0572717,6.0906187 3.9780217,5.4027021 4.083855,3.6670355 Z m -0.73025,0.34925 C 3.3006883,4.9793688 2.464605,5.8472021 1.3427717,6.4081187 1.6814384,5.0957854 2.5810217,4.1221188 3.353605,4.0162855 Z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:'Kaushan Script';-inkscape-font-specification:'Kaushan Script, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
+         id="path4532" />
+      <path
+         d="m 7.8032352,7.9850353 c -0.3386667,-0.6455833 -0.635,-1.2488332 -0.8255,-1.7885832 1.11125,-1.11125 1.87325,-2.159 2.032,-2.8045833 -0.0635,-0.15875 -0.34925,-0.3069166 -0.6985,-0.3704166 -0.508,1.1324166 -0.9736666,1.8944166 -1.55575,2.5611666 C 6.5438186,4.9264521 6.4591519,4.3655355 6.4591519,3.8152021 c 0,-0.2116666 0,-0.2963333 0.021167,-0.4444999 -0.3175,-0.1058334 -0.8678333,-0.22225 -1.1641667,-0.22225 -0.1799166,0 -0.2116666,0.052917 -0.2116666,0.2434166 0,0.5503333 0.3598333,1.93675 0.8360833,3.0585833 -0.5291667,0.6138333 -1.5980833,1.3758333 -2.1589999,1.6827499 0.010583,0.22225 0.127,0.3704167 0.2751666,0.4021667 0.6138333,-0.3598334 1.36525,-0.9101667 2.0849166,-1.55575 0.2645833,0.6455833 0.5926667,1.1535833 0.8255,1.42875 C 7.2634852,8.387202 7.6550685,8.228452 7.8032352,7.9850353 Z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:'Kaushan Script';-inkscape-font-specification:'Kaushan Script, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
+         id="path4534" />
+      <path
+         d="m 15.822921,2.2171189 c 0,-1.2065 -0.98425,-1.95791665 -2.667,-1.95791665 -1.248833,0 -2.9845,0.41274999 -3.8205832,0.98424995 0.03175,0.3280833 0.3598333,0.8995833 0.60325,1.0689167 0.3598332,-0.3069167 0.9525002,-0.5926667 1.5980832,-0.8149167 -0.22225,0.92075 -0.402167,1.36525 -0.846667,2.4129999 -1.4816662,3.5030833 -1.5769162,3.6935833 -1.7674162,4.0639999 0.3069167,0.53975 0.6455834,0.8255 1.1218332,0.9313333 0.264583,-1.2911666 0.687917,-2.4870832 1.439333,-4.1274999 0.05292,0.0635 0.105834,0.1164167 0.15875,0.1481667 0.08467,0.021167 0.254,0.021167 0.41275,0.021167 0.751417,2.8892499 1.23825,4.0216665 1.852084,4.0216665 0.328083,0 0.804333,-0.3386666 0.931333,-0.6138333 -0.740833,-0.6773333 -1.55575,-2.1801666 -1.989667,-3.4501666 1.68275,-0.2328333 2.973917,-1.3440833 2.973917,-2.6881665 z m -2.582333,-0.889 -0.127,-0.2010833 c 0.264583,-0.03175 0.508,-0.052917 0.740833,-0.052917 1.04775,0 1.55575,0.3915833 1.55575,1.0900833 0,1.17475 -1.524,2.0108333 -3.640667,2.0108333 0.560917,-1.2065 1.280584,-2.5929166 1.471084,-2.8469166 z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:'Kaushan Script';-inkscape-font-specification:'Kaushan Script, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
+         id="path4536" />
+      <path
+         d="m 19.180484,3.7728688 c -0.306917,0.635 -0.73025,1.42875 -1.026584,1.9261666 -0.762,1.27 -1.27,1.8626666 -1.68275,1.9473333 -0.09525,-0.03175 -0.148166,-0.1058333 -0.148166,-0.254 0,-1.30175 1.386416,-3.1749999 2.518833,-3.3549166 -0.03175,-0.2645833 -0.508,-0.7619999 -0.79375,-0.8360833 -1.143,0.0635 -2.667,2.2225 -2.667,3.7994166 0,0.73025 0.359833,1.2594166 0.878417,1.2805833 0.656166,-0.1058334 1.5875,-1.1641667 2.159,-2.4553333 -0.264584,0.6879167 -0.402167,1.2594166 -0.402167,1.651 0,0.5291666 0.1905,0.7831666 0.5715,0.7831666 0.211667,0 0.518583,-0.084667 0.687917,-0.1905 -0.1905,-0.1058333 -0.275167,-0.381 -0.275167,-0.7725833 0,-0.7196666 0.391583,-1.9684999 0.963083,-3.1538332 0.01058,-0.1375834 -0.486833,-0.3704167 -0.783166,-0.3704167 z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:'Kaushan Script';-inkscape-font-specification:'Kaushan Script, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
+         id="path4538" />
+      <path
+         d="m 19.738259,11.551619 c 0.0635,0.03175 0.09525,0.07408 0.211666,0.201083 0.0635,0.116417 0.127,0.15875 0.201084,0.169333 0.497416,-2.074333 1.153583,-4.2544996 1.55575,-5.1540829 0.28575,-0.66675 0.391583,-0.79375 1.397,-2.0425833 0.423333,-0.5291667 0.8255,-0.8255 1.36525,-1.11125 -0.338667,1.80975 -1.397,3.5877499 -2.487084,4.2333332 0.0635,0.15875 0.275167,0.2751667 0.529167,0.2751667 0.53975,0 1.418167,-0.5503333 1.905,-1.17475 0.624417,-0.8043333 0.98425,-1.8414999 0.98425,-2.8574999 0,-0.4656667 -0.381,-0.79375 -0.92075,-0.79375 -0.338667,0 -0.814917,0.2963333 -1.3335,0.8360833 -0.465667,0.4868333 -0.656167,0.7408333 -0.79375,0.9736667 0.201083,-0.7408333 0.85725,-2.032 1.259417,-2.4024166 -0.09525,-0.1693334 -0.613834,-0.381 -1.100667,-0.4550833 -0.254,0.2222499 -0.656167,0.9419166 -0.762,1.2699999 -0.148167,0.4656667 -0.455083,1.3229166 -1.227667,3.2702499 -0.613833,1.55575 -1.026583,3.0797499 -1.026583,3.6830003 0,0.3175 0.02117,0.582083 0.07408,0.762 0.01058,0.169333 0.08467,0.296333 0.169334,0.3175 z"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;font-family:'Kaushan Script';-inkscape-font-specification:'Kaushan Script, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332;stroke-opacity:1"
+         id="path4540" />
+    </g>
   </g>
 </svg>

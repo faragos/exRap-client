@@ -35,6 +35,23 @@ build-master:
   only:
     - master
 
+build-premerge-master:
+  image: node:15.14
+  stage: build
+  script:
+    - npm install
+    - npm run generate-api:dev
+    - npm run build
+  artifacts:
+    paths:
+      - build/
+      - src/gen/
+  except:
+    variables:
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != "master"
+  only:
+    - merge_requests
+
 build:
   image: node:15.14
   stage: build
