@@ -1,6 +1,5 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -9,38 +8,7 @@ import {
   UserOverview,
   useUserCredentialsAddCredentialMutation, UserCredentialsAddCredentialApiArg,
 } from '../../gen/auth.api.generated';
-
-type PasswordComponentProps = {
-  handleCredentialsChange: (event: ChangeEvent<HTMLInputElement>) => void,
-};
-
-const PasswordFields : React.FC<PasswordComponentProps> = (
-  { handleCredentialsChange } : PasswordComponentProps,
-) => (
-  <>
-    <TextField
-      name="password"
-      id="password"
-      label="Passwort"
-      variant="standard"
-      type="password"
-      required
-      onChange={handleCredentialsChange}
-    />
-
-    <TextField
-      name="passwordRepeat"
-      id="passwordRepeat"
-      label="Passwort wiederholen"
-      variant="standard"
-      type="password"
-      required
-      onChange={handleCredentialsChange}
-    />
-  </>
-);
-
-export { PasswordFields };
+import { PasswordFields } from './AddNewUserModal';
 
 type ChildComponentProps = {
   isModalOpen: boolean,

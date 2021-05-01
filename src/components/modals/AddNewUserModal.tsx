@@ -32,8 +32,8 @@ const PasswordFields : React.FC<PasswordComponentProps> = (
     />
 
     <TextField
-      name="passwordHint"
-      id="passwordHint"
+      name="passwordRepeat"
+      id="passwordRepeat"
       label="Passwort wiederholen"
       variant="standard"
       type="password"
