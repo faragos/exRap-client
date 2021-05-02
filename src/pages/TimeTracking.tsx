@@ -5,8 +5,6 @@ import { ManageTimeSlotRequest } from '../gen/timeTrack.api.generated';
 
 const TimeTracking : React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  /*  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState(''); */
   // TODO: ManageTimeSLotRequest braucht comment attribute
   const timeSlotDto: ManageTimeSlotRequest = {
     startTime: '',
