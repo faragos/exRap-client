@@ -33,6 +33,7 @@ const Administration : React.FC = () => {
     firstName: '',
     mailAddress: '',
     status: 'Restricted',
+    roles: [''],
   };
 
   const [currentUser, setCurrentUser] = useState(dtoUser);

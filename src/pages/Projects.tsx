@@ -90,7 +90,7 @@ const Projects : React.FC = () => {
 
   const confirmDeleteProject = () => {
     const projectStatus: ProjectStatus = 'Finished';
-    const project = { ...currentProject, status: projectStatus };
+    const project = { ...currentProject, projectStatus };
     try {
       const param: ProjectsUpdateProjectApiArg = {
         projectId: project.id,

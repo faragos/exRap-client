@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { SyntheticEvent, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -10,51 +10,73 @@ import TimePicker from '@material-ui/lab/TimePicker';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import deLocale from 'date-fns/locale/de';
+import { useProjectsGetProjectsQuery, useProjectTimeslotsAddTimeslotMutation } from '../../service/timeTrack.api';
+import {
+  ManageTimeSlotRequest,
+  ProjectOverview,
+  ProjectTimeslotsAddTimeslotApiArg,
+} from '../../gen/timeTrack.api.generated';
 
-const projects = [
-  {
-    name: 'Projekt 1',
-  },
-  {
-    name: 'Projekt 2',
-  },
-  {
-    name: 'Projekt 3',
-  },
-];
 type ChildComponentProps = {
   isModalOpen: boolean,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  startTime: string,
-  setStartTime: React.Dispatch<React.SetStateAction<string>>,
-  endTime: string,
-  setEndTime: React.Dispatch<React.SetStateAction<string>>,
+  timeSlot: ManageTimeSlotRequest,
+  setTimeSlot: React.Dispatch<React.SetStateAction<ManageTimeSlotRequest>>,
 };
 
 const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
-  setStartTime,
-  setEndTime,
-  startTime,
-  endTime,
+  timeSlot,
+  setTimeSlot,
   isModalOpen,
 }: ChildComponentProps) => {
+  const { data: projects = [] } = useProjectsGetProjectsQuery({});
+  const projectDto: ProjectOverview = {
+    id: 0,
+    initial: '',
+    name: '',
+  };
+  const [selectedProject, setSelectedProject] = useState(projectDto);
   const handleClose = () => {
     setIsModalOpen(false);
-    setStartTime('');
-    setEndTime('');
+    const initTimeSlot: ManageTimeSlotRequest = {
+      startTime: '',
+      endTime: '',
+    };
+    setTimeSlot(initTimeSlot);
   };
 
   const handleStartChange = (start: Date | null) => {
     if (start) {
-      setStartTime(start.toString());
+      setTimeSlot({ ...timeSlot, startTime: start.toISOString() });
     }
   };
 
   const handleEndChange = (end: Date | null) => {
     if (end) {
-      setEndTime(end.toString());
+      setTimeSlot({ ...timeSlot, endTime: end.toISOString() });
     }
+  };
+
+  const [
+    addTimeslot,
+  ] = useProjectTimeslotsAddTimeslotMutation();
+
+  const handleSave = () => {
+    const args: ProjectTimeslotsAddTimeslotApiArg = {
+      projectId: selectedProject.id,
+      manageTimeSlotRequest: timeSlot,
+    };
+    addTimeslot(args);
+  };
+
+  const selectProjectHandler = (
+    event: SyntheticEvent<Element, Event>,
+    value: ProjectOverview | null,
+  ) => {
+    if (value === null) return;
+
+    setSelectedProject(value);
   };
 
   return (
@@ -65,21 +87,22 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
           <Autocomplete
             id="combo-box-projects"
             options={projects}
-            getOptionLabel={(option: any) => option.name}
+            getOptionLabel={(option: ProjectOverview) => option.name}
             /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
             /* eslint-disable-next-line react/jsx-props-no-spreading */
             renderInput={(params: any) => <TextField {...params} label="Projects" variant="outlined" />}
+            onChange={selectProjectHandler}
           />
           <LocalizationProvider dateAdapter={AdapterDateFns} locale={deLocale}>
             <TimePicker
-              value={new Date(startTime)}
+              value={new Date(timeSlot.startTime)}
               onChange={handleStartChange}
                 /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
                 /* eslint-disable-next-line react/jsx-props-no-spreading */
               renderInput={(params: any) => <TextField {...params} margin="normal" />}
             />
             <TimePicker
-              value={new Date(endTime)}
+              value={new Date(timeSlot.endTime)}
               onChange={handleEndChange}
                 /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
                 /* eslint-disable-next-line react/jsx-props-no-spreading */
@@ -101,7 +124,7 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
           <Button onClick={handleClose} color="primary">
             Abbrechen
           </Button>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleSave} color="primary">
             Speichern
           </Button>
         </DialogActions>

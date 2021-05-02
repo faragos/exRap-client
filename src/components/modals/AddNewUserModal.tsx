@@ -1,17 +1,23 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, SyntheticEvent, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Autocomplete from '@material-ui/core/Autocomplete';
 import {
   UserOverview,
   UsersCreateUserApiArg,
   useUsersUpdateUserMutation,
-  UsersUpdateUserApiArg,
+  UsersUpdateUserApiArg, UserRolesAddRoleApiArg, RoleOverview, RolesGetRoleApiArg,
 } from '../../gen/auth.api.generated';
-import { useUsersCreateUserMutation } from '../../service/auth.api';
+import {
+  useRolesGetRoleQuery,
+  useRolesGetRolesQuery,
+  useUserRolesAddRoleMutation,
+  useUsersCreateUserMutation,
+} from '../../service/auth.api';
 
 type PasswordComponentProps = {
   handleCredentialsChange: (event: ChangeEvent<HTMLInputElement>) => void,
@@ -64,11 +70,27 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
     },
   });
 
+  const roleDto: RoleOverview = {
+    name: '',
+    description: '',
+  };
   const [formState, setFormState] = useState(enrichUser(user));
+  const [currentRole, setCurrentRole] = useState(roleDto);
+  const arg: RolesGetRoleApiArg = {
+    roleId: currentRole?.name || '',
+  };
+  const { data: userRole } = useRolesGetRoleQuery(arg);
 
   React.useEffect(() => {
     setFormState(enrichUser(user));
+    if (userRole === undefined) {
+      setCurrentRole({ name: '', description: '' });
+    } else {
+      setCurrentRole(userRole[0]);
+    }
   }, [user]);
+
+  const { data: roles = [] } = useRolesGetRolesQuery({});
 
   const [
     createUser,
@@ -77,6 +99,10 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   const [
     updateUser,
   ] = useUsersUpdateUserMutation();
+
+  const [
+    addRole,
+  ] = useUserRolesAddRoleMutation();
 
   const handleChange = ({
     target: { name, value },
@@ -112,7 +138,22 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
         console.log(err);
       }
     }
+    if (formState.roles) {
+      const args: UserRolesAddRoleApiArg = {
+        userId: formState.id,
+        roleId: currentRole.name,
+      };
+      addRole(args);
+    }
     setIsModalOpen(false);
+  };
+  const addRoleHandler = (
+    event: SyntheticEvent<Element, Event>,
+    value: RoleOverview | null,
+  ) => {
+    if (value === null) return;
+    setCurrentRole(value);
+    // setFormState({ ...formState, roles: [value.name] });
   };
 
   return (
@@ -162,6 +203,18 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
             onChange={handleChange}
             fullWidth
           />
+          <Autocomplete
+            id="addRole"
+            options={roles}
+            getOptionLabel={(option) => option.name}
+            filterSelectedOptions
+              /* props need to be forwarded https://material-ui.com/components/autocomplete/#checkboxes */
+              /* eslint-disable-next-line react/jsx-props-no-spreading */
+            renderInput={(params) => (<TextField {...params} variant="standard" label="Mitarbeiter hinzufügen" placeholder="Mitarbeiter" />)}
+            onChange={addRoleHandler}
+            getOptionSelected={(option, value) => option.name === value.name}
+            value={currentRole}
+          />
           {!formState.id && <PasswordFields handleCredentialsChange={handleCredentialsChange} />}
         </DialogContent>
         <DialogActions>
@@ -176,5 +229,4 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
     </Dialog>
   );
 };
-
 export default AddNewUserModal;

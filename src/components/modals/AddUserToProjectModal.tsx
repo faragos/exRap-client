@@ -58,28 +58,17 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
     data: usersInProject = [],
   } = useProjectContributorsGetContributorsQuery(contributorsArg);
 
+  // Differenzmenge - A\B - A ohne B
   const getPossibleContributors = (
-    /*    TODO: die zwei listen haben verscheidene UserOverwie Typen
+    /*    TODO: die zwei listen haben verschiedene UserOverview Typen
     Time und Auth API sollen gleiches Objekt liefern */
     userList: UserOverview[],
     contributorList: UserOverview[],
   ): UserOverview[] => {
-    const result: UserOverview[] = [];
+    let result: UserOverview[] = [];
     if (contributorList.length === 0) return users;
 
-    userList.forEach(
-      (user) => {
-        let status = 1;
-        contributorList.forEach(
-          (contributor) => {
-            if (user.userName === contributor.userName) {
-              status = 0;
-            }
-          },
-        );
-        if (status) result.push(user);
-      },
-    );
+    result = userList.filter((u) => !contributorList.some((c) => c.userName === u.userName));
     return result;
   };
 
@@ -163,10 +152,7 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Abbrechen
-          </Button>
-          <Button onClick={handleClose} color="primary">
-            Speichern
+            Schliessen
           </Button>
         </DialogActions>
       </Dialog>
