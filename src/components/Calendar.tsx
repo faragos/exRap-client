@@ -1,19 +1,26 @@
-import React from 'react';
-import FullCalendar from '@fullcalendar/react';
+import React, { useState } from 'react';
+import FullCalendar, { DatesSetArg, EventClickArg } from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import { ManageTimeSlotRequest } from '../gen/timeTrack.api.generated';
+import { ManageTimeSlotRequest, TimeslotsGetTimeslotsApiArg } from '../gen/timeTrack.api.generated';
+import { useTimeslotsGetTimeslotsQuery } from '../service/timeTrack.api';
 
 type ChildComponentProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   setTimeSlot: React.Dispatch<React.SetStateAction<ManageTimeSlotRequest>>,
 };
-
 const Calendar: React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   setTimeSlot,
 }: ChildComponentProps) => {
+  const [currentDateInfo, setCurrentDateInfo] = useState<DatesSetArg>();
+  const args: TimeslotsGetTimeslotsApiArg = {
+    startDate: currentDateInfo?.startStr,
+    endDate: currentDateInfo?.endStr,
+  };
+  const { data: timeslots = [] } = useTimeslotsGetTimeslotsQuery(args);
+
   const handleSelect = (event: any) => {
     setIsModalOpen(true);
     const timeSlot: ManageTimeSlotRequest = {
@@ -23,8 +30,12 @@ const Calendar: React.FC<ChildComponentProps> = ({
     setTimeSlot(timeSlot);
   };
 
-  const handleClick = () => {
-
+  const handleClick = (event: EventClickArg) => {
+    setTimeSlot({
+      startTime: event.event.startStr,
+      endTime: event.event.endStr,
+    });
+    setIsModalOpen(true);
   };
 
   return (
@@ -36,10 +47,11 @@ const Calendar: React.FC<ChildComponentProps> = ({
         allDaySlot={false}
         slotMinTime="05:00:00"
         slotMaxTime="22:00:00"
-        events={[
-          { title: 'event 1', date: '2021-03-25' },
-          { title: 'event 2', date: '2021-03-24' },
-        ]}
+        // TODO: API anpassen, das es start und end heisst.
+        events={timeslots.map((event) => ({
+          start: event.startTime,
+          end: event.endTime,
+        }))}
         locale="de"
         headerToolbar={{
           left: 'today prev,next',
@@ -55,6 +67,7 @@ const Calendar: React.FC<ChildComponentProps> = ({
         selectable
         select={handleSelect}
         eventClick={handleClick}
+        datesSet={(dateInfo) => setCurrentDateInfo(dateInfo)}
       />
     </div>
   );
