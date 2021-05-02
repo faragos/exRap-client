@@ -112,7 +112,7 @@ export default function ResponsiveDrawer() {
       <Divider />
       <List>
         {pages.map((page) => (
-          <ListItem button to={page.uri} component={Link}>
+          <ListItem button to={page.uri} component={Link} key={page.uri}>
             <ListItemIcon>
               {page.icon}
             </ListItemIcon>
@@ -123,7 +123,7 @@ export default function ResponsiveDrawer() {
       <Divider />
       <List>
         {secondaryPages.map((page) => (
-          <ListItem button onClick={page.fn}>
+          <ListItem button onClick={page.fn} key={page.label}>
             <ListItemIcon>
               {page.icon}
             </ListItemIcon>
