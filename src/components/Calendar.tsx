@@ -3,22 +3,24 @@ import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import { ManageTimeSlotRequest } from '../gen/timeTrack.api.generated';
 
 type ChildComponentProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  setStartTime: React.Dispatch<React.SetStateAction<string>>,
-  setEndTime: React.Dispatch<React.SetStateAction<string>>,
+  setTimeSlot: React.Dispatch<React.SetStateAction<ManageTimeSlotRequest>>,
 };
 
 const Calendar: React.FC<ChildComponentProps> = ({
   setIsModalOpen,
-  setStartTime,
-  setEndTime,
+  setTimeSlot,
 }: ChildComponentProps) => {
   const handleSelect = (event: any) => {
     setIsModalOpen(true);
-    setStartTime(event.start.toString());
-    setEndTime(event.end.toString());
+    const timeSlot: ManageTimeSlotRequest = {
+      startTime: event.start.toISOString(),
+      endTime: event.end.toISOString(),
+    };
+    setTimeSlot(timeSlot);
   };
 
   const handleClick = () => {
