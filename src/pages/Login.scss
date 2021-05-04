@@ -1,5 +1,13 @@
+.login-form-logo-container, .logo {
+  width: 100%;
+}
+
 .logo {
-  width: 90%;
   display: block;
   margin: auto;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
 }
