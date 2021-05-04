@@ -2,6 +2,32 @@
 import { rest } from 'msw';
 
 const userData = [];
+const projectData = [
+  {
+    id: 1,
+    name: 'project1',
+    initial: 'p1',
+    description: 'p1 dsc',
+    timeBudget: 0,
+    projectStatus: 'Active',
+  },
+  {
+    id: 2,
+    name: 'project2',
+    initial: 'p2',
+    description: 'p2 dsc',
+    timeBudget: 0,
+    projectStatus: 'Active',
+  },
+  {
+    id: 3,
+    name: 'project3',
+    initial: 'p3',
+    description: 'p3 dsc',
+    timeBudget: 0,
+    projectStatus: 'Finished',
+  },
+];
 
 const handlers = [
   rest.post('/auth/api/Login', (req, res, ctx) => {
@@ -30,6 +56,24 @@ const handlers = [
     xtc.status(200),
     xtc.json(userData),
   )),
+
+  rest.get('/time/api/Projects', (req, res, xtc) => res(
+    xtc.status(200),
+    xtc.json(projectData),
+  )),
+  rest.post('/time/api/Projects', (req, res, xtc) => {
+    projectData.push({
+      id: Math.random(),
+      name: req.body.name,
+      initial: req.body.initial,
+      description: req.body.description,
+      timeBudget: 0,
+      projectStatus: req.body.projectStatus,
+    });
+    return res(
+      xtc.status(200),
+    );
+  }),
 ];
 
 export default handlers;

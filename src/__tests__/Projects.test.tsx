@@ -1,11 +1,55 @@
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
+import userEvent from '@testing-library/user-event';
 import Project from '../pages/Projects';
 import store from '../store/store';
+import server from '../mocks/server';
 
-test('render Project Component', () => {
+// Establish API mocking before all tests.
+beforeAll(() => server.listen());
+// Reset any request handlers that we may add during the tests,
+// so they don't affect other tests.
+afterEach(() => server.resetHandlers());
+// Clean up after the tests are finished.
+afterAll(() => server.close());
+
+beforeEach(() => {
   render(<Provider store={store}><Project /></Provider>);
-  const linkElement = screen.getByText(/Projects/i);
-  expect(linkElement).toBeInTheDocument();
+});
+
+test('render Project Component', async () => {
+  const p1 = await screen.findByText(/Project1/i);
+  const p2 = await screen.findByText(/Project2/i);
+  expect(p1).toBeInTheDocument();
+  expect(p2).toBeInTheDocument();
+});
+
+test('render finished Project Component', async () => {
+  userEvent.click(screen.getByText(/Beendet/));
+  const p3 = await screen.findByText(/Project3/i);
+  expect(p3).toBeInTheDocument();
+});
+
+test('create new Project', async () => {
+  userEvent.click(screen.getByText('Neues Projekt erfassen'));
+
+  userEvent.type(screen.getByLabelText(/Projektname/), 'test-project');
+  userEvent.type(screen.getByLabelText(/Projektkürzel/), 't2');
+  userEvent.type(screen.getByLabelText(/Kommentar/), 'test-comment');
+
+  userEvent.click(screen.getByText('Speichern'));
+
+  const testProjectName = await screen.findByText(/test-project/);
+  // const testProjectName = await screen.getByRole('cell', { name: /test-project/i });
+  const testProjectInitial = await screen.findByText('t2');
+  const testProjectComment = await screen.findByText(/test-comment/);
+
+  expect(testProjectName).toBeInTheDocument();
+  expect(testProjectInitial).toBeInTheDocument();
+  expect(testProjectComment).toBeInTheDocument();
+});
+
+test('render add Person Component', async () => {
+
 });
