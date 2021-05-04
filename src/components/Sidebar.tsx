@@ -180,7 +180,7 @@ export default function ResponsiveDrawer() {
       <main className={classes.content}>
         <Switch>
           <Redirect exact from="/" to="/dashboard" />
-
+          <Redirect from="/login" to="/dashboard" />
           <PrivateRoute path="/dashboard" component={Dashboard} />
           <PrivateRoute path="/timetracking" component={TimeTracking} />
           <PrivateRoute path="/projects" component={Projects} />
