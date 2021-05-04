@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Projects : React.FC = () => {
   const classes = useStyles();
-  const { data } = useProjectsGetProjectsQuery({});
+  const { data } = useProjectsGetProjectsQuery({ status: 'Active' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isFilterEnabled, setIsFilterEnabled] = useState(false);

@@ -34,23 +34,18 @@ const Login : React.FC = () => {
     event.preventDefault();
     try {
       const param: LoginLoginApiArg = { loginRequest: formState };
-      try {
-        const response : LoginResponse = await login(param).unwrap();
-        const authInfo: AuthInfo = {
-          username: formState.userName,
-          token: response.token,
-          isAuthenticated: true,
-        };
-        dispatch(setCredentials(authInfo));
-        sessionStorage.setItem('token', response.token);
-        history.push('/');
-      } catch (e) {
-        console.error('Login failed');
-      }
-    } catch (err) {
-      console.log(err);
+      const response : LoginResponse = await login(param).unwrap();
+      const authInfo: AuthInfo = {
+        username: formState.userName,
+        token: response.token,
+        isAuthenticated: true,
+      };
+      dispatch(setCredentials(authInfo));
+      history.push('/');
+    } catch (e) {
+      setLoading(false);
+      console.error('Login failed');
     }
-    setLoading(false);
   };
 
   const paperStyle = {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FullCalendar, { DatesSetArg, EventClickArg } from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -21,19 +21,22 @@ const Calendar: React.FC<ChildComponentProps> = ({
   };
   const { data: timeslots = [] } = useTimeslotsGetTimeslotsQuery(args);
 
+  useEffect(() => {
+    console.log(timeslots);
+  }, [timeslots]);
   const handleSelect = (event: any) => {
     setIsModalOpen(true);
     const timeSlot: ManageTimeSlotRequest = {
-      startTime: event.start.toISOString(),
-      endTime: event.end.toISOString(),
+      start: event.start.toISOString(),
+      end: event.end.toISOString(),
     };
     setTimeSlot(timeSlot);
   };
 
   const handleClick = (event: EventClickArg) => {
     setTimeSlot({
-      startTime: event.event.startStr,
-      endTime: event.event.endStr,
+      start: event.event.startStr,
+      end: event.event.endStr,
     });
     setIsModalOpen(true);
   };
@@ -49,8 +52,8 @@ const Calendar: React.FC<ChildComponentProps> = ({
         slotMaxTime="22:00:00"
         // TODO: API anpassen, das es start und end heisst.
         events={timeslots.map((event) => ({
-          start: event.startTime,
-          end: event.endTime,
+          start: event.start,
+          end: event.end,
         }))}
         locale="de"
         headerToolbar={{
