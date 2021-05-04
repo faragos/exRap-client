@@ -10,10 +10,10 @@ type AlertDialogProps = {
   isOpen: boolean,
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
   handleConfirm: () => void,
-  title?: String,
-  content?: String,
-  buttonAgree?: String,
-  buttonDisAgree?: String,
+  title?: string,
+  content?: string,
+  buttonAgree?: string,
+  buttonDisAgree?: string,
 };
 
 const AlertDialog: React.FC<AlertDialogProps> = ({

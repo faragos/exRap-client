@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { ReactElement } from 'react';
 import './Sidebar.scss';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -21,7 +21,6 @@ import {
   Route,
   Redirect, Switch, useHistory,
 } from 'react-router-dom';
-import { ReactElement } from 'react';
 import { clearUser } from '../store/authInfo/reducers';
 import { useAppDispatch } from '../hooks';
 import PrivateRoute from './PrivateRoute';
