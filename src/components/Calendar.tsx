@@ -3,6 +3,8 @@ import FullCalendar, { DatesSetArg, EventClickArg } from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { useTheme } from '@material-ui/core/styles';
 import { ManageTimeSlotRequest, TimeslotsGetTimeslotsApiArg } from '../gen/timeTrack.api.generated';
 import { useTimeslotsGetTimeslotsQuery } from '../service/timeTrack.api';
 
@@ -20,6 +22,8 @@ const Calendar: React.FC<ChildComponentProps> = ({
     endDate: currentDateInfo?.endStr,
   };
   const { data: timeslots = [] } = useTimeslotsGetTimeslotsQuery(args);
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.up('sm'));
 
   const handleSelect = (event: any) => {
     setIsModalOpen(true);
@@ -42,7 +46,7 @@ const Calendar: React.FC<ChildComponentProps> = ({
     <div className="App">
       <FullCalendar
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
-        initialView="timeGridWeek"
+        initialView={matches ? 'timeGridWeek' : 'dayGrid'}
         weekends={false}
         allDaySlot={false}
         slotMinTime="05:00:00"
