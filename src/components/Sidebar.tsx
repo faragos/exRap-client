@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import './Sidebar.scss';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -30,6 +30,8 @@ import Projects from '../pages/Projects';
 import Administration from '../pages/Administration';
 import logo from '../assets/exRap-logo.svg';
 import NotFound from '../pages/NotFound';
+import { useLoginRenewTokenQuery } from '../service/auth.api';
+import updateStore from '../utils/validateToken';
 
 const drawerWidth = 240;
 
@@ -82,6 +84,12 @@ export default function ResponsiveDrawer() {
   const dispatch = useAppDispatch();
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const renewTime = 1200; // in s = 20min
+  const { data } = useLoginRenewTokenQuery({}, { pollingInterval: renewTime * 1000 });
+
+  useEffect(() => {
+    if (data) updateStore(data.token, dispatch);
+  }, [data]);
 
   const handleSignout = () => {
     dispatch(clearUser());

@@ -24,16 +24,16 @@ const Calendar: React.FC<ChildComponentProps> = ({
   const handleSelect = (event: any) => {
     setIsModalOpen(true);
     const timeSlot: ManageTimeSlotRequest = {
-      startTime: event.start.toISOString(),
-      endTime: event.end.toISOString(),
+      start: event.start.toISOString(),
+      end: event.end.toISOString(),
     };
     setTimeSlot(timeSlot);
   };
 
   const handleClick = (event: EventClickArg) => {
     setTimeSlot({
-      startTime: event.event.startStr,
-      endTime: event.event.endStr,
+      start: event.event.startStr,
+      end: event.event.endStr,
     });
     setIsModalOpen(true);
   };
@@ -49,8 +49,8 @@ const Calendar: React.FC<ChildComponentProps> = ({
         slotMaxTime="22:00:00"
         // TODO: API anpassen, das es start und end heisst.
         events={timeslots.map((event) => ({
-          start: event.startTime,
-          end: event.endTime,
+          start: event.start,
+          end: event.end,
         }))}
         locale="de"
         headerToolbar={{
