@@ -21,9 +21,6 @@ const Calendar: React.FC<ChildComponentProps> = ({
   };
   const { data: timeslots = [] } = useTimeslotsGetTimeslotsQuery(args);
 
-  useEffect(() => {
-    console.log(timeslots);
-  }, [timeslots]);
   const handleSelect = (event: any) => {
     setIsModalOpen(true);
     const timeSlot: ManageTimeSlotRequest = {
