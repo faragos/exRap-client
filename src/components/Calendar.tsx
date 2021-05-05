@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import FullCalendar, { DatesSetArg, EventClickArg } from '@fullcalendar/react';
+import React, { useEffect, useState } from 'react';
+import FullCalendar, { DatesSetArg, EventClickArg, Ref } from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -25,6 +25,16 @@ const Calendar: React.FC<ChildComponentProps> = ({
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up('sm'));
 
+  const calendarRef: Ref<FullCalendar> = React.createRef();
+
+  useEffect(() => {
+    if (matches) {
+      calendarRef?.current?.getApi().changeView('timeGridWeek');
+    } else {
+      calendarRef?.current?.getApi().changeView('timeGridDay');
+    }
+  }, [matches]);
+
   const handleSelect = (event: any) => {
     setIsModalOpen(true);
     const timeSlot: ManageTimeSlotRequest = {
@@ -42,11 +52,13 @@ const Calendar: React.FC<ChildComponentProps> = ({
     setIsModalOpen(true);
   };
 
+  console.log(matches);
+
   return (
     <div className="App">
       <FullCalendar
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
-        initialView={matches ? 'timeGridWeek' : 'dayGrid'}
+        initialView={matches ? 'timeGridWeek' : 'timeGridDay'}
         weekends={false}
         allDaySlot={false}
         slotMinTime="05:00:00"
@@ -60,7 +72,7 @@ const Calendar: React.FC<ChildComponentProps> = ({
         headerToolbar={{
           left: 'today prev,next',
           center: 'title',
-          right: 'timeGridDay timeGridWeek dayGridMonth',
+          right: matches ? 'timeGridDay timeGridWeek dayGridMonth' : '',
         }}
         buttonText={{
           today: 'Heute',
@@ -72,6 +84,7 @@ const Calendar: React.FC<ChildComponentProps> = ({
         select={handleSelect}
         eventClick={handleClick}
         datesSet={(dateInfo) => setCurrentDateInfo(dateInfo)}
+        ref={calendarRef}
       />
     </div>
   );

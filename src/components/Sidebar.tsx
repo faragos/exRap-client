@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import './Sidebar.scss';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -15,7 +16,6 @@ import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MenuIcon from '@material-ui/icons/Menu';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
   Link,
   Route,
@@ -51,7 +51,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    backgroundColor: theme.palette.primary.main,
+    position: 'absolute',
+    borderRadius: 0,
+    marginLeft: 0,
     [theme.breakpoints.up('sm')]: {
       display: 'none',
     },

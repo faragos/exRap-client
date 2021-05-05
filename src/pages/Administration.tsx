@@ -97,9 +97,17 @@ const Administration : React.FC = () => {
         width: '25%',
       },
     },
+    toolbar: {
+      display: 'grid',
+      gridGap: '20px',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+      justifyContent: 'space-between',
+    },
     newUserButton: {
-      position: 'absolute',
-      right: '10px',
+    },
+    search: {
+      paddingTop: '10px',
+      paddingBottom: '10px',
     },
   }));
 
@@ -109,11 +117,12 @@ const Administration : React.FC = () => {
       <Grid>
         <h1> Administration </h1>
 
-        <Toolbar>
+        <Toolbar className={classes.toolbar}>
           <TextField
             name="Suche"
             label="Suche"
             type="text"
+            className={classes.search}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -165,7 +174,6 @@ const Administration : React.FC = () => {
         setIsModalOpen={setIsCredentialsModalOpen}
         user={currentUser}
       />
-
       <AlertDialog
         isOpen={isDeleteAlertOpen}
         setIsOpen={setIsDeleteAlertOpen}
