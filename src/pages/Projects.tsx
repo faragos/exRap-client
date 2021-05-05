@@ -18,7 +18,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import ProjectFormModal from '../components/modals/ProjectFormModal';
 import AddUserToProjectModal from '../components/modals/AddUserToProjectModal';
-import ShowProjectTime from '../components/modals/ShowProjectTimeModal';
+import ShowProjectTimeModal from '../components/modals/ShowProjectTimeModal';
 import { useProjectsGetProjectsQuery, useProjectsUpdateProjectMutation } from '../service/timeTrack.api';
 import { ProjectOverview, ProjectStatus, ProjectsUpdateProjectApiArg } from '../gen/timeTrack.api.generated';
 import AlertDialog from '../components/AlertDialog';
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Projects : React.FC = () => {
   const classes = useStyles();
-  const { data } = useProjectsGetProjectsQuery({});
+  const { data } = useProjectsGetProjectsQuery({ status: 'Active' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isFilterEnabled, setIsFilterEnabled] = useState(false);
@@ -199,7 +199,7 @@ const Projects : React.FC = () => {
         project={currentProject}
       />
       )}
-      <ShowProjectTime
+      <ShowProjectTimeModal
         isModalOpen={isShowProjectTimeModalOpen}
         setIsModalOpen={setIsShowProjectTimeModalOpen}
       />

@@ -7,8 +7,8 @@ const TimeTracking : React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   // TODO: ManageTimeSLotRequest braucht comment attribute
   const timeSlotDto: ManageTimeSlotRequest = {
-    startTime: '',
-    endTime: '',
+    start: '',
+    end: '',
   };
 
   const [timeSlot, setTimeSlot] = useState(timeSlotDto);
