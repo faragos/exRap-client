@@ -42,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
     gridGap: '20px',
     gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
     justifyContent: 'space-between',
+    [theme.breakpoints.up('md')]: {
+      gridTemplateColumns: 'minmax(200px, 300px) 1fr minmax(200px, 300px)',
+    },
   },
   newProjectButton: {
   },
@@ -150,7 +153,7 @@ const Projects : React.FC = () => {
             label="Beendet"
           />
           <Button
-            variant="outlined"
+            variant="contained"
             color="primary"
             className={classes.newProjectButton}
             onClick={addNewProjectHandler}

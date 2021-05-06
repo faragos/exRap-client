@@ -56,6 +56,7 @@ const Calendar: React.FC<ChildComponentProps> = ({
 
   return (
     <div className="App">
+      <h1> Zeiterfassung </h1>
       <FullCalendar
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
         initialView={matches ? 'timeGridWeek' : 'timeGridDay'}

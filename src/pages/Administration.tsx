@@ -102,6 +102,9 @@ const Administration : React.FC = () => {
       gridGap: '20px',
       gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
       justifyContent: 'space-between',
+      [theme.breakpoints.up('md')]: {
+        gridTemplateColumns: 'minmax(200px, 300px) minmax(200px, 300px)',
+      },
     },
     newUserButton: {
     },

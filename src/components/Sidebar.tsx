@@ -34,7 +34,6 @@ import { useLoginRenewTokenQuery } from '../service/auth.api';
 import updateStore from '../utils/validateToken';
 
 const drawerWidth = 240;
-
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     display: 'flex',
@@ -54,6 +53,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   menuButton: {
     backgroundColor: theme.palette.primary.main,
     position: 'absolute',
+    zIndex: 1000,
     borderRadius: 0,
     marginLeft: 0,
     [theme.breakpoints.up('sm')]: {
@@ -67,6 +67,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      marginTop: '0',
+    },
   },
 }));
 
