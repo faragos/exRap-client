@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import Calendar from '../components/Calendar';
 import RegisterTimeModal from '../components/modals/RegisterTimeModal';
-import { ManageTimeSlotRequest } from '../gen/timeTrack.api.generated';
+import { TimeSlotOverview } from '../gen/timeTrack.api.generated';
 
 const TimeTracking : React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // TODO: ManageTimeSLotRequest braucht comment attribute
-  const timeSlotDto: ManageTimeSlotRequest = {
+  const timeSlotDto: TimeSlotOverview = {
+    id: 0,
     start: '',
     end: '',
+    comment: '',
+    project: {
+      key: undefined,
+      value: undefined,
+    },
   };
-
   const [timeSlot, setTimeSlot] = useState(timeSlotDto);
 
   return (

@@ -5,12 +5,15 @@ import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
-import { ManageTimeSlotRequest, TimeslotsGetTimeslotsApiArg } from '../gen/timeTrack.api.generated';
+import {
+  TimeSlotOverview,
+  TimeslotsGetTimeslotsApiArg,
+} from '../gen/timeTrack.api.generated';
 import { useTimeslotsGetTimeslotsQuery } from '../service/timeTrack.api';
 
 type ChildComponentProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  setTimeSlot: React.Dispatch<React.SetStateAction<ManageTimeSlotRequest>>,
+  setTimeSlot: React.Dispatch<React.SetStateAction<TimeSlotOverview>>,
 };
 const Calendar: React.FC<ChildComponentProps> = ({
   setIsModalOpen,
@@ -37,22 +40,40 @@ const Calendar: React.FC<ChildComponentProps> = ({
 
   const handleSelect = (event: any) => {
     setIsModalOpen(true);
-    const timeSlot: ManageTimeSlotRequest = {
+    const timeSlot: TimeSlotOverview = {
+      id: 0,
       start: event.start.toISOString(),
       end: event.end.toISOString(),
+      comment: '',
+      project: {},
     };
     setTimeSlot(timeSlot);
   };
 
   const handleClick = (event: EventClickArg) => {
     setTimeSlot({
+      id: parseInt(event.event.id, 10),
       start: event.event.startStr,
       end: event.event.endStr,
+      comment: event.event.extendedProps.comment,
+      project: {
+        key: event.event.extendedProps.projectId,
+        value: event.event.title,
+      },
     });
     setIsModalOpen(true);
   };
 
-  console.log(matches);
+  const timeSlotsToEventObject = () => timeslots.map((event) => ({
+    id: event.id.toString(),
+    title: event.project.value || '',
+    start: event.start,
+    end: event.end,
+    extendedProps: {
+      projectId: event.project.key,
+      comment: event.comment,
+    },
+  }));
 
   return (
     <div className="App">
@@ -64,11 +85,7 @@ const Calendar: React.FC<ChildComponentProps> = ({
         allDaySlot={false}
         slotMinTime="05:00:00"
         slotMaxTime="22:00:00"
-        // TODO: API anpassen, das es start und end heisst.
-        events={timeslots.map((event) => ({
-          start: event.start,
-          end: event.end,
-        }))}
+        events={timeSlotsToEventObject()}
         locale="de"
         headerToolbar={{
           left: 'today prev,next',

@@ -12,16 +12,15 @@ import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import deLocale from 'date-fns/locale/de';
 import { useProjectsGetProjectsQuery, useProjectTimeslotsAddTimeslotMutation } from '../../service/timeTrack.api';
 import {
-  ManageTimeSlotRequest,
   ProjectOverview,
-  ProjectTimeslotsAddTimeslotApiArg,
+  ProjectTimeslotsAddTimeslotApiArg, TimeSlotOverview,
 } from '../../gen/timeTrack.api.generated';
 
 type ChildComponentProps = {
   isModalOpen: boolean,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  timeSlot: ManageTimeSlotRequest,
-  setTimeSlot: React.Dispatch<React.SetStateAction<ManageTimeSlotRequest>>,
+  timeSlot: TimeSlotOverview,
+  setTimeSlot: React.Dispatch<React.SetStateAction<TimeSlotOverview>>,
 };
 
 const RegisterTimeModal : React.FC<ChildComponentProps> = ({
@@ -37,14 +36,12 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
     name: '',
   };
   const [selectedProject, setSelectedProject] = useState(projectDto);
+
   const handleClose = () => {
     setIsModalOpen(false);
-    const initTimeSlot: ManageTimeSlotRequest = {
-      start: '',
-      end: '',
-    };
-    setTimeSlot(initTimeSlot);
   };
+  const getProjectFromTimeSlot = () : ProjectOverview | undefined => projects
+    .find((project) => project.id === timeSlot.project.key);
 
   const handleStartChange = (start: Date | null) => {
     if (start) {
@@ -92,6 +89,7 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
             /* eslint-disable-next-line react/jsx-props-no-spreading */
             renderInput={(params: any) => <TextField {...params} label="Projects" variant="outlined" />}
             onChange={selectProjectHandler}
+            value={getProjectFromTimeSlot()}
           />
           <LocalizationProvider dateAdapter={AdapterDateFns} locale={deLocale}>
             <TimePicker
