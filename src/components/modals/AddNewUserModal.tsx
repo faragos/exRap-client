@@ -10,13 +10,11 @@ import {
   UserOverview,
   UsersCreateUserApiArg,
   useUsersUpdateUserMutation,
-  UsersUpdateUserApiArg, UserRolesAddRoleApiArg, RoleOverview, RolesGetRoleApiArg,
+  UsersUpdateUserApiArg, RoleOverview, UsersGetUserApiArg,
 } from '../../gen/auth.api.generated';
 import {
-  useRolesGetRoleQuery,
   useRolesGetRolesQuery,
-  useUserRolesAddRoleMutation,
-  useUsersCreateUserMutation,
+  useUsersCreateUserMutation, useUsersGetUserQuery,
 } from '../../service/auth.api';
 
 type PasswordComponentProps = {
@@ -70,23 +68,18 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
     },
   });
 
-  const roleDto: RoleOverview = {
-    name: '',
-    description: '',
-  };
+  const roleDto: RoleOverview[] = [];
   const [formState, setFormState] = useState(enrichUser(user));
-  const [currentRole, setCurrentRole] = useState(roleDto);
-  const arg: RolesGetRoleApiArg = {
-    roleId: currentRole?.name || '',
+  const [currentRoles, setCurrentRoles] = useState(roleDto);
+  const arg: UsersGetUserApiArg = {
+    userId: user.id,
   };
-  const { data: userRole } = useRolesGetRoleQuery(arg);
+  const { data: fullUser } = useUsersGetUserQuery(arg);
 
   React.useEffect(() => {
     setFormState(enrichUser(user));
-    if (userRole === undefined) {
-      setCurrentRole({ name: '', description: '' });
-    } else {
-      setCurrentRole(userRole[0]);
+    if (fullUser?.roles && fullUser.roles.length > 0) {
+      setCurrentRoles(fullUser.roles);
     }
   }, [user]);
 
@@ -99,10 +92,6 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   const [
     updateUser,
   ] = useUsersUpdateUserMutation();
-
-  const [
-    addRole,
-  ] = useUserRolesAddRoleMutation();
 
   const handleChange = ({
     target: { name, value },
@@ -139,20 +128,22 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
       }
     }
     if (formState.roles) {
-      const args: UserRolesAddRoleApiArg = {
+      const finalRoles = currentRoles.map((r) => r.name);
+      /* const args: UserRolesAddRoleApiArg = {
         userId: formState.id,
-        roleId: currentRole.name,
+        roleId: currentRoles.name,
       };
-      addRole(args);
+      addRole(args); */
+      console.log(finalRoles);
     }
     setIsModalOpen(false);
   };
   const addRoleHandler = (
     event: SyntheticEvent<Element, Event>,
-    value: RoleOverview | null,
+    value: RoleOverview[] | null,
   ) => {
     if (value === null) return;
-    setCurrentRole(value);
+    setCurrentRoles(value);
     // setFormState({ ...formState, roles: [value.name] });
   };
 
@@ -204,6 +195,7 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
             fullWidth
           />
           <Autocomplete
+            multiple
             id="addRole"
             options={roles}
             getOptionLabel={(option) => option.name}
@@ -213,7 +205,7 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
             renderInput={(params) => (<TextField {...params} variant="standard" label="Mitarbeiter hinzufügen" placeholder="Mitarbeiter" />)}
             onChange={addRoleHandler}
             getOptionSelected={(option, value) => option.name === value.name}
-            value={currentRole}
+            value={currentRoles}
           />
           {!formState.id && <PasswordFields handleCredentialsChange={handleCredentialsChange} />}
         </DialogContent>
