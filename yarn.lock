@@ -1440,6 +1440,15 @@
   dependencies:
     tslib "^2.0.3"
 
+"@fullcalendar/core@^5.6.0":
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/@fullcalendar/core/-/core-5.6.0.tgz#c0ea59235047828c9d0409432966bebc71df0bec"
+  integrity sha512-RK7WM2oWAd4GJ3Ib6a3ftTmz2UxUD4N2JmH8ml+E3bprS9/wjnfvZppikx30UxKUBCAzQcBGOKV8GXh0Wk7FvA==
+  dependencies:
+    "@fullcalendar/common" "~5.6.0"
+    preact "^10.0.5"
+    tslib "^2.0.3"
+
 "@fullcalendar/daygrid@^5.5.0", "@fullcalendar/daygrid@~5.6.0":
   version "5.6.0"
   resolved "https://registry.yarnpkg.com/@fullcalendar/daygrid/-/daygrid-5.6.0.tgz#705508a7e7c5d560d01877485283f370c3c70780"
@@ -10356,6 +10365,11 @@ postcss@^8.1.0:
     colorette "^1.2.2"
     nanoid "^3.1.22"
     source-map "^0.6.1"
+
+preact@^10.0.5:
+  version "10.5.13"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.5.13.tgz#85f6c9197ecd736ce8e3bec044d08fd1330fa019"
+  integrity sha512-q/vlKIGNwzTLu+jCcvywgGrt+H/1P/oIRSD6mV4ln3hmlC+Aa34C7yfPI4+5bzW8pONyVXYS7SvXosy2dKKtWQ==
 
 prelude-ls@^1.2.1:
   version "1.2.1"

@@ -3,6 +3,7 @@ import FullCalendar, { DatesSetArg, EventClickArg, Ref } from '@fullcalendar/rea
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import deLocale from '@fullcalendar/core/locales/de';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import {
@@ -74,7 +75,6 @@ const Calendar: React.FC<ChildComponentProps> = ({
       comment: event.comment,
     },
   }));
-
   return (
     <div className="App">
       <h1> Zeiterfassung </h1>
@@ -86,7 +86,8 @@ const Calendar: React.FC<ChildComponentProps> = ({
         slotMinTime="05:00:00"
         slotMaxTime="22:00:00"
         events={timeSlotsToEventObject()}
-        locale="de"
+        locale={deLocale}
+        timeZone="UTC"
         headerToolbar={{
           left: 'today prev,next',
           center: 'title',
