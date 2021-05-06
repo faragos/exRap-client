@@ -1,4 +1,5 @@
 import React, { ReactElement, useEffect } from 'react';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import './Sidebar.scss';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -15,7 +16,6 @@ import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MenuIcon from '@material-ui/icons/Menu';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
   Link,
   Route,
@@ -34,7 +34,6 @@ import { useLoginRenewTokenQuery } from '../service/auth.api';
 import updateStore from '../utils/validateToken';
 
 const drawerWidth = 240;
-
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     display: 'flex',
@@ -52,7 +51,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    backgroundColor: theme.palette.primary.main,
+    position: 'absolute',
+    zIndex: 1000,
+    borderRadius: 0,
+    marginLeft: 0,
     [theme.breakpoints.up('sm')]: {
       display: 'none',
     },
@@ -64,6 +67,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      marginTop: '0',
+    },
   },
 }));
 

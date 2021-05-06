@@ -37,13 +37,18 @@ const useStyles = makeStyles((theme) => ({
       width: '25%',
     },
   },
+  toolbar: {
+    display: 'grid',
+    gridGap: '20px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    justifyContent: 'space-between',
+    [theme.breakpoints.up('md')]: {
+      gridTemplateColumns: 'minmax(200px, 300px) 1fr minmax(200px, 300px)',
+    },
+  },
   newProjectButton: {
-    position: 'absolute',
-    right: '10px',
   },
   finishedCheckBox: {
-    position: 'absolute',
-    right: '300px',
   },
 }));
 
@@ -123,7 +128,7 @@ const Projects : React.FC = () => {
     <div>
       <Grid>
         <h1> Projects </h1>
-        <Toolbar>
+        <Toolbar className={classes.toolbar}>
           <TextField
             name="Suche"
             label="Suche"
@@ -148,7 +153,7 @@ const Projects : React.FC = () => {
             label="Beendet"
           />
           <Button
-            variant="outlined"
+            variant="contained"
             color="primary"
             className={classes.newProjectButton}
             onClick={addNewProjectHandler}
