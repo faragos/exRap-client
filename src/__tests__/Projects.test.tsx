@@ -31,6 +31,18 @@ test('render finished Project Component', async () => {
   expect(p3).toBeInTheDocument();
 });
 
+test('render create new Project Component', async () => {
+  userEvent.click(screen.getByText('Neues Projekt erfassen'));
+
+  const addProjectNameToProjectModalText = await screen.findByText(/Projektname/i);
+  const addProjectInitialToProjectModalText = await screen.findByText(/Projektkürzel/i);
+  const addProjectCommentToProjectModalText = await screen.findByText(/Kommentar/i);
+
+  expect(addProjectNameToProjectModalText).toBeInTheDocument();
+  expect(addProjectInitialToProjectModalText).toBeInTheDocument();
+  expect(addProjectCommentToProjectModalText).toBeInTheDocument();
+});
+
 test('create new Project', async () => {
   userEvent.click(screen.getByText('Neues Projekt erfassen'));
 
@@ -58,6 +70,68 @@ test('render add Person Component', async () => {
   const contributor = await screen.findByText(/testUser/i);
   expect(addUserToProjectModalText).toBeInTheDocument();
   expect(contributor).toBeInTheDocument();
+});
+
+// TODO: funktioniert noch nicht richtig
+test('add Person to Project', async () => {
+  const buttons = await screen.findAllByTestId('addProjectButton');
+  userEvent.click(buttons[0]);
+
+  userEvent.type(screen.getByLabelText(/Mitarbeiter hinzufügen/), 'testuser');
+
+  const testUserNameInProject = await screen.findByText('testuser');
+  expect(testUserNameInProject).toBeInTheDocument();
+});
+
+test('render edit Project Component', async () => {
+  const buttons = await screen.findAllByTestId('editProjectButton');
+  userEvent.click(buttons[0]);
+
+  const addUserToProjectModalText = await screen.findByText(/Projektname/i);
+  const contributor = await screen.findByText(/project1/i);
+  screen.debug(undefined, 300000);
+  expect(addUserToProjectModalText).toBeInTheDocument();
+  expect(contributor).toBeInTheDocument();
+});
+
+test('edit Project', async () => {
+  const buttons = await screen.findAllByTestId('editProjectButton');
+  userEvent.click(buttons[0]);
+
+  userEvent.type(screen.getByLabelText(/Projektname/), '-edit');
+  userEvent.type(screen.getByLabelText(/Projektkürzel/), '-edit');
+  userEvent.type(screen.getByLabelText(/Kommentar/), '-edit');
+
+  userEvent.click(screen.getByText('Speichern'));
+
+  const testProjectName = await screen.findByText(/project1-edit/);
+  // const testProjectName = await screen.getByRole('cell', { name: /test-project/i });
+  const testProjectInitial = await screen.findByText('p1-edit');
+  const testProjectComment = await screen.findByText(/p1 dsc-edit/);
+
+  expect(testProjectName).toBeInTheDocument();
+  expect(testProjectInitial).toBeInTheDocument();
+  expect(testProjectComment).toBeInTheDocument();
+});
+
+test('render delete Project Component', async () => {
+  const buttons = await screen.findAllByTestId('deleteProjectButton');
+  userEvent.click(buttons[0]);
+
+  const deleteProjectModalText = await screen.findByText(/Projekt beenden/i);
+  expect(deleteProjectModalText).toBeInTheDocument();
+});
+
+test('delete Project', async () => {
+  const buttons = await screen.findAllByTestId('deleteProjectButton');
+  userEvent.click(buttons[0]);
+
+  userEvent.click(screen.getByText('Agree'));
+
+  const deletedProjectName = await screen.findByText(/project1/i);
+  screen.debug(undefined, 300000);
+  // TODO project should not be visible
+  expect(deletedProjectName).toBeInTheDocument();
 });
 
 /* Example how to render AddUserToProject Modal -> Pls Test Modal seperated
