@@ -1,7 +1,13 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { rest } from 'msw';
 
-const userData = [];
+const userData = [{
+  id: 1,
+  userName: 'testuser',
+}];
+const contributors = [{
+  userName: 'testuser',
+}];
 const projectData = [
   {
     id: 1,
@@ -56,7 +62,6 @@ const handlers = [
     xtc.status(200),
     xtc.json(userData),
   )),
-
   rest.get('/time/api/Projects', (req, res, xtc) => res(
     xtc.status(200),
     xtc.json(projectData),
@@ -74,6 +79,10 @@ const handlers = [
       xtc.status(200),
     );
   }),
+  rest.get('/time/api/Projects/:projectId/contributors', (req, res, xtc) => res(
+    xtc.status(200),
+    xtc.json(contributors),
+  )),
 ];
 
 export default handlers;

@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React, { SyntheticEvent } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -47,8 +47,6 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
   const handleClose = () => {
     setIsModalOpen(false);
   };
-  const userDto: UserOverview[] = [];
-  const [possibleNewContributors, setPossibleNewContributors] = useState(userDto);
 
   const usersArg: UsersGetUsersApiArg = {};
   const { data: users = [] } = useUsersGetUsersQuery(usersArg);
@@ -71,10 +69,6 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
     result = userList.filter((u) => !contributorList.some((c) => c.userName === u.userName));
     return result;
   };
-
-  useEffect(() => {
-    setPossibleNewContributors(getPossibleContributors(users, usersInProject));
-  }, [usersInProject]);
 
   const [
     addUserToProjectMutation,
@@ -121,7 +115,7 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
         <DialogContent className={classes.root}>
           <Autocomplete
             id="addUser"
-            options={possibleNewContributors}
+            options={getPossibleContributors(users, usersInProject)}
             getOptionLabel={(option) => option.userName}
             filterSelectedOptions
             /* props need to be forwarded https://material-ui.com/components/autocomplete/#checkboxes */

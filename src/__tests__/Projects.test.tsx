@@ -51,5 +51,27 @@ test('create new Project', async () => {
 });
 
 test('render add Person Component', async () => {
+  const buttons = await screen.findAllByTestId('addProjectButton');
+  userEvent.click(buttons[0]);
 
+  const addUserToProjectModalText = await screen.findByText(/Mitarbeiterverwaltung project1/i);
+  const contributor = await screen.findByText(/testUser/i);
+  expect(addUserToProjectModalText).toBeInTheDocument();
+  expect(contributor).toBeInTheDocument();
 });
+
+/* Example how to render AddUserToProject Modal -> Pls Test Modal seperated
+test('render add Person Component2', async () => {
+  const project: ProjectOverview = {
+    id: 1,
+    name: 'project1',
+    initial: 'p1',
+    description: 'p1 dsc',
+    timeBudget: 0,
+    projectStatus: 'Active',
+  };
+  render(
+  <Provider store={store}>
+    <AddUserToProjectModal isModalOpen setIsModalOpen={() => true} project={project} />
+  </Provider>);
+}); */
