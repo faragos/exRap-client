@@ -65,6 +65,7 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
       manageTimeSlotRequest: timeSlot,
     };
     addTimeslot(args);
+    setIsModalOpen(false);
   };
 
   const selectProjectHandler = (
