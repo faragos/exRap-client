@@ -27,7 +27,7 @@ type ChildComponentProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
 };
 
-const ShowProjectTime : React.FC<ChildComponentProps> = ({
+const ShowProjectTimeModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   isModalOpen,
 }: ChildComponentProps) => {
@@ -112,4 +112,4 @@ const ShowProjectTime : React.FC<ChildComponentProps> = ({
   );
 };
 
-export default ShowProjectTime;
+export default ShowProjectTimeModal;

@@ -80,7 +80,7 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
     addUserToProjectMutation,
   ] = useProjectContributorsAddContributorMutation();
 
-  const addUserToProject = async (
+  const addUserToProject = (
     event: SyntheticEvent<Element, Event>,
     value: UserOverview | null,
   ) => {
@@ -93,19 +93,19 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
       projectId: project.id,
       manageProjectMemberRequest: user,
     };
-    await addUserToProjectMutation(arg);
+    addUserToProjectMutation(arg);
   };
 
   const [
     removeContributor,
   ] = useProjectContributorsRemoveContributorMutation();
 
-  const deleteContributorHandler = async (user: UserOverview) => {
+  const deleteContributorHandler = (user: UserOverview) => {
     const arg: ProjectContributorsRemoveContributorApiArg = {
       projectId: project.id,
       contributorName: user.userName,
     };
-    await removeContributor(arg);
+    removeContributor(arg);
   };
 
   const classes = useStyles();

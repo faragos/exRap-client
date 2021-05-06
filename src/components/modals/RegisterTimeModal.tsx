@@ -30,7 +30,7 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   setTimeSlot,
   isModalOpen,
 }: ChildComponentProps) => {
-  const { data: projects = [] } = useProjectsGetProjectsQuery({});
+  const { data: projects = [] } = useProjectsGetProjectsQuery({ status: 'Active' });
   const projectDto: ProjectOverview = {
     id: 0,
     initial: '',
@@ -40,21 +40,21 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   const handleClose = () => {
     setIsModalOpen(false);
     const initTimeSlot: ManageTimeSlotRequest = {
-      startTime: '',
-      endTime: '',
+      start: '',
+      end: '',
     };
     setTimeSlot(initTimeSlot);
   };
 
   const handleStartChange = (start: Date | null) => {
     if (start) {
-      setTimeSlot({ ...timeSlot, startTime: start.toISOString() });
+      setTimeSlot({ ...timeSlot, start: start.toISOString() });
     }
   };
 
   const handleEndChange = (end: Date | null) => {
     if (end) {
-      setTimeSlot({ ...timeSlot, endTime: end.toISOString() });
+      setTimeSlot({ ...timeSlot, end: end.toISOString() });
     }
   };
 
@@ -95,14 +95,14 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
           />
           <LocalizationProvider dateAdapter={AdapterDateFns} locale={deLocale}>
             <TimePicker
-              value={new Date(timeSlot.startTime)}
+              value={new Date(timeSlot.start)}
               onChange={handleStartChange}
                 /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
                 /* eslint-disable-next-line react/jsx-props-no-spreading */
               renderInput={(params: any) => <TextField {...params} margin="normal" />}
             />
             <TimePicker
-              value={new Date(timeSlot.endTime)}
+              value={new Date(timeSlot.end)}
               onChange={handleEndChange}
                 /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
                 /* eslint-disable-next-line react/jsx-props-no-spreading */

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { ReactElement, useEffect } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import './Sidebar.scss';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -21,7 +21,6 @@ import {
   Route,
   Redirect, Switch, useHistory,
 } from 'react-router-dom';
-import { ReactElement } from 'react';
 import { clearUser } from '../store/authInfo/reducers';
 import { useAppDispatch } from '../hooks';
 import PrivateRoute from './PrivateRoute';
@@ -31,6 +30,8 @@ import Projects from '../pages/Projects';
 import Administration from '../pages/Administration';
 import logo from '../assets/exRap-logo.svg';
 import NotFound from '../pages/NotFound';
+import { useLoginRenewTokenQuery } from '../service/auth.api';
+import updateStore from '../utils/validateToken';
 
 const drawerWidth = 240;
 
@@ -86,6 +87,12 @@ export default function ResponsiveDrawer() {
   const dispatch = useAppDispatch();
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const renewTime = 1200; // in s = 20min
+  const { data } = useLoginRenewTokenQuery({}, { pollingInterval: renewTime * 1000 });
+
+  useEffect(() => {
+    if (data) updateStore(data.token, dispatch);
+  }, [data]);
 
   const handleSignout = () => {
     dispatch(clearUser());
@@ -184,7 +191,7 @@ export default function ResponsiveDrawer() {
       <main className={classes.content}>
         <Switch>
           <Redirect exact from="/" to="/dashboard" />
-
+          <Redirect from="/login" to="/dashboard" />
           <PrivateRoute path="/dashboard" component={Dashboard} />
           <PrivateRoute path="/timetracking" component={TimeTracking} />
           <PrivateRoute path="/projects" component={Projects} />
