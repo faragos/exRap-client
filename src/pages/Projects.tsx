@@ -54,10 +54,11 @@ const useStyles = makeStyles((theme) => ({
 
 const Projects : React.FC = () => {
   const classes = useStyles();
-  const { data } = useProjectsGetProjectsQuery({ status: 'Active' });
+  const [isFilterEnabled, setIsFilterEnabled] = useState(false);
+  const { data } = useProjectsGetProjectsQuery({ status: isFilterEnabled ? undefined : 'Active' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-  const [isFilterEnabled, setIsFilterEnabled] = useState(false);
+
   const [isAddUserToProjectModalOpen, setIsAddUserToProjectModalOpen] = useState(false);
   const [isShowProjectTimeModalOpen, setIsShowProjectTimeModalOpen] = useState(false);
   const dtoProject: ProjectOverview = {
@@ -119,11 +120,6 @@ const Projects : React.FC = () => {
     setIsShowProjectTimeModalOpen(true);
   };
 
-  const filterHelper = () => {
-    if (isFilterEnabled) return ['Active', 'Finished'];
-    return ['Active'];
-  };
-
   return (
     <div>
       <Grid>
@@ -164,29 +160,27 @@ const Projects : React.FC = () => {
         <Table className={classes.table}>
           <TableBody>
             {
-                data
-                  ?.filter((item) => filterHelper().includes(item.projectStatus || ''))
-                  .map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell>{item.initial}</TableCell>
-                      <TableCell>{item.description}</TableCell>
-                      <TableCell>
-                        <IconButton onClick={showProjectTimeHandler}>
-                          <EqualizerIcon />
-                        </IconButton>
-                        <IconButton onClick={() => addUserToProjectHandler(item)} disabled={item.projectStatus !== 'Active'}>
-                          <PersonAddIcon />
-                        </IconButton>
-                        <IconButton onClick={() => handleEditProject(item)} disabled={item.projectStatus !== 'Active'}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton onClick={() => deleteProject(item)} disabled={item.projectStatus !== 'Active'}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                data?.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.initial}</TableCell>
+                    <TableCell>{item.description}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={showProjectTimeHandler}>
+                        <EqualizerIcon />
+                      </IconButton>
+                      <IconButton onClick={() => addUserToProjectHandler(item)} disabled={item.projectStatus !== 'Active'}>
+                        <PersonAddIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleEditProject(item)} disabled={item.projectStatus !== 'Active'}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => deleteProject(item)} disabled={item.projectStatus !== 'Active'}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
               }
           </TableBody>
         </Table>
