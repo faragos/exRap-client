@@ -5,7 +5,6 @@ import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
-import deLocale from '@fullcalendar/core/locales/de';
 import {
   TimeSlotOverview,
   TimeslotsGetTimeslotsApiArg,
@@ -87,7 +86,7 @@ const Calendar: React.FC<ChildComponentProps> = ({
         slotMinTime="05:00:00"
         slotMaxTime="22:00:00"
         events={timeSlotsToEventObject()}
-        locale={deLocale}
+        locale="de"
         headerToolbar={{
           left: 'today prev,next',
           center: 'title',
