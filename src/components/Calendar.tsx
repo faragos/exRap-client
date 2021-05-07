@@ -63,18 +63,18 @@ const Calendar: React.FC<ChildComponentProps> = ({
     });
     setIsModalOpen(true);
   };
-
   const timeSlotsToEventObject = () => timeslots.map((event) => ({
     id: event.id.toString(),
     title: event.project.value || '',
-    start: event.start,
-    end: event.end,
+    // Workaround: adding 'z' for right time Format
+    start: new Date(`${event.start}z`),
+    // Workaround: adding 'z' for right time Format
+    end: new Date(`${event.end}z`),
     extendedProps: {
       projectId: event.project.key,
       comment: event.comment,
     },
   }));
-
   return (
     <div className="App">
       <h1> Zeiterfassung </h1>

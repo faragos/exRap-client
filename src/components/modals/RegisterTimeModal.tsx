@@ -10,10 +10,14 @@ import TimePicker from '@material-ui/lab/TimePicker';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import deLocale from 'date-fns/locale/de';
-import { useProjectsGetProjectsQuery, useProjectTimeslotsAddTimeslotMutation } from '../../service/timeTrack.api';
+import {
+  useProjectsGetProjectsQuery,
+  useProjectTimeslotsAddTimeslotMutation,
+  useProjectTimeslotsUpdateTimeslotMutation,
+} from '../../service/timeTrack.api';
 import {
   ProjectOverview,
-  ProjectTimeslotsAddTimeslotApiArg, TimeSlotOverview,
+  ProjectTimeslotsAddTimeslotApiArg, ProjectTimeslotsUpdateTimeslotApiArg, TimeSlotOverview,
 } from '../../gen/timeTrack.api.generated';
 
 type ChildComponentProps = {
@@ -43,28 +47,63 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   const getProjectFromTimeSlot = () : ProjectOverview | undefined => projects
     .find((project) => project.id === timeSlot.project.key);
 
+  // TimePicker has Problem with Time Changes, it resets the Date to current Date
+  // This is a Workaround
+  const fixDateChange = (currentDate: string, newDate: Date): Date | null => {
+    const h = newDate.getHours();
+    const m = newDate.getMinutes();
+
+    if (h === null || m === null) return null;
+
+    const date = new Date(currentDate);
+    date.setHours(h);
+    date.setMinutes(m);
+    return date;
+  };
+
   const handleStartChange = (start: Date | null) => {
     if (start) {
-      setTimeSlot({ ...timeSlot, start: start.toISOString() });
+      const startDate = fixDateChange(timeSlot.start, start);
+      if (!startDate) return;
+      setTimeSlot({ ...timeSlot, start: startDate.toISOString() });
     }
   };
 
   const handleEndChange = (end: Date | null) => {
     if (end) {
-      setTimeSlot({ ...timeSlot, end: end.toISOString() });
+      const endDate = fixDateChange(timeSlot.end, end);
+      if (!endDate) return;
+      setTimeSlot({ ...timeSlot, end: endDate.toISOString() });
     }
   };
 
-  const [
-    addTimeslot,
-  ] = useProjectTimeslotsAddTimeslotMutation();
+  const [addTimeslot] = useProjectTimeslotsAddTimeslotMutation();
+  const [updateTimeslot] = useProjectTimeslotsUpdateTimeslotMutation();
 
   const handleSave = () => {
-    const args: ProjectTimeslotsAddTimeslotApiArg = {
-      projectId: selectedProject.id,
-      manageTimeSlotRequest: timeSlot,
-    };
-    addTimeslot(args);
+    if (timeSlot.id) {
+      try {
+        const updateArgs: ProjectTimeslotsUpdateTimeslotApiArg = {
+          timeslotId: timeSlot.id,
+          projectId: selectedProject.id,
+          manageTimeSlotRequest: timeSlot,
+        };
+        updateTimeslot(updateArgs);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      try {
+        const addArgs: ProjectTimeslotsAddTimeslotApiArg = {
+          projectId: selectedProject.id,
+          manageTimeSlotRequest: timeSlot,
+        };
+        addTimeslot(addArgs);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    setIsModalOpen(false);
   };
 
   const selectProjectHandler = (
