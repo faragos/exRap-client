@@ -10,18 +10,25 @@ import TimePicker from '@material-ui/lab/TimePicker';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import deLocale from 'date-fns/locale/de';
-import { useProjectsGetProjectsQuery, useProjectTimeslotsAddTimeslotMutation } from '../../service/timeTrack.api';
 import {
-  ManageTimeSlotRequest,
+  useProjectsGetProjectsQuery,
+  useProjectTimeslotsAddTimeslotMutation, useProjectTimeslotsDeleteTimeslotMutation,
+  useProjectTimeslotsUpdateTimeslotMutation,
+} from '../../service/timeTrack.api';
+import {
   ProjectOverview,
   ProjectTimeslotsAddTimeslotApiArg,
+  ProjectTimeslotsDeleteTimeslotApiArg,
+  ProjectTimeslotsUpdateTimeslotApiArg,
+  TimeSlotOverview,
 } from '../../gen/timeTrack.api.generated';
+import AlertDialog from '../AlertDialog';
 
 type ChildComponentProps = {
   isModalOpen: boolean,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  timeSlot: ManageTimeSlotRequest,
-  setTimeSlot: React.Dispatch<React.SetStateAction<ManageTimeSlotRequest>>,
+  timeSlot: TimeSlotOverview,
+  setTimeSlot: React.Dispatch<React.SetStateAction<TimeSlotOverview>>,
 };
 
 const RegisterTimeModal : React.FC<ChildComponentProps> = ({
@@ -37,37 +44,94 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
     name: '',
   };
   const [selectedProject, setSelectedProject] = useState(projectDto);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const deleteTitle = 'Zeiteintrag';
+  const deleteContent = 'Wollen sie den Zeiteintrag wirklich löschen?';
+
   const handleClose = () => {
     setIsModalOpen(false);
-    const initTimeSlot: ManageTimeSlotRequest = {
-      start: '',
-      end: '',
-    };
-    setTimeSlot(initTimeSlot);
+  };
+  const getProjectFromTimeSlot = () : ProjectOverview | undefined => projects
+    .find((project) => project.id === timeSlot.project.key);
+
+  // TimePicker has Problem with Time Changes, it resets the Date to current Date
+  // This is a Workaround
+  const fixDateChange = (currentDate: string, newDate: Date): Date | null => {
+    const h = newDate.getHours();
+    const m = newDate.getMinutes();
+
+    if (h === null || m === null) return null;
+
+    const date = new Date(currentDate);
+    date.setHours(h);
+    date.setMinutes(m);
+    return date;
   };
 
   const handleStartChange = (start: Date | null) => {
     if (start) {
-      setTimeSlot({ ...timeSlot, start: start.toISOString() });
+      const startDate = fixDateChange(timeSlot.start, start);
+      if (!startDate) return;
+      setTimeSlot({ ...timeSlot, start: startDate.toISOString() });
     }
   };
 
   const handleEndChange = (end: Date | null) => {
     if (end) {
-      setTimeSlot({ ...timeSlot, end: end.toISOString() });
+      const endDate = fixDateChange(timeSlot.end, end);
+      if (!endDate) return;
+      setTimeSlot({ ...timeSlot, end: endDate.toISOString() });
     }
   };
 
-  const [
-    addTimeslot,
-  ] = useProjectTimeslotsAddTimeslotMutation();
+  const [addTimeslot] = useProjectTimeslotsAddTimeslotMutation();
+  const [updateTimeslot] = useProjectTimeslotsUpdateTimeslotMutation();
 
   const handleSave = () => {
-    const args: ProjectTimeslotsAddTimeslotApiArg = {
-      projectId: selectedProject.id,
-      manageTimeSlotRequest: timeSlot,
-    };
-    addTimeslot(args);
+    if (timeSlot.id) {
+      try {
+        const updateArgs: ProjectTimeslotsUpdateTimeslotApiArg = {
+          timeslotId: timeSlot.id,
+          projectId: selectedProject.id,
+          manageTimeSlotRequest: timeSlot,
+        };
+        updateTimeslot(updateArgs);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      try {
+        const addArgs: ProjectTimeslotsAddTimeslotApiArg = {
+          projectId: selectedProject.id,
+          manageTimeSlotRequest: timeSlot,
+        };
+        addTimeslot(addArgs);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    setIsModalOpen(false);
+  };
+
+  const [deleteTimeSlot] = useProjectTimeslotsDeleteTimeslotMutation();
+  const confirmDeleteTimeslot = () => {
+    if (!timeSlot.project.key) return;
+
+    try {
+      const args: ProjectTimeslotsDeleteTimeslotApiArg = {
+        timeslotId: timeSlot.id,
+        projectId: timeSlot.project.key,
+      };
+      deleteTimeSlot(args);
+      setIsDeleteAlertOpen(false);
+      setIsModalOpen(false);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleDelete = () => {
+    setIsDeleteAlertOpen(true);
   };
 
   const selectProjectHandler = (
@@ -92,6 +156,7 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
             /* eslint-disable-next-line react/jsx-props-no-spreading */
             renderInput={(params: any) => <TextField {...params} label="Projects" variant="outlined" />}
             onChange={selectProjectHandler}
+            value={getProjectFromTimeSlot()}
           />
           <LocalizationProvider dateAdapter={AdapterDateFns} locale={deLocale}>
             <TimePicker
@@ -121,6 +186,9 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
           />
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleDelete} color="primary" disabled={timeSlot.id === 0}>
+            Löschen
+          </Button>
           <Button onClick={handleClose} color="primary">
             Abbrechen
           </Button>
@@ -129,6 +197,13 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
           </Button>
         </DialogActions>
       </Dialog>
+      <AlertDialog
+        isOpen={isDeleteAlertOpen}
+        setIsOpen={setIsDeleteAlertOpen}
+        handleConfirm={confirmDeleteTimeslot}
+        title={deleteTitle}
+        content={deleteContent}
+      />
     </div>
   );
 };
