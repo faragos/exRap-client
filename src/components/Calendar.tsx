@@ -64,12 +64,13 @@ const Calendar: React.FC<ChildComponentProps> = ({
     });
     setIsModalOpen(true);
   };
-
   const timeSlotsToEventObject = () => timeslots.map((event) => ({
     id: event.id.toString(),
     title: event.project.value || '',
-    start: event.start,
-    end: event.end,
+    // Workaround: adding 'z' for right time Format
+    start: new Date(`${event.start}z`),
+    // Workaround: adding 'z' for right time Format
+    end: new Date(`${event.end}z`),
     extendedProps: {
       projectId: event.project.key,
       comment: event.comment,
@@ -87,7 +88,6 @@ const Calendar: React.FC<ChildComponentProps> = ({
         slotMaxTime="22:00:00"
         events={timeSlotsToEventObject()}
         locale={deLocale}
-        timeZone="UTC"
         headerToolbar={{
           left: 'today prev,next',
           center: 'title',
