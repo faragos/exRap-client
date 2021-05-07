@@ -11,7 +11,7 @@ import {
   IconButton, Table, TableBody, TableCell, TableRow,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { UsersGetUsersApiArg } from '../../gen/auth.api.generated';
+import { UsersGetUsersApiArg, UserOverview as UserOverviewAuth } from '../../gen/auth.api.generated';
 import { useUsersGetUsersQuery } from '../../service/auth.api';
 import {
   useProjectContributorsAddContributorMutation,
@@ -57,11 +57,10 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
   const {
     data: usersInProject = [],
   } = useProjectContributorsGetContributorsQuery(contributorsArg);
+  const [contributors, setContributors] = useState<UserOverviewAuth[]>([]);
 
   // Differenzmenge - A\B - A ohne B
   const getPossibleContributors = (
-    /*    TODO: die zwei listen haben verschiedene UserOverview Typen
-    Time und Auth API sollen gleiches Objekt liefern */
     userList: UserOverview[],
     contributorList: UserOverview[],
   ): UserOverview[] => {
@@ -72,8 +71,13 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
     return result;
   };
 
+  const mapTimeToAuthUser = () => users.filter(
+    (u) => usersInProject.some((c) => c.userName === u.userName),
+  );
+
   useEffect(() => {
     setPossibleNewContributors(getPossibleContributors(users, usersInProject));
+    setContributors(mapTimeToAuthUser());
   }, [usersInProject]);
 
   const [
@@ -133,12 +137,11 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
           <Table>
             <TableBody>
               {
-                usersInProject.map((item) => (
+                contributors.map((item) => (
                   <TableRow key={item.userName}>
+                    <TableCell>{item.firstName}</TableCell>
+                    <TableCell>{item.name}</TableCell>
                     <TableCell>{item.userName}</TableCell>
-                    {/* <TableCell>{item.userInitial}</TableCell>
-                    TODO: API Anpassung, response braucht zusätzliche Attribute
-                    <TableCell>{item.userRole}</TableCell> */}
                     <TableCell>
                       <IconButton onClick={() => deleteContributorHandler(item)}>
                         <DeleteIcon />
