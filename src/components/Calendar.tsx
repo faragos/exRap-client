@@ -3,9 +3,9 @@ import FullCalendar, { DatesSetArg, EventClickArg, Ref } from '@fullcalendar/rea
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import deLocale from '@fullcalendar/core/locales/de';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
+import deLocale from '@fullcalendar/core/locales/de';
 import {
   TimeSlotOverview,
   TimeslotsGetTimeslotsApiArg,

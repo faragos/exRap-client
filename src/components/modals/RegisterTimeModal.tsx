@@ -52,10 +52,10 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   const fixDateChange = (currentDate: string, newDate: Date): Date | null => {
     const h = newDate.getHours();
     const m = newDate.getMinutes();
+
+    if (h === null || m === null) return null;
+
     const date = new Date(currentDate);
-
-    if (!h || !m) return null;
-
     date.setHours(h);
     date.setMinutes(m);
     return date;
