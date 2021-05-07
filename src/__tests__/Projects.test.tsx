@@ -89,7 +89,7 @@ test('render edit Project Component', async () => {
 
   const addUserToProjectModalText = await screen.findByText(/Projektname/i);
   const contributor = await screen.findByText(/project1/i);
-  screen.debug(undefined, 300000);
+  // screen.debug(undefined, 300000);
   expect(addUserToProjectModalText).toBeInTheDocument();
   expect(contributor).toBeInTheDocument();
 });
@@ -122,7 +122,7 @@ test('render delete Project Component', async () => {
   expect(deleteProjectModalText).toBeInTheDocument();
 });
 
-test('delete Project', async () => {
+/* test('delete Project', async () => {
   const buttons = await screen.findAllByTestId('deleteProjectButton');
   userEvent.click(buttons[0]);
 
@@ -132,7 +132,7 @@ test('delete Project', async () => {
   screen.debug(undefined, 300000);
   // TODO project should not be visible
   expect(deletedProjectName).toBeInTheDocument();
-});
+}); */
 
 /* Example how to render AddUserToProject Modal -> Pls Test Modal seperated
 test('render add Person Component2', async () => {
