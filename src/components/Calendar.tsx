@@ -103,6 +103,8 @@ const Calendar: React.FC<ChildComponentProps> = ({
         eventClick={handleClick}
         datesSet={(dateInfo) => setCurrentDateInfo(dateInfo)}
         ref={calendarRef}
+        stickyHeaderDates
+        contentHeight="auto"
       />
     </div>
   );
