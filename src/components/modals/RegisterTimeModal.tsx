@@ -45,6 +45,8 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   };
   const [selectedProject, setSelectedProject] = useState(projectDto);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const deleteTitle = 'Zeiteintrag';
+  const deleteContent = 'Wollen sie den Zeiteintrag wirklich löschen?';
 
   const handleClose = () => {
     setIsModalOpen(false);
@@ -199,6 +201,8 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
         isOpen={isDeleteAlertOpen}
         setIsOpen={setIsDeleteAlertOpen}
         handleConfirm={confirmDeleteTimeslot}
+        title={deleteTitle}
+        content={deleteContent}
       />
     </div>
   );
