@@ -12,13 +12,17 @@ import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import deLocale from 'date-fns/locale/de';
 import {
   useProjectsGetProjectsQuery,
-  useProjectTimeslotsAddTimeslotMutation,
+  useProjectTimeslotsAddTimeslotMutation, useProjectTimeslotsDeleteTimeslotMutation,
   useProjectTimeslotsUpdateTimeslotMutation,
 } from '../../service/timeTrack.api';
 import {
   ProjectOverview,
-  ProjectTimeslotsAddTimeslotApiArg, ProjectTimeslotsUpdateTimeslotApiArg, TimeSlotOverview,
+  ProjectTimeslotsAddTimeslotApiArg,
+  ProjectTimeslotsDeleteTimeslotApiArg,
+  ProjectTimeslotsUpdateTimeslotApiArg,
+  TimeSlotOverview,
 } from '../../gen/timeTrack.api.generated';
+import AlertDialog from '../AlertDialog';
 
 type ChildComponentProps = {
   isModalOpen: boolean,
@@ -40,6 +44,7 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
     name: '',
   };
   const [selectedProject, setSelectedProject] = useState(projectDto);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
 
   const handleClose = () => {
     setIsModalOpen(false);
@@ -106,6 +111,27 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
     setIsModalOpen(false);
   };
 
+  const [deleteTimeSlot] = useProjectTimeslotsDeleteTimeslotMutation();
+  const confirmDeleteTimeslot = () => {
+    if (!timeSlot.project.key) return;
+
+    try {
+      const args: ProjectTimeslotsDeleteTimeslotApiArg = {
+        timeslotId: timeSlot.id,
+        projectId: timeSlot.project.key,
+      };
+      deleteTimeSlot(args);
+      setIsDeleteAlertOpen(false);
+      setIsModalOpen(false);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const handleDelete = () => {
+    setIsDeleteAlertOpen(true);
+  };
+
   const selectProjectHandler = (
     event: SyntheticEvent<Element, Event>,
     value: ProjectOverview | null,
@@ -158,6 +184,9 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
           />
         </DialogContent>
         <DialogActions>
+          <Button onClick={handleDelete} color="primary" disabled={timeSlot.id === 0}>
+            Löschen
+          </Button>
           <Button onClick={handleClose} color="primary">
             Abbrechen
           </Button>
@@ -166,6 +195,11 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
           </Button>
         </DialogActions>
       </Dialog>
+      <AlertDialog
+        isOpen={isDeleteAlertOpen}
+        setIsOpen={setIsDeleteAlertOpen}
+        handleConfirm={confirmDeleteTimeslot}
+      />
     </div>
   );
 };

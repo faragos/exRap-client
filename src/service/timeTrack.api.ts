@@ -28,6 +28,9 @@ export const api = generatedApi.enhanceEndpoints({
     projectTimeslotsUpdateTimeslot: {
       invalidatesTags: ['TimeSlot'],
     },
+    projectTimeslotsDeleteTimeslot: {
+      invalidatesTags: ['TimeSlot'],
+    },
     timeslotsGetTimeslots: {
       providesTags: ['TimeSlot'],
     },
