@@ -4,6 +4,7 @@ import {
 import React from 'react';
 import { Provider } from 'react-redux';
 // import userEvent from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 import Administration from '../pages/Administration';
 import store from '../store/store';
 import server from '../mocks/server';
@@ -23,6 +24,56 @@ beforeEach(() => {
 test('render Administration Component', async () => {
   const linkElement = screen.getByText(/Administration/i);
   expect(linkElement).toBeInTheDocument();
+});
+
+test('render create new User Component', async () => {
+  userEvent.click(screen.getByText('Neuer Mitarbeiter erfassen'));
+
+  const addFirstnameToUserModalText = await screen.findByText(/Vorname/i);
+  const addLastnameToUserModalText = await screen.findByText(/Nachname/i);
+  const addInitialToUserModalText = await screen.findByText(/Kürzel/i);
+  const addMailToUserModalText = await screen.findByText(/Mail/i);
+
+  expect(addFirstnameToUserModalText).toBeInTheDocument();
+  expect(addLastnameToUserModalText).toBeInTheDocument();
+  expect(addInitialToUserModalText).toBeInTheDocument();
+  expect(addMailToUserModalText).toBeInTheDocument();
+});
+
+test('render edit Person Component', async () => {
+  const buttons = await screen.findAllByTestId('editUserButton');
+  userEvent.click(buttons[0]);
+
+  const addFirstnameToUserModalText = await screen.findByText(/Vorname/i);
+  const addLastnameToUserModalText = await screen.findByText(/Nachname/i);
+  const addInitialToUserModalText = await screen.findByText(/Kürzel/i);
+  const addMailToUserModalText = await screen.findByText(/Mail/i);
+
+  expect(addFirstnameToUserModalText).toBeInTheDocument();
+  expect(addLastnameToUserModalText).toBeInTheDocument();
+  expect(addInitialToUserModalText).toBeInTheDocument();
+  expect(addMailToUserModalText).toBeInTheDocument();
+});
+
+test('render edit Password Component', async () => {
+  const buttons = await screen.findAllByTestId('editPasswordButton');
+  userEvent.click(buttons[0]);
+
+  const editPasswordModalText = await screen.findByText(/Passwort ändern/i);
+  const enterPasswordModalText = await screen.findByText('Passwort');
+  const secondEnterPasswordModalText = await screen.findByText(/Passwort wiederholen */i);
+
+  expect(editPasswordModalText).toBeInTheDocument();
+  expect(enterPasswordModalText).toBeInTheDocument();
+  expect(secondEnterPasswordModalText).toBeInTheDocument();
+});
+
+test('render delete User Component', async () => {
+  const buttons = await screen.findAllByTestId('deleteUserButton');
+  userEvent.click(buttons[0]);
+
+  const deleteUserModalText = await screen.findByText(/Alert/i);
+  expect(deleteUserModalText).toBeInTheDocument();
 });
 
 /* test('test add new user', async () => {
