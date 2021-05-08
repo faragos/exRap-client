@@ -57,7 +57,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
 };
 
 AlertDialog.defaultProps = {
-  title: 'Alert',
+  title: 'Löschbestätigung',
   content: 'Wollen sie das Objekt wirklich löschen?',
   buttonAgree: 'Löschen',
   buttonDisAgree: 'Abbrechen',

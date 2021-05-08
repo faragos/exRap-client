@@ -181,6 +181,7 @@ const Administration : React.FC = () => {
         isOpen={isDeleteAlertOpen}
         setIsOpen={setIsDeleteAlertOpen}
         handleConfirm={confirmDeleteUser}
+        content="Wollen sie den User wirklich löschen?"
       />
     </div>
   );
