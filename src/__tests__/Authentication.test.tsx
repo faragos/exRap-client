@@ -1,7 +1,6 @@
 import { cleanup } from '@testing-library/react';
 import jwt from 'jsonwebtoken';
 import updateStore, { isTokenValid } from '../utils/validateToken';
-import { setCredentials } from '../store/authInfo/reducers';
 
 afterEach(cleanup);
 
