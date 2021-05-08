@@ -210,7 +210,7 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
             filterSelectedOptions
               /* props need to be forwarded https://material-ui.com/components/autocomplete/#checkboxes */
               /* eslint-disable-next-line react/jsx-props-no-spreading */
-            renderInput={(params) => (<TextField {...params} variant="standard" label="Mitarbeiter hinzufügen" placeholder="Mitarbeiter" />)}
+            renderInput={(params) => (<TextField {...params} variant="standard" label="Rolle hinzufügen" placeholder="Rolle" />)}
             onChange={addRoleHandler}
             getOptionSelected={(option, value) => option.name === value.name}
             value={currentRole}

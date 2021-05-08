@@ -40,6 +40,31 @@ test('render create new User Component', async () => {
   expect(addMailToUserModalText).toBeInTheDocument();
 });
 
+test('create new User', async () => {
+  // TODO funktioniert noch nicht.
+  userEvent.click(screen.getByText('Neuer Mitarbeiter erfassen'));
+
+  userEvent.type(screen.getByLabelText(/Vorname/), 'test');
+  userEvent.type(screen.getByLabelText(/Nachname/), 'user1');
+  userEvent.type(screen.getByLabelText(/Kürzel/), 'tusr1');
+  userEvent.type(screen.getByLabelText(/Mail/), 'testuser1@ost.ch');
+
+  userEvent.type(screen.getByLabelText(/Rolle hinzufügen/), 'ProjectContributor');
+
+  userEvent.type(screen.getByLabelText('Passwort'), 'test1234');
+  userEvent.type(screen.getByLabelText(/Passwort wiederholen/), 'test1234');
+  screen.debug(undefined, 300000);
+
+  userEvent.click(screen.getByText('Speichern'));
+
+  const testUserName = await screen.findByText(/test user1/);
+  const testUserInitial = await screen.findByText('tusr1');
+  // const testProjectComment = await screen.findByText(/ProjectContributor/);
+
+  expect(testUserName).toBeInTheDocument();
+  expect(testUserInitial).toBeInTheDocument();
+});
+
 test('render edit Person Component', async () => {
   const buttons = await screen.findAllByTestId('editUserButton');
   userEvent.click(buttons[0]);
