@@ -1,12 +1,21 @@
 import React from 'react';
 import {
-  cleanup, render, screen,
+  cleanup, render, screen, waitFor,
 } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import userEvent from '@testing-library/user-event';
 import RegisterTimeModal from '../components/modals/RegisterTimeModal';
 import store from '../store/store';
 import { TimeSlotOverview } from '../gen/timeTrack.api.generated';
+import server from '../mocks/server';
+
+// Establish API mocking before all tests.
+beforeAll(() => server.listen());
+// Reset any request handlers that we may add during the tests,
+// so they don't affect other tests.
+afterEach(() => server.resetHandlers());
+// Clean up after the tests are finished.
+afterAll(() => server.close());
 
 const setIsModalOpenMock = jest.fn();
 const setTimeSlotMock = jest.fn();
@@ -77,6 +86,33 @@ test('delete timeslot', async () => {
   userEvent.click(deleteButton);
   const deleteAlert = await screen.findByText(/Wollen sie den Zeiteintrag wirklich löschen?/);
   expect(deleteAlert).toBeInTheDocument();
+});
+
+test('delete timeslot modal', async () => {
+  loadPage(timeSlotDto);
+  const deleteButton = await screen.findByRole('button', { name: 'Löschen' });
+  userEvent.click(deleteButton);
+  const deleteAlert = await screen.findByText(/Wollen sie den Zeiteintrag wirklich löschen?/);
+  const allDelete = await screen.findAllByText('Löschen');
+  userEvent.click(allDelete[1]);
+
+  await waitFor(() => {
+    expect(deleteAlert).not.toBeInTheDocument();
+  });
+});
+
+test('cancel delete timeslot', async () => {
+  loadPage(timeSlotDto);
+  const deleteButton = await screen.findByRole('button', { name: 'Löschen' });
+  userEvent.click(deleteButton);
+
+  const deleteAlert = await screen.findByText(/Wollen sie den Zeiteintrag wirklich löschen?/);
+  const cancelButton = await screen.findByRole('button', { name: 'Abbrechen' });
+  userEvent.click(cancelButton);
+
+  await waitFor(() => {
+    expect(deleteAlert).not.toBeInTheDocument();
+  });
 });
 
 test('close modal', async () => {

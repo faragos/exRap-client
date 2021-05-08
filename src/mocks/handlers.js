@@ -218,6 +218,9 @@ const handlers = [
       xtc.json(currentProject.contributors),
     );
   }),
+  rest.delete('/time/api/Projects/:projectId/timeslots/:timeslotId', (req, res, xtc) => res(
+    xtc.status(200),
+  )),
 
 ];
 
