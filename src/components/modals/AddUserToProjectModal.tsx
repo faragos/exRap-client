@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React, { SyntheticEvent } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -11,7 +11,7 @@ import {
   IconButton, Table, TableBody, TableCell, TableRow,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { UsersGetUsersApiArg, UserOverview as UserOverviewAuth } from '../../gen/auth.api.generated';
+import { UsersGetUsersApiArg } from '../../gen/auth.api.generated';
 import { useUsersGetUsersQuery } from '../../service/auth.api';
 import {
   useProjectContributorsAddContributorMutation,
@@ -47,8 +47,6 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
   const handleClose = () => {
     setIsModalOpen(false);
   };
-  const userDto: UserOverview[] = [];
-  const [possibleNewContributors, setPossibleNewContributors] = useState(userDto);
 
   const usersArg: UsersGetUsersApiArg = {};
   const { data: users = [] } = useUsersGetUsersQuery(usersArg);
@@ -57,7 +55,6 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
   const {
     data: usersInProject = [],
   } = useProjectContributorsGetContributorsQuery(contributorsArg);
-  const [contributors, setContributors] = useState<UserOverviewAuth[]>([]);
 
   // Differenzmenge - A\B - A ohne B
   const getPossibleContributors = (
@@ -74,11 +71,6 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
   const mapTimeToAuthUser = () => users.filter(
     (u) => usersInProject.some((c) => c.userName === u.userName),
   );
-
-  useEffect(() => {
-    setPossibleNewContributors(getPossibleContributors(users, usersInProject));
-    setContributors(mapTimeToAuthUser());
-  }, [usersInProject]);
 
   const [
     addUserToProjectMutation,
@@ -125,7 +117,7 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
         <DialogContent className={classes.root}>
           <Autocomplete
             id="addUser"
-            options={possibleNewContributors}
+            options={getPossibleContributors(users, usersInProject)}
             getOptionLabel={(option) => option.userName}
             filterSelectedOptions
             /* props need to be forwarded https://material-ui.com/components/autocomplete/#checkboxes */
@@ -137,7 +129,7 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
           <Table>
             <TableBody>
               {
-                contributors.map((item) => (
+                mapTimeToAuthUser().map((item) => (
                   <TableRow key={item.userName}>
                     <TableCell>{item.firstName}</TableCell>
                     <TableCell>{item.name}</TableCell>
