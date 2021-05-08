@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import './Login.scss';
 import { useHistory } from 'react-router-dom';
 import {
-  Grid, Paper, TextField, FormControlLabel, Checkbox, Button, CircularProgress, Box,
+  Grid, Paper, TextField, FormControlLabel, Checkbox, Button, CircularProgress, Box, Alert,
 } from '@material-ui/core';
-import { Alert } from '@material-ui/lab';
 import { useLoginLoginMutation } from '../service/auth.api';
 import { LoginLoginApiArg, LoginResponse } from '../gen/auth.api.generated';
 import { setCredentials } from '../store/authInfo/reducers';
