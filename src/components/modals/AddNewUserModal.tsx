@@ -11,7 +11,8 @@ import {
   UsersCreateUserApiArg,
   useUsersUpdateUserMutation,
   UsersUpdateUserApiArg, RoleOverview,
-  UsersGetUserApiArg, UserRolesOverwriteRolesApiArg, CreateUserRequest, ManageCredentialRequest,
+  UsersGetUserApiArg, UserRolesOverwriteRolesApiArg,
+  CreateUserRequest, ManageCredentialRequest, UserInformation,
 } from '../../gen/auth.api.generated';
 import {
   useRolesGetRolesQuery, useUserRolesOverwriteRolesMutation,
@@ -70,6 +71,13 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   });
 
   const roleDto: RoleOverview[] = [];
+  const getRoles = (fullUser? : UserInformation) : RoleOverview[] => {
+    if (fullUser?.roles && fullUser.roles.length > 0) {
+      return fullUser.roles;
+    }
+    return roleDto;
+  };
+
   const [formState, setFormState] = useState(enrichUser(user));
   const [currentRoles, setCurrentRoles] = useState(roleDto);
   const arg: UsersGetUserApiArg = {
@@ -79,10 +87,7 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
 
   React.useEffect(() => {
     setFormState(enrichUser(user));
-    setCurrentRoles(roleDto);
-    if (fullUser?.roles && fullUser.roles.length > 0) {
-      setCurrentRoles(fullUser.roles);
-    }
+    setCurrentRoles(getRoles(fullUser));
   }, [user, fullUser]);
 
   const { data: roles = [] } = useRolesGetRolesQuery({});
