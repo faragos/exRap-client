@@ -151,13 +151,13 @@ const Administration : React.FC = () => {
                   <TableCell>{item.userName}</TableCell>
                   <TableCell>{item.roles?.join(', ')}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => editUser(item)}>
+                    <IconButton data-testid="editUserButton" onClick={() => editUser(item)}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton onClick={() => editCredentials(item)}>
+                    <IconButton data-testid="editPasswordButton" onClick={() => editCredentials(item)}>
                       <VpnKeyIcon />
                     </IconButton>
-                    <IconButton onClick={() => deleteUser(item)}>
+                    <IconButton data-testid="deleteUserButton" onClick={() => deleteUser(item)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
