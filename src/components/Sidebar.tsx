@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { ReactElement, useEffect } from 'react';
+import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import './Sidebar.scss';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Divider from '@material-ui/core/Divider';
@@ -15,13 +16,11 @@ import AccountTreeIcon from '@material-ui/icons/AccountTree';
 import SettingsIcon from '@material-ui/icons/Settings';
 import MenuIcon from '@material-ui/icons/Menu';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import {
   Link,
   Route,
   Redirect, Switch, useHistory,
 } from 'react-router-dom';
-import { ReactElement } from 'react';
 import { clearUser } from '../store/authInfo/reducers';
 import { useAppDispatch } from '../hooks';
 import PrivateRoute from './PrivateRoute';
@@ -31,9 +30,10 @@ import Projects from '../pages/Projects';
 import Administration from '../pages/Administration';
 import logo from '../assets/exRap-logo.svg';
 import NotFound from '../pages/NotFound';
+import { useLoginRenewTokenQuery } from '../service/auth.api';
+import updateStore from '../utils/validateToken';
 
 const drawerWidth = 240;
-
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     display: 'flex',
@@ -51,7 +51,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
   },
   menuButton: {
-    marginRight: theme.spacing(2),
+    backgroundColor: theme.palette.primary.main,
+    position: 'absolute',
+    zIndex: 1000,
+    borderRadius: 0,
+    marginLeft: 0,
     [theme.breakpoints.up('sm')]: {
       display: 'none',
     },
@@ -63,6 +67,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      marginTop: '0',
+    },
   },
 }));
 
@@ -83,6 +90,12 @@ export default function ResponsiveDrawer() {
   const dispatch = useAppDispatch();
   const classes = useStyles();
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const renewTime = 1200; // in s = 20min
+  const { data } = useLoginRenewTokenQuery({}, { pollingInterval: renewTime * 1000 });
+
+  useEffect(() => {
+    if (data) updateStore(data.token, dispatch);
+  }, [data]);
 
   const handleSignout = () => {
     dispatch(clearUser());
@@ -181,7 +194,7 @@ export default function ResponsiveDrawer() {
       <main className={classes.content}>
         <Switch>
           <Redirect exact from="/" to="/dashboard" />
-
+          <Redirect from="/login" to="/dashboard" />
           <PrivateRoute path="/dashboard" component={Dashboard} />
           <PrivateRoute path="/timetracking" component={TimeTracking} />
           <PrivateRoute path="/projects" component={Projects} />

@@ -18,7 +18,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
 import ProjectFormModal from '../components/modals/ProjectFormModal';
 import AddUserToProjectModal from '../components/modals/AddUserToProjectModal';
-import ShowProjectTime from '../components/modals/ShowProjectTimeModal';
+import ShowProjectTimeModal from '../components/modals/ShowProjectTimeModal';
 import { useProjectsGetProjectsQuery, useProjectsUpdateProjectMutation } from '../service/timeTrack.api';
 import { ProjectOverview, ProjectStatus, ProjectsUpdateProjectApiArg } from '../gen/timeTrack.api.generated';
 import AlertDialog from '../components/AlertDialog';
@@ -37,22 +37,28 @@ const useStyles = makeStyles((theme) => ({
       width: '25%',
     },
   },
+  toolbar: {
+    display: 'grid',
+    gridGap: '20px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    justifyContent: 'space-between',
+    [theme.breakpoints.up('md')]: {
+      gridTemplateColumns: 'minmax(200px, 300px) 1fr minmax(200px, 300px)',
+    },
+  },
   newProjectButton: {
-    position: 'absolute',
-    right: '10px',
   },
   finishedCheckBox: {
-    position: 'absolute',
-    right: '300px',
   },
 }));
 
 const Projects : React.FC = () => {
   const classes = useStyles();
-  const { data } = useProjectsGetProjectsQuery({});
+  const [isFilterEnabled, setIsFilterEnabled] = useState(false);
+  const { data } = useProjectsGetProjectsQuery({ status: isFilterEnabled ? undefined : 'Active' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-  const [isFilterEnabled, setIsFilterEnabled] = useState(false);
+
   const [isAddUserToProjectModalOpen, setIsAddUserToProjectModalOpen] = useState(false);
   const [isShowProjectTimeModalOpen, setIsShowProjectTimeModalOpen] = useState(false);
   const dtoProject: ProjectOverview = {
@@ -90,7 +96,7 @@ const Projects : React.FC = () => {
 
   const confirmDeleteProject = () => {
     const projectStatus: ProjectStatus = 'Finished';
-    const project = { ...currentProject, status: projectStatus };
+    const project = { ...currentProject, projectStatus };
     try {
       const param: ProjectsUpdateProjectApiArg = {
         projectId: project.id,
@@ -114,16 +120,11 @@ const Projects : React.FC = () => {
     setIsShowProjectTimeModalOpen(true);
   };
 
-  const filterHelper = () => {
-    if (isFilterEnabled) return ['Active', 'Finished'];
-    return ['Active'];
-  };
-
   return (
     <div>
       <Grid>
         <h1> Projects </h1>
-        <Toolbar>
+        <Toolbar className={classes.toolbar}>
           <TextField
             name="Suche"
             label="Suche"
@@ -148,7 +149,7 @@ const Projects : React.FC = () => {
             label="Beendet"
           />
           <Button
-            variant="outlined"
+            variant="contained"
             color="primary"
             className={classes.newProjectButton}
             onClick={addNewProjectHandler}
@@ -159,29 +160,27 @@ const Projects : React.FC = () => {
         <Table className={classes.table}>
           <TableBody>
             {
-                data
-                  ?.filter((item) => filterHelper().includes(item.projectStatus || ''))
-                  .map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell>{item.name}</TableCell>
-                      <TableCell>{item.initial}</TableCell>
-                      <TableCell>{item.description}</TableCell>
-                      <TableCell>
-                        <IconButton onClick={showProjectTimeHandler}>
-                          <EqualizerIcon />
-                        </IconButton>
-                        <IconButton onClick={() => addUserToProjectHandler(item)} disabled={item.projectStatus !== 'Active'}>
-                          <PersonAddIcon />
-                        </IconButton>
-                        <IconButton onClick={() => handleEditProject(item)} disabled={item.projectStatus !== 'Active'}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton onClick={() => deleteProject(item)} disabled={item.projectStatus !== 'Active'}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                data?.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.initial}</TableCell>
+                    <TableCell>{item.description}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={showProjectTimeHandler}>
+                        <EqualizerIcon />
+                      </IconButton>
+                      <IconButton onClick={() => addUserToProjectHandler(item)} disabled={item.projectStatus !== 'Active'}>
+                        <PersonAddIcon />
+                      </IconButton>
+                      <IconButton onClick={() => handleEditProject(item)} disabled={item.projectStatus !== 'Active'}>
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton onClick={() => deleteProject(item)} disabled={item.projectStatus !== 'Active'}>
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))
               }
           </TableBody>
         </Table>
@@ -199,7 +198,7 @@ const Projects : React.FC = () => {
         project={currentProject}
       />
       )}
-      <ShowProjectTime
+      <ShowProjectTimeModal
         isModalOpen={isShowProjectTimeModalOpen}
         setIsModalOpen={setIsShowProjectTimeModalOpen}
       />

@@ -10,10 +10,10 @@ type AlertDialogProps = {
   isOpen: boolean,
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
   handleConfirm: () => void,
-  title?: String,
-  content?: String,
-  buttonAgree?: String,
-  buttonDisAgree?: String,
+  title?: string,
+  content?: string,
+  buttonAgree?: string,
+  buttonDisAgree?: string,
 };
 
 const AlertDialog: React.FC<AlertDialogProps> = ({
@@ -47,7 +47,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
           <Button onClick={handleClose} color="primary">
             { buttonDisAgree }
           </Button>
-          <Button onClick={handleConfirm} color="primary" autoFocus>
+          <Button onClick={handleConfirm} color="primary" variant="contained" autoFocus>
             { buttonAgree }
           </Button>
         </DialogActions>
@@ -57,10 +57,10 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
 };
 
 AlertDialog.defaultProps = {
-  title: 'Alert',
+  title: 'Löschbestätigung',
   content: 'Wollen sie das Objekt wirklich löschen?',
-  buttonAgree: 'Agree',
-  buttonDisAgree: 'Disagree',
+  buttonAgree: 'Löschen',
+  buttonDisAgree: 'Abbrechen',
 };
 
 export default AlertDialog;

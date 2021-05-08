@@ -15,6 +15,7 @@ const userSlice = createSlice({
       state.username = username;
       state.token = token;
       state.isAuthenticated = true;
+      sessionStorage.setItem('token', token);
     },
     clearUser: (state) => {
       state.username = '';

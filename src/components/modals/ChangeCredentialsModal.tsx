@@ -28,8 +28,6 @@ const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
     setFormState(user);
   }, [user]);
 
-  // const { data } = useRolesGetRolesQuery({});
-
   const [
     updateCredentials, // This is the mutation trigger
   ] = useUserCredentialsAddCredentialMutation();

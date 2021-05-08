@@ -11,7 +11,7 @@ import {
   IconButton, Table, TableBody, TableCell, TableRow,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { UsersGetUsersApiArg } from '../../gen/auth.api.generated';
+import { UsersGetUsersApiArg, UserOverview as UserOverviewAuth } from '../../gen/auth.api.generated';
 import { useUsersGetUsersQuery } from '../../service/auth.api';
 import {
   useProjectContributorsAddContributorMutation,
@@ -57,41 +57,34 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
   const {
     data: usersInProject = [],
   } = useProjectContributorsGetContributorsQuery(contributorsArg);
+  const [contributors, setContributors] = useState<UserOverviewAuth[]>([]);
 
+  // Differenzmenge - A\B - A ohne B
   const getPossibleContributors = (
-    /*    TODO: die zwei listen haben verscheidene UserOverwie Typen
-    Time und Auth API sollen gleiches Objekt liefern */
     userList: UserOverview[],
     contributorList: UserOverview[],
   ): UserOverview[] => {
-    const result: UserOverview[] = [];
+    let result: UserOverview[] = [];
     if (contributorList.length === 0) return users;
 
-    userList.forEach(
-      (user) => {
-        let status = 1;
-        contributorList.forEach(
-          (contributor) => {
-            if (user.userName === contributor.userName) {
-              status = 0;
-            }
-          },
-        );
-        if (status) result.push(user);
-      },
-    );
+    result = userList.filter((u) => !contributorList.some((c) => c.userName === u.userName));
     return result;
   };
 
+  const mapTimeToAuthUser = () => users.filter(
+    (u) => usersInProject.some((c) => c.userName === u.userName),
+  );
+
   useEffect(() => {
     setPossibleNewContributors(getPossibleContributors(users, usersInProject));
+    setContributors(mapTimeToAuthUser());
   }, [usersInProject]);
 
   const [
     addUserToProjectMutation,
   ] = useProjectContributorsAddContributorMutation();
 
-  const addUserToProject = async (
+  const addUserToProject = (
     event: SyntheticEvent<Element, Event>,
     value: UserOverview | null,
   ) => {
@@ -104,19 +97,19 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
       projectId: project.id,
       manageProjectMemberRequest: user,
     };
-    await addUserToProjectMutation(arg);
+    addUserToProjectMutation(arg);
   };
 
   const [
     removeContributor,
   ] = useProjectContributorsRemoveContributorMutation();
 
-  const deleteContributorHandler = async (user: UserOverview) => {
+  const deleteContributorHandler = (user: UserOverview) => {
     const arg: ProjectContributorsRemoveContributorApiArg = {
       projectId: project.id,
       contributorName: user.userName,
     };
-    await removeContributor(arg);
+    removeContributor(arg);
   };
 
   const classes = useStyles();
@@ -144,12 +137,11 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
           <Table>
             <TableBody>
               {
-                usersInProject.map((item) => (
+                contributors.map((item) => (
                   <TableRow key={item.userName}>
+                    <TableCell>{item.firstName}</TableCell>
+                    <TableCell>{item.name}</TableCell>
                     <TableCell>{item.userName}</TableCell>
-                    {/* <TableCell>{item.userInitial}</TableCell>
-                    TODO: API Anpassung, response braucht zusätzliche Attribute
-                    <TableCell>{item.userRole}</TableCell> */}
                     <TableCell>
                       <IconButton onClick={() => deleteContributorHandler(item)}>
                         <DeleteIcon />
@@ -163,10 +155,7 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
-            Abbrechen
-          </Button>
-          <Button onClick={handleClose} color="primary">
-            Speichern
+            Schliessen
           </Button>
         </DialogActions>
       </Dialog>

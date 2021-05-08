@@ -1,17 +1,22 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, SyntheticEvent, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Autocomplete from '@material-ui/core/Autocomplete';
 import {
   UserOverview,
   UsersCreateUserApiArg,
   useUsersUpdateUserMutation,
-  UsersUpdateUserApiArg,
+  UsersUpdateUserApiArg, RoleOverview,
+  UsersGetUserApiArg, UserRolesOverwriteRolesApiArg, CreateUserRequest, ManageCredentialRequest,
 } from '../../gen/auth.api.generated';
-import { useUsersCreateUserMutation } from '../../service/auth.api';
+import {
+  useRolesGetRolesQuery, useUserRolesOverwriteRolesMutation,
+  useUsersCreateUserMutation, useUsersGetUserQuery,
+} from '../../service/auth.api';
 
 type PasswordComponentProps = {
   handleCredentialsChange: (event: ChangeEvent<HTMLInputElement>) => void,
@@ -56,7 +61,7 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   isModalOpen,
   user,
 }: ChildComponentProps) => {
-  const enrichUser = (initialUser: UserOverview) => ({
+  const enrichUser = (initialUser: UserOverview) : UserOverview & CreateUserRequest => ({
     ...initialUser,
     credentials: {
       password: '',
@@ -64,11 +69,23 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
     },
   });
 
+  const roleDto: RoleOverview[] = [];
   const [formState, setFormState] = useState(enrichUser(user));
+  const [currentRoles, setCurrentRoles] = useState(roleDto);
+  const arg: UsersGetUserApiArg = {
+    userId: user.id,
+  };
+  const { data: fullUser } = useUsersGetUserQuery(arg);
 
   React.useEffect(() => {
     setFormState(enrichUser(user));
-  }, [user]);
+    setCurrentRoles(roleDto);
+    if (fullUser?.roles && fullUser.roles.length > 0) {
+      setCurrentRoles(fullUser.roles);
+    }
+  }, [user, fullUser]);
+
+  const { data: roles = [] } = useRolesGetRolesQuery({});
 
   const [
     createUser,
@@ -78,6 +95,10 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
     updateUser,
   ] = useUsersUpdateUserMutation();
 
+  const [
+    updateRoles,
+  ] = useUserRolesOverwriteRolesMutation();
+
   const handleChange = ({
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>) => setFormState((prev) => ({ ...prev, [name]: value }));
@@ -85,11 +106,23 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   const handleCredentialsChange = ({
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>) => {
-    setFormState((prev) => ({ ...prev, credentials: { ...prev.credentials, [name]: value } }));
+    // eslint-disable-next-line max-len
+    setFormState((prev) => ({ ...prev, credentials: { ...prev.credentials, [name]: value } as ManageCredentialRequest }));
   };
 
   const handleClose = () => {
     setIsModalOpen(false);
+  };
+
+  const prepareUpdateRoles = (id : number) => {
+    if (formState.roles) {
+      const finalRoles = currentRoles.map((r) => r.name);
+      const args: UserRolesOverwriteRolesApiArg = {
+        userId: id,
+        body: finalRoles,
+      };
+      updateRoles(args);
+    }
   };
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
@@ -100,6 +133,7 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
           userId: formState.id,
           manageUserRequest: formState,
         };
+        prepareUpdateRoles(formState.id);
         updateUser(param);
       } catch (err) {
         console.log(err);
@@ -107,12 +141,21 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
     } else {
       try {
         const param: UsersCreateUserApiArg = { createUserRequest: formState };
-        createUser(param);
+        const result = await createUser(param).unwrap();
+        if (result) {
+          prepareUpdateRoles(result.id);
+        }
       } catch (err) {
         console.log(err);
       }
     }
     setIsModalOpen(false);
+  };
+  const addRoleHandler = (
+    event: SyntheticEvent<Element, Event>,
+    value: RoleOverview[],
+  ) => {
+    setCurrentRoles(value);
   };
 
   return (
@@ -162,6 +205,19 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
             onChange={handleChange}
             fullWidth
           />
+          <Autocomplete
+            multiple
+            id="addRole"
+            options={roles}
+            getOptionLabel={(option) => option.name}
+            filterSelectedOptions
+              /* props need to be forwarded https://material-ui.com/components/autocomplete/#checkboxes */
+              /* eslint-disable-next-line react/jsx-props-no-spreading */
+            renderInput={(params) => (<TextField {...params} variant="standard" label="Rolle hinzufügen" placeholder="Rollen" />)}
+            onChange={addRoleHandler}
+            getOptionSelected={(option, value) => option.name === value.name}
+            value={currentRoles}
+          />
           {!formState.id && <PasswordFields handleCredentialsChange={handleCredentialsChange} />}
         </DialogContent>
         <DialogActions>
@@ -176,5 +232,4 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
     </Dialog>
   );
 };
-
 export default AddNewUserModal;

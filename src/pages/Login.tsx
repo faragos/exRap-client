@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './Login.scss';
 import { useHistory } from 'react-router-dom';
 import {
-  Grid, Paper, TextField, FormControlLabel, Checkbox, Button,
+  Grid, Paper, TextField, FormControlLabel, Checkbox, Button, CircularProgress, Box, Alert,
 } from '@material-ui/core';
 import { useLoginLoginMutation } from '../service/auth.api';
 import { LoginLoginApiArg, LoginResponse } from '../gen/auth.api.generated';
@@ -18,8 +18,10 @@ const Login : React.FC = () => {
     userName: '',
     password: '',
   });
+  const [loading, setLoading] = useState(false);
   const [
-    login, // This is the mutation trigger
+    login,
+    { error },
   ] = useLoginLoginMutation();
 
   const handleChange = ({
@@ -27,6 +29,7 @@ const Login : React.FC = () => {
   }: React.ChangeEvent<HTMLInputElement>) => setFormState((prev) => ({ ...prev, [name]: value }));
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
+    setLoading(true);
     event.preventDefault();
     try {
       const param: LoginLoginApiArg = { loginRequest: formState };
@@ -37,10 +40,10 @@ const Login : React.FC = () => {
         isAuthenticated: true,
       };
       dispatch(setCredentials(authInfo));
-      sessionStorage.setItem('token', response.token);
       history.push('/');
-    } catch (err) {
-      console.log(err);
+    } catch (e) {
+      setLoading(false);
+      console.error('Login failed');
     }
   };
 
@@ -51,31 +54,52 @@ const Login : React.FC = () => {
     margin: '200px auto',
   };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <Grid>
-        <Paper elevation={10} style={paperStyle}>
-          <Grid>
-            <img src={logo} alt="Logo exRap" className="logo" />
-          </Grid>
-          <TextField id="loginName" name="userName" label="Username" type="text" fullWidth variant="standard" required onChange={handleChange} />
-          <TextField id="password" name="password" label="Password" type="password" fullWidth variant="standard" required onChange={handleChange} />
-          <FormControlLabel
-            control={(
-              <Checkbox
-                name="checkedB"
-                color="primary"
-              />
-                )}
-            label="Stay logged in"
+  let content = (
+    <>
+      {error && <Box mb={2}><Alert severity="error">Login fehlgeschlagen! Bitte überprüfen sie Ihre Eingaben.</Alert></Box>}
+      <TextField value={formState.userName} id="loginName" name="userName" label="Username" type="text" fullWidth variant="standard" required onChange={handleChange} />
+      <TextField id="password" name="password" label="Password" type="password" fullWidth variant="standard" required onChange={handleChange} />
+      <FormControlLabel
+        control={(
+          <Checkbox
+            name="checkedB"
+            color="primary"
           />
-          <Button type="submit" color="primary" variant="contained" fullWidth>
-            Login
-          </Button>
-          <p />
-        </Paper>
-      </Grid>
+              )}
+        label="Stay logged in"
+      />
+    </>
+  );
+
+  if (loading) {
+    content = <CircularProgress />;
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="login-form">
+      <Paper elevation={10} style={paperStyle}>
+        <Grid
+          container
+          direction="column"
+          justifyContent="center"
+          alignItems="center"
+        >
+
+          <Box className="login-form-logo-container" my={2}>
+            <img src={logo} alt="Logo exRap" className="logo" />
+          </Box>
+          <Box my={2}>
+            {content}
+          </Box>
+          <Box my={2} width="100%">
+            <Button type="submit" color="primary" variant="contained" fullWidth>
+              Login
+            </Button>
+          </Box>
+        </Grid>
+      </Paper>
     </form>
   );
 };
+
 export default Login;

@@ -1,2 +1,2 @@
 #!/bin/bash
-npm run generate-api:local-dev
+npm run generate-api:dev
