@@ -80,13 +80,10 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   React.useEffect(() => {
     setFormState(enrichUser(user));
     setCurrentRoles(roleDto);
-  }, [user]);
-
-  React.useEffect(() => {
     if (fullUser?.roles && fullUser.roles.length > 0) {
       setCurrentRoles(fullUser.roles);
     }
-  }, [fullUser]);
+  }, [user, fullUser]);
 
   const { data: roles = [] } = useRolesGetRolesQuery({});
 
