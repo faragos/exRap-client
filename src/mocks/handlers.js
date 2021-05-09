@@ -180,6 +180,7 @@ const handlers = [
             description: req.body.description,
             timeBudget: req.body.timeBudget,
             projectStatus: req.body.projectStatus,
+            contributors: req.body.contributors,
           };
         }
         return project;

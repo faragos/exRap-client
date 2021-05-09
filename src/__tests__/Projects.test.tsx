@@ -62,7 +62,7 @@ test('create new Project', async () => {
   expect(testProjectComment).toBeInTheDocument();
 });
 
-test('render add Person Component', async () => {
+test('render add User Component', async () => {
   const buttons = await screen.findAllByTestId('addProjectButton');
   userEvent.click(buttons[0]);
 
@@ -72,8 +72,7 @@ test('render add Person Component', async () => {
   expect(contributor).toBeInTheDocument();
 });
 
-// TODO: funktioniert noch nicht richtig
-test('add Person to Project', async () => {
+test('add User to Project', async () => {
   const buttons = await screen.findAllByTestId('addProjectButton');
   userEvent.click(buttons[0]);
 
