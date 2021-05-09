@@ -19,7 +19,7 @@ const roles = [
     description: 'Manages the company or a part of it',
   },
 ];
-const userData = [
+let userData = [
   {
     id: 1,
     userName: 'testuser',
@@ -156,7 +156,28 @@ const handlers = [
       xtc.status(200),
     );
   }),
+  rest.put('/auth/api/Users/:userId', (req, res, xtc) => {
+    const { userId } = req.params;
 
+    userData = userData.map(
+      (user) => {
+        if (user.id === parseInt(userId, 10)) {
+          return {
+            ...user,
+            userName: req.body.userName,
+            name: req.body.name,
+            firstName: req.body.firstName,
+            mailAddress: req.body.mailAddress,
+            status: req.body.status,
+          };
+        }
+        return user;
+      },
+    );
+    return res(
+      xtc.status(200),
+    );
+  }),
   rest.get('/time/api/Projects', (req, res, xtc) => res(
     xtc.status(200),
     xtc.json(projectData),
@@ -197,12 +218,11 @@ const handlers = [
     projectData = projectData.map(
       (project) => {
         if (project.id === parseInt(projectId, 10)) {
-          return res(
-            xtc.status(200),
-            xtc.json({
-              projectStatus: 'Finished',
-            }),
-          );
+          console.log('test11');
+          return {
+            ...project,
+            projectStatus: 'Finished',
+          };
         }
         return project;
       },

@@ -104,7 +104,6 @@ test('edit Project', async () => {
   userEvent.click(screen.getByText('Speichern'));
 
   const testProjectName = await screen.findByText(/project1-edit/);
-  // const testProjectName = await screen.getByRole('cell', { name: /test-project/i });
   const testProjectInitial = await screen.findByText('p1-edit');
   const testProjectComment = await screen.findByText(/p1 dsc-edit/);
 
@@ -121,17 +120,21 @@ test('render delete Project Component', async () => {
   expect(deleteProjectModalText).toBeInTheDocument();
 });
 
-/* test('delete Project', async () => {
+test('delete Project', async () => {
   const buttons = await screen.findAllByTestId('deleteProjectButton');
   userEvent.click(buttons[0]);
 
-  userEvent.click(screen.getByText('Agree'));
+  userEvent.click(screen.getByText('Löschen'));
 
   const deletedProjectName = await screen.findByText(/project1/i);
   screen.debug(undefined, 300000);
   // TODO project should not be visible
   expect(deletedProjectName).toBeInTheDocument();
-}); */
+
+  userEvent.click(buttons[0]);
+  const deleteProjectModalText = await screen.findByText(/Projekt beenden/i);
+  expect(deleteProjectModalText).toBeInTheDocument();
+});
 
 /* Example how to render AddUserToProject Modal -> Pls Test Modal seperated
 test('render add Person Component2', async () => {
