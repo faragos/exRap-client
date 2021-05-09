@@ -127,7 +127,6 @@ test('delete Project', async () => {
   userEvent.click(screen.getByText('Löschen'));
 
   const deletedProjectName = await screen.findByText(/project1/i);
-  screen.debug(undefined, 300000);
   // TODO project should not be visible
   expect(deletedProjectName).toBeInTheDocument();
 
