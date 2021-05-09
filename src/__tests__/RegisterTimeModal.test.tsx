@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  cleanup, render, screen, waitFor,
+  cleanup, fireEvent, render, screen, waitFor,
 } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import userEvent from '@testing-library/user-event';
@@ -8,6 +8,7 @@ import RegisterTimeModal from '../components/modals/RegisterTimeModal';
 import store from '../store/store';
 import { TimeSlotOverview } from '../gen/timeTrack.api.generated';
 import server from '../mocks/server';
+import MockDate from 'mockdate'
 
 // Establish API mocking before all tests.
 beforeAll(() => server.listen());
@@ -32,8 +33,8 @@ const initalTimeSlot: TimeSlotOverview = {
 };
 const timeSlotDto: TimeSlotOverview = {
   id: 1,
-  start: '10:00',
-  end: '12:00',
+  start: new Date(1466424490000).toISOString(),
+  end: new Date(1466424490000).toISOString(),
   comment: 'comment',
   project: {
     key: 1,
@@ -121,3 +122,45 @@ test('close modal', async () => {
   userEvent.click(closeButton);
   expect(setIsModalOpenMock).toBeCalledWith(false);
 });
+
+
+test('test if start date ist changed correctly', async () => {
+  const mockDate = new Date(1466424490000)
+  MockDate.set(mockDate)
+  loadPage(timeSlotDto);
+  let timepicker = (await screen.findAllByLabelText(/Choose time/))[0]
+  await timepicker.click()
+  const sixHours = await screen.findByLabelText('clock view is open, go to text input view' );
+  await sixHours.click()
+  const input = await screen.findByPlaceholderText("hh:mm")
+  fireEvent.input(input, {target: {value: "06:00"}})
+  const closeButton = await screen.findByRole('button', { name: 'OK' })
+  closeButton.click()
+
+  let date = mockDate
+  date.setHours(6, 0)
+  let finishedTimeSlot = {...timeSlotDto, start: date.toISOString()}
+  expect(setTimeSlotMock).toBeCalledWith(finishedTimeSlot);
+  MockDate.reset()
+});
+
+test('test if end date ist changed correctly', async () => {
+  const mockDate = new Date(1466424490000)
+  MockDate.set(mockDate)
+  loadPage(timeSlotDto);
+  let timepicker = (await screen.findAllByLabelText(/Choose time/))[1]
+  await timepicker.click()
+  const sixHours = await screen.findByLabelText('clock view is open, go to text input view' );
+  await sixHours.click()
+  const input = await screen.findByPlaceholderText("hh:mm")
+  fireEvent.input(input, {target: {value: "06:00"}})
+  const closeButton = await screen.findByRole('button', { name: 'OK' })
+  closeButton.click()
+
+  let date = mockDate
+  date.setHours(6, 0)
+  let finishedTimeSlot = {...timeSlotDto, end: date.toISOString()}
+  expect(setTimeSlotMock).toBeCalledWith(finishedTimeSlot);
+  MockDate.reset()
+});
+
