@@ -71,9 +71,9 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   });
 
   const roleDto: RoleOverview[] = [];
-  const getRoles = (fullUser? : UserInformation) : RoleOverview[] => {
-    if (fullUser?.roles && fullUser.roles.length > 0) {
-      return fullUser.roles;
+  const getRoles = (currentFullUser? : UserInformation) : RoleOverview[] => {
+    if (currentFullUser?.roles && currentFullUser.roles.length > 0) {
+      return currentFullUser.roles;
     }
     return roleDto;
   };
@@ -179,7 +179,6 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
             onChange={handleChange}
           />
           <TextField
-            autoFocus
             id="name"
             name="name"
             label="Nachname"
@@ -189,7 +188,6 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
             onChange={handleChange}
           />
           <TextField
-            autoFocus
             id="userName"
             name="userName"
             label="Kürzel"
@@ -200,7 +198,6 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
             fullWidth
           />
           <TextField
-            autoFocus
             id="mailAddress"
             name="mailAddress"
             label="Mail"

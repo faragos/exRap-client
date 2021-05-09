@@ -166,16 +166,16 @@ const Projects : React.FC = () => {
                     <TableCell>{item.initial}</TableCell>
                     <TableCell>{item.description}</TableCell>
                     <TableCell>
-                      <IconButton onClick={showProjectTimeHandler}>
+                      <IconButton data-testid="showTimeButton" onClick={showProjectTimeHandler}>
                         <EqualizerIcon />
                       </IconButton>
-                      <IconButton onClick={() => addUserToProjectHandler(item)} disabled={item.projectStatus !== 'Active'}>
+                      <IconButton data-testid="addProjectButton" onClick={() => addUserToProjectHandler(item)} disabled={item.projectStatus !== 'Active'}>
                         <PersonAddIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleEditProject(item)} disabled={item.projectStatus !== 'Active'}>
+                      <IconButton data-testid="editProjectButton" onClick={() => handleEditProject(item)} disabled={item.projectStatus !== 'Active'}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={() => deleteProject(item)} disabled={item.projectStatus !== 'Active'}>
+                      <IconButton data-testid="deleteProjectButton" onClick={() => deleteProject(item)} disabled={item.projectStatus !== 'Active'}>
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>

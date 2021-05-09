@@ -81,6 +81,7 @@
     "eslint-plugin-react-hooks": "^4.0.8",
     "jest-sonar-reporter": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
+    "mockdate": "^3.0.5",
     "msw": "^0.28.1"
   }
 }
