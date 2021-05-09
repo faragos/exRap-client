@@ -70,7 +70,7 @@ test('add new timeslot', async () => {
 
   expect(commentInput.value).toEqual('test-comment');
   expect(setIsModalOpenMock).toBeCalledWith(false);
-});
+}, 10000);
 
 test('update timeslot', async () => {
   loadPage(timeSlotDto);
