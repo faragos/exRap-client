@@ -211,26 +211,6 @@ const handlers = [
       xtc.status(200),
     );
   }),
-  rest.delete('/time/api/Projects/:projectId', (req, res, xtc) => {
-    // TODO funktioniert noch nicht.
-    const { projectId } = req.params;
-
-    projectData = projectData.map(
-      (project) => {
-        if (project.id === parseInt(projectId, 10)) {
-          console.log('test11');
-          return {
-            ...project,
-            projectStatus: 'Finished',
-          };
-        }
-        return project;
-      },
-    );
-    return res(
-      xtc.status(200),
-    );
-  }),
   rest.get('/time/api/Projects/:projectId/contributors', (req, res, xtc) => {
     const { projectId } = req.params;
     const currentProject = projectData.find((project) => project.id === parseInt(projectId, 10));
