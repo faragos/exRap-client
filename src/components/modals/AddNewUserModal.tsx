@@ -71,9 +71,9 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   });
 
   const roleDto: RoleOverview[] = [];
-  const getRoles = (fullUser? : UserInformation) : RoleOverview[] => {
-    if (fullUser?.roles && fullUser.roles.length > 0) {
-      return fullUser.roles;
+  const getRoles = (currentFullUser? : UserInformation) : RoleOverview[] => {
+    if (currentFullUser?.roles && currentFullUser.roles.length > 0) {
+      return currentFullUser.roles;
     }
     return roleDto;
   };

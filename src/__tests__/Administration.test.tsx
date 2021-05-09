@@ -58,7 +58,7 @@ test('create new User', async () => {
 
   expect(testUserName).toBeInTheDocument();
   expect(testUserInitial).toBeInTheDocument();
-}, 10000);
+}, 20000);
 
 test('render edit User Component', async () => {
   const buttons = await screen.findAllByTestId('editUserButton');
