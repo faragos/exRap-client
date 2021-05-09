@@ -97,7 +97,7 @@ test('render delete User Component', async () => {
   const buttons = await screen.findAllByTestId('deleteUserButton');
   userEvent.click(buttons[0]);
 
-  const deleteUserModalText = await screen.findByText(/Alert/i);
+  const deleteUserModalText = await screen.findByText(/Löschbestätigung/i);
   expect(deleteUserModalText).toBeInTheDocument();
 });
 

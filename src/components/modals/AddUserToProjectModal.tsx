@@ -58,8 +58,6 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
 
   // Differenzmenge - A\B - A ohne B
   const getPossibleContributors = (
-    /*    TODO: die zwei listen haben verschiedene UserOverview Typen
-    Time und Auth API sollen gleiches Objekt liefern */
     userList: UserOverview[],
     contributorList: UserOverview[],
   ): UserOverview[] => {
@@ -69,6 +67,10 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
     result = userList.filter((u) => !contributorList.some((c) => c.userName === u.userName));
     return result;
   };
+
+  const mapTimeToAuthUser = () => users.filter(
+    (u) => usersInProject.some((c) => c.userName === u.userName),
+  );
 
   const [
     addUserToProjectMutation,
@@ -127,12 +129,11 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
           <Table>
             <TableBody>
               {
-                usersInProject.map((item) => (
+                mapTimeToAuthUser().map((item) => (
                   <TableRow key={item.userName}>
+                    <TableCell>{item.firstName}</TableCell>
+                    <TableCell>{item.name}</TableCell>
                     <TableCell>{item.userName}</TableCell>
-                    {/* <TableCell>{item.userInitial}</TableCell>
-                    TODO: API Anpassung, response braucht zusätzliche Attribute
-                    <TableCell>{item.userRole}</TableCell> */}
                     <TableCell>
                       <IconButton onClick={() => deleteContributorHandler(item)}>
                         <DeleteIcon />
