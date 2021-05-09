@@ -85,7 +85,7 @@ interface NavigationAction {
   fn: () => void,
 }
 
-export default function ResponsiveDrawer() {
+export default function Sidebar() {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const classes = useStyles();
