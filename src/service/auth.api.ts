@@ -21,7 +21,7 @@ export const api = generatedApi.enhanceEndpoints({
     usersUpdateUser: {
       invalidatesTags: ['User'],
     },
-    userCredentialsAddCredential: {
+    userCredentialsUpdateCredential: {
       invalidatesTags: ['Password'],
     },
     userRolesOverwriteRoles: {
@@ -35,7 +35,7 @@ export const {
   useLoginRenewTokenQuery,
   useRolesGetRolesQuery,
   useRolesGetRoleQuery,
-  useUserCredentialsAddCredentialMutation,
+  useUserCredentialsUpdateCredentialMutation,
   useUserRolesAddRoleMutation,
   useUserRolesOverwriteRolesMutation,
   useUsersGetUsersQuery,
