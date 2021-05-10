@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import {
   UserOverview,
-  useUserCredentialsAddCredentialMutation, UserCredentialsAddCredentialApiArg,
+  useUserCredentialsUpdateCredentialMutation, UserCredentialsUpdateCredentialApiArg,
 } from '../../gen/auth.api.generated';
 import { PasswordFields } from './AddNewUserModal';
 
@@ -30,7 +30,7 @@ const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
 
   const [
     updateCredentials, // This is the mutation trigger
-  ] = useUserCredentialsAddCredentialMutation();
+  ] = useUserCredentialsUpdateCredentialMutation();
 
   const handleChange = ({
     target: { name, value },
@@ -42,7 +42,7 @@ const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
 
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
-    const param: UserCredentialsAddCredentialApiArg = {
+    const param: UserCredentialsUpdateCredentialApiArg = {
       userId: formState.id,
       manageCredentialRequest: credentials,
     };
