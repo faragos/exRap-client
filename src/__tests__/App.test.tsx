@@ -3,9 +3,20 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import App from '../App';
 import store from '../store/store';
+import server from '../mocks/server';
 
-test('renders learn react link', () => {
+// Establish API mocking before all tests.
+beforeAll(() => server.listen());
+// Reset any request handlers that we may add during the tests,
+// so they don't affect other tests.
+afterEach(() => server.resetHandlers());
+// Clean up after the tests are finished.
+afterAll(() => server.close());
+
+beforeEach(() => {
   render(<Provider store={store}><App /></Provider>);
-  const linkElement = screen.getByText(/ExRap/i);
-  expect(linkElement).toBeInTheDocument();
+});
+
+test('render App Component', async () => {
+  expect(await screen.findByText(/Login/i)).toBeInTheDocument();
 });

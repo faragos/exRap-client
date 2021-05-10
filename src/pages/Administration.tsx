@@ -8,7 +8,6 @@ import {
   TextField,
   InputAdornment,
   Grid,
-  Paper,
   Button,
   IconButton,
 } from '@material-ui/core';
@@ -16,43 +15,73 @@ import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { ExRapAuthDTOUser, UsersCreateUserApiArg } from '../gen/auth.api.generated';
-import { useUsersCreateUserMutation, useUsersGetUsersQuery } from '../service/auth.api';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import {
+  UserOverview, UsersGetUsersApiArg, UsersUpdateUserApiArg, useUsersUpdateUserMutation,
+  UserStatus,
+} from '../gen/auth.api.generated';
+import { useUsersGetUsersQuery } from '../service/auth.api';
+import AddNewUserModal from '../components/modals/AddNewUserModal';
+import AlertDialog from '../components/AlertDialog';
+import ChangeCredentialsModal from '../components/modals/ChangeCredentialsModal';
 
 const Administration : React.FC = () => {
-  const dtoUser: ExRapAuthDTOUser = {
+  const dtoUser: UserOverview = {
+    id: 0,
     userName: '',
     name: '',
     firstName: '',
-    initial: '',
     mailAddress: '',
     status: 'Restricted',
+    roles: [''],
   };
-  const [formState, setFormState] = useState(dtoUser);
 
+  const [currentUser, setCurrentUser] = useState(dtoUser);
+  const [isUserModalOpen, setIsUserModalOpen] = useState(false);
+  const [isCredentialsModalOpen, setIsCredentialsModalOpen] = useState(false);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+
+  const usersArg: UsersGetUsersApiArg = {};
+  const { data: users = [] } = useUsersGetUsersQuery(usersArg);
   const [
-    createUser, // This is the mutation trigger
-  ] = useUsersCreateUserMutation();
+    updateUser,
+  ] = useUsersUpdateUserMutation();
 
-  const handleChange = ({
-    target: { name, value },
-  }: React.ChangeEvent<HTMLInputElement>) => setFormState((prev) => ({ ...prev, [name]: value }));
+  const addNewUserHandler = () => {
+    setCurrentUser(dtoUser);
+    setIsUserModalOpen(true);
+  };
 
-  const handleSubmit = async (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
+  const editUser = (user: UserOverview) => {
+    setCurrentUser(user);
+    setIsUserModalOpen(true);
+  };
+
+  const editCredentials = (user: UserOverview) => {
+    setCurrentUser(user);
+    setIsCredentialsModalOpen(true);
+  };
+
+  const deleteUser = (user: UserOverview) => {
+    setCurrentUser(user);
+    setIsDeleteAlertOpen(true);
+  };
+
+  const confirmDeleteUser = async () => {
+    const userStatus: UserStatus = 'Deleted';
+    const user = { ...currentUser, status: userStatus };
     try {
-      const param: UsersCreateUserApiArg = { exRapAuthDtoUser: formState };
-      createUser(param);
+      const param: UsersUpdateUserApiArg = {
+        userId: user.id,
+        manageUserRequest: user,
+      };
+      updateUser(param);
     } catch (err) {
       console.log(err);
     }
+    setCurrentUser(user);
+    setIsDeleteAlertOpen(false);
   };
-
-  const { data } = useUsersGetUsersQuery({});
-  let users;
-  if (data) {
-    users = data.map((user) => <li key={user.id}>{user.userName}</li>);
-  }
 
   const useStyles = makeStyles((theme) => ({
     table: {
@@ -68,76 +97,35 @@ const Administration : React.FC = () => {
         width: '25%',
       },
     },
+    toolbar: {
+      display: 'grid',
+      gridGap: '20px',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+      justifyContent: 'space-between',
+      [theme.breakpoints.up('md')]: {
+        gridTemplateColumns: 'minmax(200px, 300px) minmax(200px, 300px)',
+      },
+    },
     newUserButton: {
-      position: 'absolute',
-      right: '10px',
+    },
+    search: {
+      paddingTop: '10px',
+      paddingBottom: '10px',
     },
   }));
 
-  const paperStyle = {
-    padding: 20,
-    height: '50vh',
-    width: 900,
-    margin: '20px auto',
-  };
-
   const classes = useStyles();
-
-  const tableEntries = [
-    {
-      _id: '1',
-      userFullName: 'Lukas Schlunegger',
-      userShortName: 'lsc',
-      userPosition: 'System Engineer',
-    },
-    {
-      _id: '2',
-      userFullName: 'Armend Lesi',
-      userShortName: 'ale',
-      userPosition: 'Projektleiter',
-    },
-  ];
-
   return (
-    <Grid>
-      <h1> Administration </h1>
-      <h2>Alle Benutzer</h2>
-      {users}
+    <div>
+      <Grid>
+        <h1> Administration </h1>
 
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="username">
-          username
-          <input id="username" name="username" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="name">
-          name
-          <input id="name" name="name" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="firstName">
-          firstName
-          <input id="firstName" name="firstName" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="initial">
-          initial
-          <input id="initial" name="initial" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="mailAddress">
-          mailAddress
-          <input id="mailAddress" name="mailAddress" type="text" onChange={handleChange} />
-        </label>
-        <label htmlFor="status">
-          status
-          <input id="status" name="status" type="text" onChange={handleChange} />
-        </label>
-        <input type="submit" value="add" />
-      </form>
-
-      <Paper elevation={10} style={paperStyle}>
-        <Toolbar>
+        <Toolbar className={classes.toolbar}>
           <TextField
             name="Suche"
             label="Suche"
             type="text"
+            className={classes.search}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -146,35 +134,56 @@ const Administration : React.FC = () => {
               ),
             }}
           />
-          <Button variant="outlined" color="primary" className={classes.newUserButton}>
+          <Button variant="contained" color="primary" className={classes.newUserButton} onClick={addNewUserHandler}>
             Neuer Mitarbeiter erfassen
           </Button>
         </Toolbar>
         <Table className={classes.table}>
           <TableBody>
             {
-            tableEntries.map((item) => (
-              <TableRow>
-                <TableCell>{item.userFullName}</TableCell>
-                <TableCell>{item.userShortName}</TableCell>
-                <TableCell>{item.userPosition}</TableCell>
-                <TableCell>
-                  <IconButton>
-                    <EditIcon />
-                  </IconButton>
-                  <IconButton>
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))
+              users.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    {item.firstName}
+                    {' '}
+                    {item.name}
+                  </TableCell>
+                  <TableCell>{item.userName}</TableCell>
+                  <TableCell>{item.roles?.join(', ')}</TableCell>
+                  <TableCell>
+                    <IconButton data-testid="editUserButton" onClick={() => editUser(item)}>
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton data-testid="editPasswordButton" onClick={() => editCredentials(item)}>
+                      <VpnKeyIcon />
+                    </IconButton>
+                    <IconButton data-testid="deleteUserButton" onClick={() => deleteUser(item)}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
           }
           </TableBody>
         </Table>
-      </Paper>
-    </Grid>
-
+      </Grid>
+      <AddNewUserModal
+        isModalOpen={isUserModalOpen}
+        setIsModalOpen={setIsUserModalOpen}
+        user={currentUser}
+      />
+      <ChangeCredentialsModal
+        isModalOpen={isCredentialsModalOpen}
+        setIsModalOpen={setIsCredentialsModalOpen}
+        user={currentUser}
+      />
+      <AlertDialog
+        isOpen={isDeleteAlertOpen}
+        setIsOpen={setIsDeleteAlertOpen}
+        handleConfirm={confirmDeleteUser}
+        content="Wollen sie den User wirklich löschen?"
+      />
+    </div>
   );
 };
-
 export default Administration;

@@ -1,23 +1,23 @@
 import { api as generatedApi } from '../gen/dashboard.api.generated';
 
 export const api = generatedApi.enhanceEndpoints({
-  addEntityTypes: ['Dashboard'],
+  addTagTypes: ['Dashboard'],
   endpoints: {
     // basic notation: just specify properties to be overridden
     dashboardsGetDashboards: {
-      provides: ['Dashboard'],
+      providesTags: ['Dashboard'],
     },
     dashboardsCreateDashboard: {
-      invalidates: ['Dashboard'],
+      invalidatesTags: ['Dashboard'],
     },
     dashboardsGetDashboard: {
-      provides: ['Dashboard'],
+      providesTags: ['Dashboard'],
     },
     dashboardsUpdateDashboard: {
-      invalidates: ['Dashboard'],
+      invalidatesTags: ['Dashboard'],
     },
     dashboardsDeleteDashboard: {
-      invalidates: ['Dashboard'],
+      invalidatesTags: ['Dashboard'],
     },
   },
 });

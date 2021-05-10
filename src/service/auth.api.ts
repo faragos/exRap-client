@@ -1,20 +1,31 @@
 import { api as generatedApi } from '../gen/auth.api.generated';
 
 export const api = generatedApi.enhanceEndpoints({
-  addEntityTypes: ['Login', 'User'],
+  addTagTypes: ['Login', 'User', 'Password'],
   endpoints: {
-    // basic notation: just specify properties to be overridden
     loginLogin: {
-      invalidates: ['Login'],
+      invalidatesTags: ['Login'],
     },
     rolesGetRoles: {
-      provides: ['Login'],
+      providesTags: ['Login', 'User'],
+    },
+    usersGetUser: {
+      providesTags: ['User'],
     },
     usersGetUsers: {
-      provides: ['User'],
+      providesTags: ['User'],
     },
     usersCreateUser: {
-      invalidates: ['User'],
+      invalidatesTags: ['User'],
+    },
+    usersUpdateUser: {
+      invalidatesTags: ['User'],
+    },
+    userCredentialsUpdateCredential: {
+      invalidatesTags: ['Password'],
+    },
+    userRolesOverwriteRoles: {
+      invalidatesTags: ['User'],
     },
   },
 });
@@ -24,8 +35,9 @@ export const {
   useLoginRenewTokenQuery,
   useRolesGetRolesQuery,
   useRolesGetRoleQuery,
-  useUserCredentialsAddCredentialMutation,
+  useUserCredentialsUpdateCredentialMutation,
   useUserRolesAddRoleMutation,
+  useUserRolesOverwriteRolesMutation,
   useUsersGetUsersQuery,
   useUsersCreateUserMutation,
   useUsersGetUserQuery,
