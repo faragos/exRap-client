@@ -4,9 +4,19 @@ import {
   TableBody,
   TableCell,
   TableRow,
+  Paper,
 } from '@material-ui/core';
+import {
+  Chart,
+  ArgumentAxis,
+  ValueAxis,
+  BarSeries,
+  Title,
+  Legend,
+} from '@devexpress/dx-react-chart-material-ui';
 import { makeStyles } from '@material-ui/core/styles';
 import TableHead from '@material-ui/core/TableHead';
+import { Stack, Animation } from '@devexpress/dx-react-chart';
 
 const Dashboard : React.FC = () => {
   const myProject = [
@@ -43,8 +53,20 @@ const Dashboard : React.FC = () => {
     {
       id: 3,
       projectName: 'Projekt 3',
-      usersInProject: 2,
+      usersInProject: 10,
       hoursInProject: 48,
+    },
+  ];
+
+  const chartData = [
+    {
+      barName: 'Anzahl Mitarbeiter',
+      2020: 36,
+      2021: 38,
+    }, {
+      barName: 'Anzahl Projekte',
+      2020: 51,
+      2021: 21,
     },
   ];
 
@@ -59,9 +81,15 @@ const Dashboard : React.FC = () => {
         cursor: 'pointed',
       },
     },
+    paper: {
+      width: 500,
+      height: 500,
+      margin: 30,
+      flexDirection: 'row',
+    },
   }));
-
   const classes = useStyles();
+
   return (
     <div>
       <h1> Dashboard </h1>
@@ -85,6 +113,32 @@ const Dashboard : React.FC = () => {
                 }
         </TableBody>
       </Table>
+
+      <Paper className={classes.paper}>
+        <Chart
+          data={chartData}
+        >
+          <ArgumentAxis />
+          <ValueAxis />
+
+          <BarSeries
+            name="2020"
+            valueField="2020"
+            argumentField="barName"
+            color="#D3D3D3"
+          />
+          <BarSeries
+            name="2021"
+            valueField="2021"
+            argumentField="barName"
+            color="#808080"
+          />
+          <Animation />
+          <Legend position="bottom" />
+          <Title text="Projektübersicht" />
+          <Stack />
+        </Chart>
+      </Paper>
 
       <Table className={classes.table} style={{ width: 350, float: 'right' }}>
         <TableHead>
