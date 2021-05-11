@@ -105,6 +105,8 @@ const Calendar: React.FC<ChildComponentProps> = ({
         ref={calendarRef}
         stickyHeaderDates
         contentHeight="auto"
+        eventColor="#a1887f"
+        eventTextColor="#000"
       />
     </div>
   );
