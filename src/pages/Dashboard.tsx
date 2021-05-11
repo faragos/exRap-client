@@ -53,7 +53,7 @@ const Dashboard : React.FC = () => {
     {
       id: 3,
       projectName: 'Projekt 3',
-      usersInProject: 10,
+      usersInProject: 2,
       hoursInProject: 48,
     },
   ];
