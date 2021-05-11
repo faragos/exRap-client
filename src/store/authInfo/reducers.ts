@@ -17,10 +17,7 @@ const userSlice = createSlice({
       state.isAuthenticated = true;
       sessionStorage.setItem('token', token);
     },
-    clearUser: (state) => {
-      state.username = '';
-      state.token = '';
-      state.isAuthenticated = false;
+    clearUser: () => {
       sessionStorage.clear();
     },
   },
