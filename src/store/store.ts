@@ -1,15 +1,25 @@
-import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import {
+  configureStore, combineReducers, Action,
+} from '@reduxjs/toolkit';
 import { api as dashboardApi } from '../service/dashboard.api';
 import { api as authApi } from '../service/auth.api';
 import { api as timeTrackApi } from '../service/timeTrack.api';
-import authInfoReducer from './authInfo/reducers';
+import authInfoReducer, { clearUser } from './authInfo/reducers';
 
-const rootReducer = combineReducers({
+const appReducer = combineReducers({
   authInfo: authInfoReducer,
   [dashboardApi.reducerPath]: dashboardApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
   [timeTrackApi.reducerPath]: timeTrackApi.reducer,
 });
+
+const rootReducer = (state: any, action: Action<any>) => {
+  if (clearUser.match(action)) {
+    // eslint-disable-next-line no-param-reassign
+    state = undefined;
+  }
+  return appReducer(state, action);
+};
 
 const store = configureStore({
   reducer: rootReducer,
