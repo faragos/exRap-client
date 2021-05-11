@@ -1,52 +1,17 @@
 import React from 'react';
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow,
+  Table, TableBody, TableCell, TableRow,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import TableHead from '@material-ui/core/TableHead';
+import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
+import { useAppSelector } from '../hooks';
+import printSpentTime from '../utils/utils';
 
 const Dashboard : React.FC = () => {
-  const myProject = [
-    {
-      id: 1,
-      projectName: 'Projekt 1',
-      hoursInProject: 108,
-    },
-    {
-      id: 2,
-      projectName: 'Projekt 1',
-      hoursInProject: 80,
-    },
-    {
-      id: 3,
-      projectName: 'Projekt 1',
-      hoursInProject: 50,
-    },
-  ];
-
-  const projects = [
-    {
-      id: 1,
-      projectName: 'Projekt 1',
-      usersInProject: 5,
-      hoursInProject: 108,
-    },
-    {
-      id: 2,
-      projectName: 'Projekt 2',
-      usersInProject: 2,
-      hoursInProject: 48,
-    },
-    {
-      id: 3,
-      projectName: 'Projekt 3',
-      usersInProject: 2,
-      hoursInProject: 48,
-    },
-  ];
+  const authInfo = useAppSelector((state) => state.authInfo);
+  const { data: contributorProjects } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Contributor' });
+  const { data: managerProjects } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Manager' });
 
   const useStyles = makeStyles((theme) => ({
     table: {
@@ -74,14 +39,14 @@ const Dashboard : React.FC = () => {
         </TableHead>
         <TableBody>
           {
-                    myProject.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell>
-                          {item.projectName}
-                        </TableCell>
-                        <TableCell align="right">{item.hoursInProject}</TableCell>
-                      </TableRow>
-                    ))
+            contributorProjects?.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>
+                  {item.name}
+                </TableCell>
+                <TableCell align="right">{printSpentTime(item.contributorsSpentMinutes?.[authInfo.username])}</TableCell>
+              </TableRow>
+            ))
                 }
         </TableBody>
       </Table>
@@ -96,15 +61,15 @@ const Dashboard : React.FC = () => {
         </TableHead>
         <TableBody>
           {
-                    projects.map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell>
-                          {item.projectName}
-                        </TableCell>
-                        <TableCell align="center">{item.usersInProject}</TableCell>
-                        <TableCell align="right">{item.hoursInProject}</TableCell>
-                      </TableRow>
-                    ))
+            managerProjects?.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>
+                  {item.name}
+                </TableCell>
+                <TableCell align="center">{Object.keys(item.contributorsSpentMinutes || {}).length}</TableCell>
+                <TableCell align="right">{printSpentTime(item.totalSpentMinutes)}</TableCell>
+              </TableRow>
+            ))
                 }
         </TableBody>
       </Table>
