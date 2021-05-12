@@ -116,7 +116,8 @@ const Projects : React.FC = () => {
     setIsAddUserToProjectModalOpen(true);
   };
 
-  const showProjectTimeHandler = () => {
+  const showProjectTimeHandler = (project: ProjectOverview) => {
+    setCurrentProject(project);
     setIsShowProjectTimeModalOpen(true);
   };
 
@@ -166,7 +167,7 @@ const Projects : React.FC = () => {
                     <TableCell>{item.initial}</TableCell>
                     <TableCell>{item.description}</TableCell>
                     <TableCell>
-                      <IconButton data-testid="showTimeButton" onClick={showProjectTimeHandler}>
+                      <IconButton data-testid="showTimeButton" onClick={() => showProjectTimeHandler(item)}>
                         <EqualizerIcon />
                       </IconButton>
                       <IconButton data-testid="addProjectButton" onClick={() => addUserToProjectHandler(item)} disabled={item.projectStatus !== 'Active'}>
@@ -201,6 +202,7 @@ const Projects : React.FC = () => {
       <ShowProjectTimeModal
         isModalOpen={isShowProjectTimeModalOpen}
         setIsModalOpen={setIsShowProjectTimeModalOpen}
+        project={currentProject}
       />
       <AlertDialog
         isOpen={isDeleteAlertOpen}

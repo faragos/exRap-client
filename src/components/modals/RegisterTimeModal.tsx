@@ -38,12 +38,6 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   isModalOpen,
 }: ChildComponentProps) => {
   const { data: projects = [] } = useProjectsGetProjectsQuery({ status: 'Active' });
-  const projectDto: ProjectOverview = {
-    id: 0,
-    initial: '',
-    name: '',
-  };
-  const [selectedProject, setSelectedProject] = useState(projectDto);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const deleteTitle = 'Zeiteintrag';
   const deleteContent = 'Wollen sie den Zeiteintrag wirklich löschen?';
@@ -84,6 +78,10 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
     }
   };
 
+  const handleCommentChange = (event: any) => {
+    setTimeSlot({ ...timeSlot, comment: event.target.value });
+  };
+
   const [addTimeslot] = useProjectTimeslotsAddTimeslotMutation();
   const [updateTimeslot] = useProjectTimeslotsUpdateTimeslotMutation();
 
@@ -92,7 +90,7 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
       try {
         const updateArgs: ProjectTimeslotsUpdateTimeslotApiArg = {
           timeslotId: timeSlot.id,
-          projectId: selectedProject.id,
+          projectId: timeSlot.project.key || 0,
           manageTimeSlotRequest: timeSlot,
         };
         updateTimeslot(updateArgs);
@@ -102,7 +100,7 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
     } else {
       try {
         const addArgs: ProjectTimeslotsAddTimeslotApiArg = {
-          projectId: selectedProject.id,
+          projectId: timeSlot.project.key || 0,
           manageTimeSlotRequest: timeSlot,
         };
         addTimeslot(addArgs);
@@ -136,11 +134,10 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
 
   const selectProjectHandler = (
     event: SyntheticEvent<Element, Event>,
-    value: ProjectOverview | null,
+    project: ProjectOverview | null,
   ) => {
-    if (value === null) return;
-
-    setSelectedProject(value);
+    if (project === null) return;
+    setTimeSlot({ ...timeSlot, project: { key: project.id, value: project.name } });
   };
 
   return (
@@ -175,7 +172,6 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
             />
           </LocalizationProvider>
           <TextField
-            autoFocus
             margin="dense"
             id="comment"
             label="Kommentar"
@@ -183,6 +179,8 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
             multiline
             rows={4}
             variant="filled"
+            onChange={handleCommentChange}
+            value={timeSlot.comment || ''}
           />
         </DialogContent>
         <DialogActions>
