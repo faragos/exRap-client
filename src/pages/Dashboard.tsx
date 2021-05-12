@@ -13,6 +13,7 @@ import {
   BarSeries,
   Title,
   Legend,
+  LineSeries,
 } from '@devexpress/dx-react-chart-material-ui';
 import { makeStyles } from '@material-ui/core/styles';
 import TableHead from '@material-ui/core/TableHead';
@@ -67,6 +68,35 @@ const Dashboard : React.FC = () => {
       barName: 'Anzahl Projekte',
       2020: 51,
       2021: 21,
+    },
+  ];
+
+  const confidence = [
+    {
+      year: 2010,
+      tvNews: 19,
+      church: 29,
+      military: 32,
+    }, {
+      year: 2012,
+      tvNews: 13,
+      church: 32,
+      military: 33,
+    }, {
+      year: 2014,
+      tvNews: 14,
+      church: 35,
+      military: 30,
+    }, {
+      year: 2016,
+      tvNews: 13,
+      church: 32,
+      military: 34,
+    }, {
+      year: 2018,
+      tvNews: 15,
+      church: 28,
+      military: 32,
     },
   ];
 
@@ -137,6 +167,36 @@ const Dashboard : React.FC = () => {
           <Legend position="bottom" />
           <Title text="Projektübersicht" />
           <Stack />
+        </Chart>
+      </Paper>
+
+      <Paper className={classes.paper}>
+        <Chart
+          data={confidence}
+        >
+          <ArgumentAxis />
+          <ValueAxis />
+
+          <LineSeries
+            name="Projekt 1"
+            valueField="tvNews"
+            argumentField="year"
+          />
+          <LineSeries
+            name="Projekt 2"
+            valueField="church"
+            argumentField="year"
+          />
+          <LineSeries
+            name="Projekt 3"
+            valueField="military"
+            argumentField="year"
+          />
+          <Legend position="bottom" />
+          <Title
+            text={`Confidence in Institutions in American society ${'\n'}(Great deal)`}
+          />
+          <Animation />
         </Chart>
       </Paper>
 
