@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Table, TableBody, TableCell, TableRow, Paper,
+  Table, TableBody, TableCell, TableRow,
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -26,34 +26,36 @@ const Dashboard : React.FC = () => {
     },
   ]; */
 
-  /*
-  const confidence = [
+  const projectsOverview = [
     {
-      year: 2010,
-      tvNews: 19,
-      church: 29,
+      id: 1,
+      year: 2019,
+      users: 20,
+      projects: 4,
     }, {
-      year: 2012,
-      tvNews: 13,
-      church: 32,
+      id: 2,
+      year: 2020,
+      users: 23,
+      projects: 5,
     }, {
-      year: 2014,
-      tvNews: 14,
-      church: 35,
+      id: 3,
+      year: 2021,
+      users: 30,
+      projects: 8,
     }, {
-      year: 2016,
-      tvNews: 13,
-      church: 32,
-    }, {
-      year: 2018,
-      tvNews: 15,
-      church: 28,
+      id: 4,
+      year: 2022,
+      users: 24,
+      projects: 5,
     },
   ];
-*/
 
   const useStyles = makeStyles((theme) => ({
     table: {
+      width: '50%',
+      height: '50%',
+      float: 'left',
+      border: 10,
       marginTop: theme.spacing(3),
       '& tbody td': {
         fontWeight: '300',
@@ -63,20 +65,6 @@ const Dashboard : React.FC = () => {
         cursor: 'pointed',
       },
     },
-    paperProjectOverview: {
-      width: 500,
-      height: 500,
-      margin: 30,
-      flexDirection: 'row',
-    },
-    paperProjectUserTrend: {
-      width: 500,
-      height: 500,
-      margin: 30,
-      position: 'absolute',
-      top: 0,
-      right: 0,
-    },
   }));
 
   const classes = useStyles();
@@ -85,7 +73,7 @@ const Dashboard : React.FC = () => {
     <div>
       <h1> Dashboard </h1>
 
-      <Table className={classes.table} style={{ width: 300 }}>
+      <Table className={classes.table}>
         <TableHead>
           <TableRow>
             <TableCell colSpan={3}>Meine Projekte</TableCell>
@@ -105,11 +93,51 @@ const Dashboard : React.FC = () => {
         </TableBody>
       </Table>
 
-      <Paper className={classes.paperProjectOverview} />
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Projekt/Mitarbeiter-Verlauf</TableCell>
+            <TableCell align="center">Projekte/Mitarbeiter</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {
+            projectsOverview.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>
+                  {item.year}
+                </TableCell>
+                <TableCell align="center">{item.projects / item.users}</TableCell>
+              </TableRow>
+            ))
+          }
+        </TableBody>
+      </Table>
 
-      <Paper className={classes.paperProjectUserTrend} />
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Projektübersicht</TableCell>
+            <TableCell align="center">Anzahl Projekte</TableCell>
+            <TableCell align="right">Anzahl Mitarbeiter</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {
+            projectsOverview.map((item) => (
+              <TableRow key={item.id}>
+                <TableCell>
+                  {item.year}
+                </TableCell>
+                <TableCell align="center">{item.projects}</TableCell>
+                <TableCell align="right">{item.users}</TableCell>
+              </TableRow>
+            ))
+          }
+        </TableBody>
+      </Table>
 
-      <Table className={classes.table} style={{ width: 350, float: 'right' }}>
+      <Table className={classes.table}>
         <TableHead>
           <TableRow>
             <TableCell>Projektname</TableCell>
