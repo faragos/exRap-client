@@ -2,28 +2,19 @@ import React from 'react';
 import {
   Table, TableBody, TableCell, TableRow, Paper,
 } from '@material-ui/core';
-import {
-  Chart,
-  ArgumentAxis,
-  ValueAxis,
-  BarSeries,
-  Title,
-  Legend,
-  LineSeries,
-} from '@devexpress/dx-react-chart-material-ui';
+
 import { makeStyles } from '@material-ui/core/styles';
 import TableHead from '@material-ui/core/TableHead';
 import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
 import { useAppSelector } from '../hooks';
 import printSpentTime from '../utils/utils';
-import { Stack, Animation } from '@devexpress/dx-react-chart';
 
 const Dashboard : React.FC = () => {
   const authInfo = useAppSelector((state) => state.authInfo);
   const { data: contributorProjects } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Contributor' });
   const { data: managerProjects } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Manager' });
 
-  const chartData = [
+  /*  const chartData = [
     {
       barName: 'Anzahl Mitarbeiter',
       2020: 36,
@@ -33,36 +24,33 @@ const Dashboard : React.FC = () => {
       2020: 51,
       2021: 21,
     },
-  ];
+  ]; */
 
+  /*
   const confidence = [
     {
       year: 2010,
       tvNews: 19,
       church: 29,
-      military: 32,
     }, {
       year: 2012,
       tvNews: 13,
       church: 32,
-      military: 33,
     }, {
       year: 2014,
       tvNews: 14,
       church: 35,
-      military: 30,
     }, {
       year: 2016,
       tvNews: 13,
       church: 32,
-      military: 34,
     }, {
       year: 2018,
       tvNews: 15,
       church: 28,
-      military: 32,
     },
   ];
+*/
 
   const useStyles = makeStyles((theme) => ({
     table: {
@@ -75,11 +63,19 @@ const Dashboard : React.FC = () => {
         cursor: 'pointed',
       },
     },
-    paper: {
+    paperProjectOverview: {
       width: 500,
       height: 500,
       margin: 30,
       flexDirection: 'row',
+    },
+    paperProjectUserTrend: {
+      width: 500,
+      height: 500,
+      margin: 30,
+      position: 'absolute',
+      top: 0,
+      right: 0,
     },
   }));
 
@@ -109,61 +105,9 @@ const Dashboard : React.FC = () => {
         </TableBody>
       </Table>
 
-      <Paper className={classes.paper}>
-        <Chart
-          data={chartData}
-        >
-          <ArgumentAxis />
-          <ValueAxis />
+      <Paper className={classes.paperProjectOverview} />
 
-          <BarSeries
-            name="2020"
-            valueField="2020"
-            argumentField="barName"
-            color="#D3D3D3"
-          />
-          <BarSeries
-            name="2021"
-            valueField="2021"
-            argumentField="barName"
-            color="#808080"
-          />
-          <Animation />
-          <Legend position="bottom" />
-          <Title text="Projektübersicht" />
-          <Stack />
-        </Chart>
-      </Paper>
-
-      <Paper className={classes.paper}>
-        <Chart
-          data={confidence}
-        >
-          <ArgumentAxis />
-          <ValueAxis />
-
-          <LineSeries
-            name="Projekt 1"
-            valueField="tvNews"
-            argumentField="year"
-          />
-          <LineSeries
-            name="Projekt 2"
-            valueField="church"
-            argumentField="year"
-          />
-          <LineSeries
-            name="Projekt 3"
-            valueField="military"
-            argumentField="year"
-          />
-          <Legend position="bottom" />
-          <Title
-            text={`Confidence in Institutions in American society ${'\n'}(Great deal)`}
-          />
-          <Animation />
-        </Chart>
-      </Paper>
+      <Paper className={classes.paperProjectUserTrend} />
 
       <Table className={classes.table} style={{ width: 350, float: 'right' }}>
         <TableHead>
