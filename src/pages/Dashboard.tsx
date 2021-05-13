@@ -40,10 +40,10 @@ const Dashboard : React.FC = () => {
 
   const useStyles = makeStyles((theme) => ({
     table: {
-      width: '50%',
-      height: '50%',
+      width: '45%',
+      height: '45%',
       float: 'left',
-      border: 10,
+      margin: 10,
       marginTop: theme.spacing(3),
       '& tbody td': {
         fontWeight: '300',
