@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Table, TableBody, TableCell, TableRow,
+  Table, TableBody, TableCell, TableContainer, TableRow, Typography,
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -81,49 +81,55 @@ const Dashboard : React.FC = () => {
         </TableBody>
       </Table>
 
-      <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Projekt/Mitarbeiter-Verlauf</TableCell>
-            <TableCell align="center">Projekte/Mitarbeiter</TableCell>
+      <TableContainer className={classes.table}>
+        <Typography variant="h6">Projekt/Mitarbeiter-Verlauf</Typography>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Jahr</TableCell>
+              <TableCell align="center">Projekte/Mitarbeiter</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {
+        projectsOverview.map((item) => (
+          <TableRow key={item.id}>
+            <TableCell>
+              {item.year}
+            </TableCell>
+            <TableCell align="center">{item.projects / item.users}</TableCell>
           </TableRow>
-        </TableHead>
-        <TableBody>
-          {
-            projectsOverview.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>
-                  {item.year}
-                </TableCell>
-                <TableCell align="center">{item.projects / item.users}</TableCell>
-              </TableRow>
-            ))
-          }
-        </TableBody>
-      </Table>
+        ))
+      }
+          </TableBody>
+        </Table>
+      </TableContainer>
 
-      <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Projektübersicht</TableCell>
-            <TableCell align="center">Anzahl Projekte</TableCell>
-            <TableCell align="right">Anzahl Mitarbeiter</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {
-            projectsOverview.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>
-                  {item.year}
-                </TableCell>
-                <TableCell align="center">{item.projects}</TableCell>
-                <TableCell align="right">{item.users}</TableCell>
-              </TableRow>
-            ))
-          }
-        </TableBody>
-      </Table>
+      <TableContainer className={classes.table}>
+        <Typography variant="h6">Projektübersicht</Typography>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Jahr</TableCell>
+              <TableCell align="center">Anzahl Projekte</TableCell>
+              <TableCell align="right">Anzahl Mitarbeiter</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {
+              projectsOverview.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    {item.year}
+                  </TableCell>
+                  <TableCell align="center">{item.projects}</TableCell>
+                  <TableCell align="right">{item.users}</TableCell>
+                </TableRow>
+              ))
+            }
+          </TableBody>
+        </Table>
+      </TableContainer>
 
       <Table className={classes.table}>
         <TableHead>
