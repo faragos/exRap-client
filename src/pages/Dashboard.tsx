@@ -14,18 +14,6 @@ const Dashboard : React.FC = () => {
   const { data: contributorProjects } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Contributor' });
   const { data: managerProjects } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Manager' });
 
-  /*  const chartData = [
-    {
-      barName: 'Anzahl Mitarbeiter',
-      2020: 36,
-      2021: 38,
-    }, {
-      barName: 'Anzahl Projekte',
-      2020: 51,
-      2021: 21,
-    },
-  ]; */
-
   const projectsOverview = [
     {
       id: 1,
