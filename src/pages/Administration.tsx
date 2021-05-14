@@ -5,17 +5,17 @@ import {
   TableRow,
   TableCell,
   Toolbar,
-  TextField,
-  InputAdornment,
+  /* InputAdornment, */
   Grid,
   Button,
   IconButton,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import SearchIcon from '@material-ui/icons/Search';
+/* import SearchIcon from '@material-ui/icons/Search'; */
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import SearchBar from 'material-ui-search-bar';
 import {
   UserOverview, UsersGetUsersApiArg, UsersUpdateUserApiArg, useUsersUpdateUserMutation,
   UserStatus,
@@ -46,6 +46,9 @@ const Administration : React.FC = () => {
   const [
     updateUser,
   ] = useUsersUpdateUserMutation();
+
+  const [items, setItems] = useState<UserOverview[]>(users);
+  const [searched, setSearched] = useState<string>('');
 
   const addNewUserHandler = () => {
     setCurrentUser(dtoUser);
@@ -81,6 +84,16 @@ const Administration : React.FC = () => {
     }
     setCurrentUser(user);
     setIsDeleteAlertOpen(false);
+  };
+
+  const requestSearch = (searchedVal: string) => {
+    const itFil = users.filter((row) => row.name.toLowerCase().includes(searchedVal.toLowerCase()));
+    setItems(itFil);
+  };
+
+  const cancelSearch = () => {
+    setSearched('');
+    requestSearch(searched);
   };
 
   const useStyles = makeStyles((theme) => ({
@@ -121,18 +134,19 @@ const Administration : React.FC = () => {
         <h1> Administration </h1>
 
         <Toolbar className={classes.toolbar}>
-          <TextField
-            name="Suche"
-            label="Suche"
-            type="text"
+          <SearchBar
+            // name="Suche"
+            // type="text"
             className={classes.search}
-            InputProps={{
+            onChange={(searchedVal) => requestSearch(searchedVal)}
+            onCancelSearch={() => cancelSearch()}
+/*            InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
                   <SearchIcon />
                 </InputAdornment>
               ),
-            }}
+            }} */
           />
           <Button variant="contained" color="primary" className={classes.newUserButton} onClick={addNewUserHandler}>
             Neuer Mitarbeiter erfassen
@@ -141,7 +155,7 @@ const Administration : React.FC = () => {
         <Table className={classes.table}>
           <TableBody>
             {
-              users.map((item) => (
+              items.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>
                     {item.firstName}
