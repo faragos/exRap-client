@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { /* useEffect, */ useState } from 'react';
 import {
   Table,
   TableBody,
@@ -46,8 +46,9 @@ const Administration : React.FC = () => {
   const [
     updateUser,
   ] = useUsersUpdateUserMutation();
-
+  /*
   const [rows, setRows] = useState<UserOverview[]>(users);
+*/
 
   const addNewUserHandler = () => {
     setCurrentUser(dtoUser);
@@ -85,18 +86,20 @@ const Administration : React.FC = () => {
     setIsDeleteAlertOpen(false);
   };
 
-  const handleSearch = (searchedValue: { target: { value: string; }; } | null) => {
+  /*  const handleSearch = (searchedValue: { target: { value: string; }; } | null) => {
     if (searchedValue == null) {
       setRows(users);
     } else {
-      /* eslint-disable-next-line max-len */
-      setRows(users.filter((row) => row.name.toLowerCase().includes(searchedValue.target.value.toLowerCase()) || row.firstName.toLowerCase().includes(searchedValue.target.value.toLowerCase())));
+      /!* eslint-disable-next-line max-len *!/
+      setRows(users.filter((row) =>
+      row.name.toLowerCase().includes(searchedValue.target.value.toLowerCase())
+      || row.firstName.toLowerCase().includes(searchedValue.target.value.toLowerCase())));
     }
-  };
+  }; */
 
-  useEffect(() => {
+  /*  useEffect(() => {
     handleSearch(null);
-  }, [users]);
+  }, [users]); */
 
   const useStyles = makeStyles((theme) => ({
     table: {
@@ -139,7 +142,7 @@ const Administration : React.FC = () => {
           <TextField
             type="string"
             label="Suche Mitarbeiter"
-            onChange={handleSearch}
+/*            onChange={handleSearch} */
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -155,7 +158,10 @@ const Administration : React.FC = () => {
         <Table className={classes.table}>
           <TableBody>
             {
+              users.map((item) => (
+                /*
               rows.map((item) => (
+*/
                 <TableRow key={item.id}>
                   <TableCell>
                     {item.firstName}
