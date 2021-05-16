@@ -5,19 +5,21 @@ import {
   TableRow,
   TableCell,
   Toolbar,
-  /*  TextField,
-  InputAdornment, */
   Grid,
-  Button, IconButton, FormControlLabel, Checkbox,
+  Button,
+  IconButton,
+  FormControlLabel,
+  Checkbox,
+  TextField,
+  InputAdornment,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-/* import SearchIcon from '@material-ui/icons/Search'; */
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
-import SearchBar from 'material-ui-search-bar';
 
+import SearchIcon from '@material-ui/icons/Search';
 import ProjectFormModal from '../components/modals/ProjectFormModal';
 import AddUserToProjectModal from '../components/modals/AddUserToProjectModal';
 import ShowProjectTimeModal from '../components/modals/ShowProjectTimeModal';
@@ -72,9 +74,6 @@ const Projects : React.FC = () => {
     projectStatus: 'Active',
   };
 
-  const [items, setItems] = useState<ProjectOverview[]>(projects);
-  const [searched, setSearched] = useState<string>('');
-
   const deleteDialogTitle = 'Projekt beenden';
   const deleteDialogContent = 'Wollen Sie das Projekt wirklich beenden?';
 
@@ -126,34 +125,20 @@ const Projects : React.FC = () => {
     setIsShowProjectTimeModalOpen(true);
   };
 
-  const requestSearch = (searcVal: string) => {
-    const itFil = projects.filter((row) => row.name.toLowerCase().includes(searcVal.toLowerCase()));
-    setItems(itFil);
-  };
-
-  const cancelSearch = () => {
-    setSearched('');
-    requestSearch(searched);
-  };
-
   return (
     <div>
       <Grid>
         <h1> Projects </h1>
         <Toolbar className={classes.toolbar}>
-          <SearchBar
-/* /!*!/!*            name="Suche"
-            label="Suche"*!/
-            type="text"*!/
+          <TextField
+            label="Suche Projekte"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
                   <SearchIcon />
                 </InputAdornment>
               ),
-            }} */
-            onChange={(searchedVal) => requestSearch(searchedVal)}
-            onCancelSearch={() => cancelSearch()}
+            }}
           />
           <FormControlLabel
             className={classes.finishedCheckBox}
@@ -178,7 +163,7 @@ const Projects : React.FC = () => {
         <Table className={classes.table}>
           <TableBody>
             {
-                items.map((item) => (
+                projects.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{item.initial}</TableCell>

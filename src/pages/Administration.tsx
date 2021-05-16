@@ -1,21 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
   TableRow,
   TableCell,
   Toolbar,
-  /* InputAdornment, */
+  InputAdornment,
   Grid,
   Button,
   IconButton,
+  TextField,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-/* import SearchIcon from '@material-ui/icons/Search'; */
+import SearchIcon from '@material-ui/icons/Search';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import SearchBar from 'material-ui-search-bar';
 import {
   UserOverview, UsersGetUsersApiArg, UsersUpdateUserApiArg, useUsersUpdateUserMutation,
   UserStatus,
@@ -47,8 +47,7 @@ const Administration : React.FC = () => {
     updateUser,
   ] = useUsersUpdateUserMutation();
 
-  const [items, setItems] = useState<UserOverview[]>(users);
-  const [searched, setSearched] = useState<string>('');
+  const [rows, setRows] = useState<UserOverview[]>(users);
 
   const addNewUserHandler = () => {
     setCurrentUser(dtoUser);
@@ -86,15 +85,18 @@ const Administration : React.FC = () => {
     setIsDeleteAlertOpen(false);
   };
 
-  const requestSearch = (searchedVal: string) => {
-    const itFil = users.filter((row) => row.name.toLowerCase().includes(searchedVal.toLowerCase()));
-    setItems(itFil);
+  const handleSearch = (searchedValue: { target: { value: string; }; } | null) => {
+    if (searchedValue == null) {
+      setRows(users);
+    } else {
+      /* eslint-disable-next-line max-len */
+      setRows(users.filter((row) => row.name.toLowerCase().includes(searchedValue.target.value.toLowerCase()) || row.firstName.toLowerCase().includes(searchedValue.target.value.toLowerCase())));
+    }
   };
 
-  const cancelSearch = () => {
-    setSearched('');
-    requestSearch(searched);
-  };
+  useEffect(() => {
+    handleSearch(null);
+  }, [users]);
 
   const useStyles = makeStyles((theme) => ({
     table: {
@@ -134,19 +136,17 @@ const Administration : React.FC = () => {
         <h1> Administration </h1>
 
         <Toolbar className={classes.toolbar}>
-          <SearchBar
-            // name="Suche"
-            // type="text"
-            className={classes.search}
-            onChange={(searchedVal) => requestSearch(searchedVal)}
-            onCancelSearch={() => cancelSearch()}
-/*            InputProps={{
+          <TextField
+            type="string"
+            label="Suche Mitarbeiter"
+            onChange={handleSearch}
+            InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
                   <SearchIcon />
                 </InputAdornment>
               ),
-            }} */
+            }}
           />
           <Button variant="contained" color="primary" className={classes.newUserButton} onClick={addNewUserHandler}>
             Neuer Mitarbeiter erfassen
@@ -155,7 +155,7 @@ const Administration : React.FC = () => {
         <Table className={classes.table}>
           <TableBody>
             {
-              items.map((item) => (
+              rows.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>
                     {item.firstName}
