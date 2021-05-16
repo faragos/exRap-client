@@ -10,6 +10,7 @@ import {
   TimeslotsGetTimeslotsApiArg,
 } from '../gen/timeTrack.api.generated';
 import { useTimeslotsGetTimeslotsQuery } from '../service/timeTrack.api';
+import ErrorDialog from './ErrorDialog';
 
 type ChildComponentProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
@@ -20,11 +21,13 @@ const Calendar: React.FC<ChildComponentProps> = ({
   setTimeSlot,
 }: ChildComponentProps) => {
   const [currentDateInfo, setCurrentDateInfo] = useState<DatesSetArg>();
+  const [isErrorAlertOpen, setIsErrorAlertOpen] = useState(false);
+  const [errorContent, setErrorContent] = useState('');
   const args: TimeslotsGetTimeslotsApiArg = {
     startDate: currentDateInfo?.startStr,
     endDate: currentDateInfo?.endStr,
   };
-  const { data: timeslots = [] } = useTimeslotsGetTimeslotsQuery(args);
+  const { data: timeslots = [], error: timeError } = useTimeslotsGetTimeslotsQuery(args);
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up('sm'));
 
@@ -37,6 +40,13 @@ const Calendar: React.FC<ChildComponentProps> = ({
       calendarRef?.current?.getApi().changeView('timeGridDay');
     }
   }, [matches]);
+
+  useEffect(() => {
+    if (timeError) {
+      // @ts-ignore
+      setErrorContent(timeError.message);
+    }
+  }, [timeError]);
 
   const handleSelect = (event: any) => {
     setIsModalOpen(true);
@@ -108,6 +118,13 @@ const Calendar: React.FC<ChildComponentProps> = ({
         eventColor="#a1887f"
         eventTextColor="#000"
       />
+      {timeError && (
+      <ErrorDialog
+        isOpen={isErrorAlertOpen}
+        setIsOpen={setIsErrorAlertOpen}
+        content={errorContent}
+      />
+      )}
     </div>
   );
 };

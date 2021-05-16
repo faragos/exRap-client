@@ -1,4 +1,6 @@
-import React, { ChangeEvent, SyntheticEvent, useState } from 'react';
+import React, {
+  ChangeEvent, SyntheticEvent, useEffect, useState,
+} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -18,6 +20,7 @@ import {
   useRolesGetRolesQuery, useUserRolesOverwriteRolesMutation,
   useUsersCreateUserMutation, useUsersGetUserQuery,
 } from '../../service/auth.api';
+import ErrorDialog from '../ErrorDialog';
 
 type PasswordComponentProps = {
   handleCredentialsChange: (event: ChangeEvent<HTMLInputElement>) => void,
@@ -35,6 +38,7 @@ const PasswordFields : React.FC<PasswordComponentProps> = (
       type="password"
       required
       onChange={handleCredentialsChange}
+      inputProps={{ minLength: 8 }}
     />
 
     <TextField
@@ -45,6 +49,7 @@ const PasswordFields : React.FC<PasswordComponentProps> = (
       type="password"
       required
       onChange={handleCredentialsChange}
+      inputProps={{ minLength: 8 }}
     />
   </>
 );
@@ -80,29 +85,58 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
 
   const [formState, setFormState] = useState(enrichUser(user));
   const [currentRoles, setCurrentRoles] = useState(roleDto);
+  const [isErrorAlertOpen, setIsErrorAlertOpen] = useState(false);
+  const [errorContent, setErrorContent] = useState('');
   const arg: UsersGetUserApiArg = {
     userId: user.id,
   };
-  const { data: fullUser } = useUsersGetUserQuery(arg);
+  const { data: fullUser, error: fullUserError } = useUsersGetUserQuery(arg);
 
   React.useEffect(() => {
     setFormState(enrichUser(user));
     setCurrentRoles(getRoles(fullUser));
   }, [user, fullUser]);
 
-  const { data: roles = [] } = useRolesGetRolesQuery({});
+  const { data: roles = [], error: rolesError } = useRolesGetRolesQuery({});
 
   const [
     createUser,
+    { error: createUserError },
   ] = useUsersCreateUserMutation();
 
   const [
     updateUser,
+    { error: updateUserError },
   ] = useUsersUpdateUserMutation();
 
   const [
     updateRoles,
+    { error: updateRolesError },
   ] = useUserRolesOverwriteRolesMutation();
+
+  useEffect(() => {
+    if (fullUserError) {
+      // @ts-ignore
+      setErrorContent(fullUserError.message);
+    }
+    if (rolesError) {
+      // @ts-ignore
+      setErrorContent(rolesError.message);
+    }
+    if (createUserError) {
+      // @ts-ignore
+      setErrorContent(createUserError.message);
+    }
+    if (updateUserError) {
+      // @ts-ignore
+      setErrorContent(updateUserError.message);
+    }
+    if (updateRolesError) {
+      // @ts-ignore
+      setErrorContent(updateRolesError.message);
+    }
+    setIsErrorAlertOpen(true);
+  }, [fullUserError, rolesError, createUserError, updateUserError, updateRolesError]);
 
   const handleChange = ({
     target: { name, value },
@@ -133,25 +167,17 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     if (formState?.id) {
-      try {
-        const param: UsersUpdateUserApiArg = {
-          userId: formState.id,
-          manageUserRequest: formState,
-        };
-        prepareUpdateRoles(formState.id);
-        updateUser(param);
-      } catch (err) {
-        console.log(err);
-      }
+      const param: UsersUpdateUserApiArg = {
+        userId: formState.id,
+        manageUserRequest: formState,
+      };
+      prepareUpdateRoles(formState.id);
+      updateUser(param);
     } else {
-      try {
-        const param: UsersCreateUserApiArg = { createUserRequest: formState };
-        const result = await createUser(param).unwrap();
-        if (result) {
-          prepareUpdateRoles(result.id);
-        }
-      } catch (err) {
-        console.log(err);
+      const param: UsersCreateUserApiArg = { createUserRequest: formState };
+      const result = await createUser(param).unwrap();
+      if (result) {
+        prepareUpdateRoles(result.id);
       }
     }
     setIsModalOpen(false);
@@ -164,74 +190,89 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   };
 
   return (
-    <Dialog open={isModalOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
-      <form onSubmit={handleSubmit}>
-        <DialogTitle id="form-dialog-title">Neuer Mitarbeiter erfassen</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            id="firstName"
-            name="firstName"
-            label="Vorname"
-            variant="standard"
-            placeholder="Max"
-            value={formState.firstName}
-            onChange={handleChange}
-          />
-          <TextField
-            id="name"
-            name="name"
-            label="Nachname"
-            variant="standard"
-            placeholder="Muster"
-            value={formState.name}
-            onChange={handleChange}
-          />
-          <TextField
-            id="userName"
-            name="userName"
-            label="Kürzel"
-            variant="standard"
-            placeholder="abc"
-            value={formState.userName}
-            onChange={handleChange}
-            fullWidth
-          />
-          <TextField
-            id="mailAddress"
-            name="mailAddress"
-            label="Mail"
-            variant="standard"
-            placeholder="example@test.ch"
-            value={formState.mailAddress}
-            onChange={handleChange}
-            fullWidth
-          />
-          <Autocomplete
-            multiple
-            id="addRole"
-            options={roles}
-            getOptionLabel={(option) => option.name}
-            filterSelectedOptions
+    <div>
+
+      <Dialog open={isModalOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <form onSubmit={handleSubmit}>
+          <DialogTitle id="form-dialog-title">Neuer Mitarbeiter erfassen</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              id="firstName"
+              name="firstName"
+              label="Vorname"
+              variant="standard"
+              placeholder="Max"
+              value={formState.firstName}
+              onChange={handleChange}
+              required
+            />
+            <TextField
+              id="name"
+              name="name"
+              label="Nachname"
+              variant="standard"
+              placeholder="Muster"
+              value={formState.name}
+              onChange={handleChange}
+              required
+            />
+            <TextField
+              id="userName"
+              name="userName"
+              label="Kürzel"
+              variant="standard"
+              placeholder="abc"
+              value={formState.userName}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+            <TextField
+              id="mailAddress"
+              name="mailAddress"
+              label="Mail"
+              variant="standard"
+              placeholder="example@test.ch"
+              value={formState.mailAddress}
+              onChange={handleChange}
+              fullWidth
+              required
+              type="email"
+            />
+            <Autocomplete
+              multiple
+              id="addRole"
+              options={roles}
+              getOptionLabel={(option) => option.name}
+              filterSelectedOptions
               /* props need to be forwarded https://material-ui.com/components/autocomplete/#checkboxes */
               /* eslint-disable-next-line react/jsx-props-no-spreading */
-            renderInput={(params) => (<TextField {...params} variant="standard" label="Rolle hinzufügen" placeholder="Rollen" />)}
-            onChange={addRoleHandler}
-            getOptionSelected={(option, value) => option.name === value.name}
-            value={currentRoles}
-          />
-          {!formState.id && <PasswordFields handleCredentialsChange={handleCredentialsChange} />}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>
-            Abbrechen
-          </Button>
-          <Button type="submit" color="primary" variant="contained">
-            Speichern
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+              renderInput={(params) => (<TextField {...params} variant="standard" label="Rolle hinzufügen" placeholder="Rollen" />)}
+              onChange={addRoleHandler}
+              getOptionSelected={(option, value) => option.name === value.name}
+              value={currentRoles}
+            />
+            {!formState.id && <PasswordFields handleCredentialsChange={handleCredentialsChange} />}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>
+              Abbrechen
+            </Button>
+            <Button type="submit" color="primary" variant="contained">
+              Speichern
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+      {(fullUserError || rolesError || createUserError || updateUserError || updateRolesError) && (
+      <ErrorDialog
+        isOpen={isErrorAlertOpen}
+        setIsOpen={setIsErrorAlertOpen}
+        content={errorContent}
+      />
+      )}
+    </div>
   );
 };
 export default AddNewUserModal;
