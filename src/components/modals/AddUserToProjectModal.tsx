@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React, { SyntheticEvent } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -25,7 +25,6 @@ import {
   ProjectOverview,
   UserOverview,
 } from '../../gen/timeTrack.api.generated';
-import ErrorDialog from '../ErrorDialog';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -53,15 +52,11 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
   const usersArg: UsersGetUsersApiArg = {};
   const {
     data: users = [],
-    error: usersError,
     isLoading: usersIsLoading,
   } = useUsersGetUsersQuery(usersArg);
-  const [isErrorAlertOpen, setIsErrorAlertOpen] = useState(false);
-  const [errorContent, setErrorContent] = useState('');
   const contributorsArg: ProjectContributorsGetContributorsApiArg = { projectId: project.id };
   const {
     data: usersInProject = [],
-    error: contributorsError,
     isLoading: contributorsIsLoading,
   } = useProjectContributorsGetContributorsQuery(contributorsArg);
 
@@ -83,7 +78,7 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
 
   const [
     addUserToProjectMutation,
-    { error: addContributorError, isLoading: addContributorIsLoading },
+    { isLoading: addContributorIsLoading },
   ] = useProjectContributorsAddContributorMutation();
 
   const addUserToProject = (
@@ -104,28 +99,8 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
 
   const [
     removeContributor,
-    { error: removeContributorError, isLoading: removeContributorIsLoading },
+    { isLoading: removeContributorIsLoading },
   ] = useProjectContributorsRemoveContributorMutation();
-
-  useEffect(() => {
-    if (usersError) {
-      // @ts-ignore
-      setErrorContent(usersError.message);
-    }
-    if (contributorsError) {
-      // @ts-ignore
-      setErrorContent(contributorsError.message);
-    }
-    if (addContributorError) {
-      // @ts-ignore
-      setErrorContent(addContributorError.message);
-    }
-    if (removeContributorError) {
-      // @ts-ignore
-      setErrorContent(removeContributorError.message);
-    }
-    setIsErrorAlertOpen(true);
-  }, [usersError, contributorsError, addContributorError, removeContributorError]);
 
   const deleteContributorHandler = (user: UserOverview) => {
     const arg: ProjectContributorsRemoveContributorApiArg = {
@@ -191,13 +166,6 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
           </Button>
         </DialogActions>
       </Dialog>
-      {(usersError || contributorsError || addContributorError || removeContributorError) && (
-      <ErrorDialog
-        isOpen={isErrorAlertOpen}
-        setIsOpen={setIsErrorAlertOpen}
-        content={errorContent}
-      />
-      )}
     </div>
   );
 };

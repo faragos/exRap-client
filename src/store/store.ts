@@ -1,10 +1,27 @@
 import {
   configureStore, combineReducers, Action,
+  isRejected,
 } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 import { api as dashboardApi } from '../service/dashboard.api';
 import { api as authApi } from '../service/auth.api';
 import { api as timeTrackApi } from '../service/timeTrack.api';
 import authInfoReducer, { clearUser } from './authInfo/reducers';
+
+const rtkQueryErrorLogger = () => (next: Function) => (action: Action) => {
+  if (isRejected(action)) {
+    toast.error(action.error.message, {
+      position: 'top-right',
+      autoClose: false,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }
+  return next(action);
+};
 
 const appReducer = combineReducers({
   authInfo: authInfoReducer,
@@ -25,7 +42,12 @@ const store = configureStore({
   reducer: rootReducer,
 
   middleware: (getDefaultMiddleware) => getDefaultMiddleware()
-    .concat(dashboardApi.middleware, authApi.middleware, timeTrackApi.middleware),
+    .concat(
+      dashboardApi.middleware,
+      authApi.middleware,
+      timeTrackApi.middleware,
+      rtkQueryErrorLogger,
+    ),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

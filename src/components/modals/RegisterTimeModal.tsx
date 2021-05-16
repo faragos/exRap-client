@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React, { SyntheticEvent, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -10,6 +10,7 @@ import TimePicker from '@material-ui/lab/TimePicker';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import deLocale from 'date-fns/locale/de';
+
 import {
   useProjectsGetProjectsQuery,
   useProjectTimeslotsAddTimeslotMutation, useProjectTimeslotsDeleteTimeslotMutation,
@@ -23,7 +24,6 @@ import {
   TimeSlotOverview,
 } from '../../gen/timeTrack.api.generated';
 import AlertDialog from '../AlertDialog';
-import ErrorDialog from '../ErrorDialog';
 
 type ChildComponentProps = {
   isModalOpen: boolean,
@@ -38,9 +38,7 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   setTimeSlot,
   isModalOpen,
 }: ChildComponentProps) => {
-  const { data: projects = [], error: projectError } = useProjectsGetProjectsQuery({ status: 'Active' });
-  const [isErrorAlertOpen, setIsErrorAlertOpen] = useState(false);
-  const [errorContent, setErrorContent] = useState('');
+  const { data: projects = [] } = useProjectsGetProjectsQuery({ status: 'Active' });
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const deleteTitle = 'Zeiteintrag';
   const deleteContent = 'Wollen sie den Zeiteintrag wirklich löschen?';
@@ -89,10 +87,9 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
     setTimeSlot({ ...timeSlot, comment: event.target.value });
   };
 
-  const [addTimeslot, { error: addTimeslotError }] = useProjectTimeslotsAddTimeslotMutation();
+  const [addTimeslot] = useProjectTimeslotsAddTimeslotMutation();
   const [
     updateTimeslot,
-    { error: updateTimeslotError },
   ] = useProjectTimeslotsUpdateTimeslotMutation();
 
   const handleSave = () => {
@@ -115,7 +112,6 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
 
   const [
     deleteTimeSlot,
-    { error: deleteTimeslotError },
   ] = useProjectTimeslotsDeleteTimeslotMutation();
   const confirmDeleteTimeslot = () => {
     if (!timeSlot.project.key) return;
@@ -128,26 +124,6 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
     setIsDeleteAlertOpen(false);
     setIsModalOpen(false);
   };
-
-  useEffect(() => {
-    if (addTimeslotError) {
-      // @ts-ignore
-      setErrorContent(addTimeslotError.message);
-    }
-    if (updateTimeslotError) {
-      // @ts-ignore
-      setErrorContent(updateTimeslotError.message);
-    }
-    if (deleteTimeslotError) {
-      // @ts-ignore
-      setErrorContent(deleteTimeslotError.message);
-    }
-    if (projectError) {
-      // @ts-ignore
-      setErrorContent(projectError.message);
-    }
-    setIsErrorAlertOpen(true);
-  }, [addTimeslotError, updateTimeslotError, deleteTimeslotError, projectError]);
 
   const handleDelete = () => {
     setIsDeleteAlertOpen(true);
@@ -223,13 +199,6 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
         title={deleteTitle}
         content={deleteContent}
       />
-      {(addTimeslotError || updateTimeslotError || deleteTimeslotError || projectError) && (
-      <ErrorDialog
-        isOpen={isErrorAlertOpen}
-        setIsOpen={setIsErrorAlertOpen}
-        content={errorContent}
-      />
-      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, {
-  ChangeEvent, SyntheticEvent, useEffect, useState,
+  ChangeEvent, SyntheticEvent, useState,
 } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -20,7 +20,6 @@ import {
   useRolesGetRolesQuery, useUserRolesOverwriteRolesMutation,
   useUsersCreateUserMutation, useUsersGetUserQuery,
 } from '../../service/auth.api';
-import ErrorDialog from '../ErrorDialog';
 
 type PasswordComponentProps = {
   handleCredentialsChange: (event: ChangeEvent<HTMLInputElement>) => void,
@@ -85,58 +84,29 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
 
   const [formState, setFormState] = useState(enrichUser(user));
   const [currentRoles, setCurrentRoles] = useState(roleDto);
-  const [isErrorAlertOpen, setIsErrorAlertOpen] = useState(false);
-  const [errorContent, setErrorContent] = useState('');
   const arg: UsersGetUserApiArg = {
     userId: user.id,
   };
-  const { data: fullUser, error: fullUserError } = useUsersGetUserQuery(arg);
+  const { data: fullUser } = useUsersGetUserQuery(arg);
 
   React.useEffect(() => {
     setFormState(enrichUser(user));
     setCurrentRoles(getRoles(fullUser));
   }, [user, fullUser]);
 
-  const { data: roles = [], error: rolesError } = useRolesGetRolesQuery({});
+  const { data: roles = [] } = useRolesGetRolesQuery({});
 
   const [
     createUser,
-    { error: createUserError },
   ] = useUsersCreateUserMutation();
 
   const [
     updateUser,
-    { error: updateUserError },
   ] = useUsersUpdateUserMutation();
 
   const [
     updateRoles,
-    { error: updateRolesError },
   ] = useUserRolesOverwriteRolesMutation();
-
-  useEffect(() => {
-    if (fullUserError) {
-      // @ts-ignore
-      setErrorContent(fullUserError.message);
-    }
-    if (rolesError) {
-      // @ts-ignore
-      setErrorContent(rolesError.message);
-    }
-    if (createUserError) {
-      // @ts-ignore
-      setErrorContent(createUserError.message);
-    }
-    if (updateUserError) {
-      // @ts-ignore
-      setErrorContent(updateUserError.message);
-    }
-    if (updateRolesError) {
-      // @ts-ignore
-      setErrorContent(updateRolesError.message);
-    }
-    setIsErrorAlertOpen(true);
-  }, [fullUserError, rolesError, createUserError, updateUserError, updateRolesError]);
 
   const handleChange = ({
     target: { name, value },
@@ -265,13 +235,6 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
           </DialogActions>
         </form>
       </Dialog>
-      {(fullUserError || rolesError || createUserError || updateUserError || updateRolesError) && (
-      <ErrorDialog
-        isOpen={isErrorAlertOpen}
-        setIsOpen={setIsErrorAlertOpen}
-        content={errorContent}
-      />
-      )}
     </div>
   );
 };

@@ -14,7 +14,6 @@ import {
   ProjectsCreateProjectApiArg,
   ProjectsUpdateProjectApiArg,
 } from '../../gen/timeTrack.api.generated';
-import ErrorDialog from '../ErrorDialog';
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
@@ -36,33 +35,17 @@ const ProjectFormModal : React.FC<ChildComponentProps> = ({
   project,
 }: ChildComponentProps) => {
   const [projectForm, setProjectForm] = useState(project);
-  const [isErrorAlertOpen, setIsErrorAlertOpen] = useState(false);
-  const [errorContent, setErrorContent] = useState('');
   const [
     createProject,
-    { error: createProjectError },
   ] = useProjectsCreateProjectMutation();
 
   const [
     updateProject,
-    { error: updateProjectError },
   ] = useProjectsUpdateProjectMutation();
 
   useEffect(() => {
     setProjectForm(project);
   }, [project]);
-
-  useEffect(() => {
-    if (createProjectError) {
-      // @ts-ignore
-      setErrorContent(usersError.message);
-    }
-    if (updateProjectError) {
-      // @ts-ignore
-      setErrorContent(contributorsError.message);
-    }
-    setIsErrorAlertOpen(true);
-  }, [createProjectError, updateProjectError]);
 
   const handleChange = ({ target: { name, value } }: React.ChangeEvent<HTMLInputElement>) => {
     setProjectForm((prev) => ({ ...prev, [name]: value }));
@@ -142,13 +125,6 @@ const ProjectFormModal : React.FC<ChildComponentProps> = ({
           </DialogActions>
         </form>
       </Dialog>
-      {(createProjectError || updateProjectError) && (
-      <ErrorDialog
-        isOpen={isErrorAlertOpen}
-        setIsOpen={setIsErrorAlertOpen}
-        content={errorContent}
-      />
-      )}
     </div>
   );
 };

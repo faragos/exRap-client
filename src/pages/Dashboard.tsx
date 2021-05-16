@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   CircularProgress,
   Table, TableBody, TableCell, TableRow,
@@ -8,34 +8,17 @@ import TableHead from '@material-ui/core/TableHead';
 import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
 import { useAppSelector } from '../hooks';
 import printSpentTime from '../utils/utils';
-import ErrorDialog from '../components/ErrorDialog';
 
 const Dashboard : React.FC = () => {
   const authInfo = useAppSelector((state) => state.authInfo);
   const {
     data: contributorProjects,
-    error: contributorError,
     isLoading: contributorIsLoading,
   } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Contributor' });
   const {
     data: managerProjects,
-    error: managerError,
     isLoading: managerIsLoading,
   } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Manager' });
-  const [isErrorAlertOpen, setIsErrorAlertOpen] = useState(false);
-  const [errorContent, setErrorContent] = useState('');
-
-  useEffect(() => {
-    if (contributorError) {
-      // @ts-ignore
-      setErrorContent(contributorError.message);
-    }
-    if (managerError) {
-      // @ts-ignore
-      setErrorContent(managerError.message);
-    }
-    setIsErrorAlertOpen(true);
-  }, [contributorError, managerError]);
 
   const useStyles = makeStyles((theme) => ({
     table: {
@@ -109,13 +92,6 @@ const Dashboard : React.FC = () => {
             </TableBody>
           </Table>
         )}
-      {(contributorError || managerError) && (
-      <ErrorDialog
-        isOpen={isErrorAlertOpen}
-        setIsOpen={setIsErrorAlertOpen}
-        content={errorContent}
-      />
-      )}
     </div>
   );
 };

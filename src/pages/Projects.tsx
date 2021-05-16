@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -22,7 +22,6 @@ import ShowProjectTimeModal from '../components/modals/ShowProjectTimeModal';
 import { useProjectsGetProjectsQuery, useProjectsUpdateProjectMutation } from '../service/timeTrack.api';
 import { ProjectOverview, ProjectStatus, ProjectsUpdateProjectApiArg } from '../gen/timeTrack.api.generated';
 import AlertDialog from '../components/AlertDialog';
-import ErrorDialog from '../components/ErrorDialog';
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -58,13 +57,10 @@ const Projects : React.FC = () => {
   const [isFilterEnabled, setIsFilterEnabled] = useState(false);
   const {
     data,
-    error: projectsError,
     isLoading: projectsIsLoading,
   } = useProjectsGetProjectsQuery({ status: isFilterEnabled ? undefined : 'Active' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-  const [isErrorAlertOpen, setIsErrorAlertOpen] = useState(false);
-  const [errorContent, setErrorContent] = useState('');
   const [isAddUserToProjectModalOpen, setIsAddUserToProjectModalOpen] = useState(false);
   const [isShowProjectTimeModalOpen, setIsShowProjectTimeModalOpen] = useState(false);
   const dtoProject: ProjectOverview = {
@@ -98,20 +94,8 @@ const Projects : React.FC = () => {
 
   const [
     updateProject,
-    { error: updateProjectError, isLoading: updateProjectIsLoading },
+    { isLoading: updateProjectIsLoading },
   ] = useProjectsUpdateProjectMutation();
-
-  useEffect(() => {
-    if (projectsError) {
-      // @ts-ignore
-      setErrorContent(projectsError.message);
-    }
-    if (updateProjectError) {
-      // @ts-ignore
-      setErrorContent(updateProjectError.message);
-    }
-    setIsErrorAlertOpen(true);
-  }, [projectsError, updateProjectError]);
 
   const confirmDeleteProject = () => {
     const projectStatus: ProjectStatus = 'Finished';
@@ -243,13 +227,6 @@ const Projects : React.FC = () => {
         title={deleteDialogTitle}
         content={deleteDialogContent}
       />
-      {(projectsError || updateProjectError) && (
-      <ErrorDialog
-        isOpen={isErrorAlertOpen}
-        setIsOpen={setIsErrorAlertOpen}
-        content={errorContent}
-      />
-      )}
     </div>
   );
 };

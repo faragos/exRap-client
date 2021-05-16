@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Table,
   TableBody,
@@ -24,7 +24,6 @@ import { useUsersGetUsersQuery } from '../service/auth.api';
 import AddNewUserModal from '../components/modals/AddNewUserModal';
 import AlertDialog from '../components/AlertDialog';
 import ChangeCredentialsModal from '../components/modals/ChangeCredentialsModal';
-import ErrorDialog from '../components/ErrorDialog';
 
 const Administration : React.FC = () => {
   const dtoUser: UserOverview = {
@@ -41,30 +40,15 @@ const Administration : React.FC = () => {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [isCredentialsModalOpen, setIsCredentialsModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-  const [isErrorAlertOpen, setIsErrorAlertOpen] = useState(false);
-  const [errorContent, setErrorContent] = useState('');
 
   const usersArg: UsersGetUsersApiArg = {};
   const {
     data: users = [],
     isLoading: usersIsLoading,
-    error: userError,
   } = useUsersGetUsersQuery(usersArg);
   const [
-    updateUser, { error: deleteError, isLoading: deleteUserIsLoading },
+    updateUser, { isLoading: deleteUserIsLoading },
   ] = useUsersUpdateUserMutation();
-
-  useEffect(() => {
-    if (userError) {
-      // @ts-ignore
-      setErrorContent(userError.message);
-    }
-    if (deleteError) {
-      // @ts-ignore
-      setErrorContent(deleteError.message);
-    }
-    setIsErrorAlertOpen(true);
-  }, [userError, deleteError]);
 
   const addNewUserHandler = () => {
     setCurrentUser(dtoUser);
@@ -207,13 +191,6 @@ const Administration : React.FC = () => {
         handleConfirm={confirmDeleteUser}
         content="Wollen sie den User wirklich löschen?"
       />
-      {(deleteError || userError) && (
-      <ErrorDialog
-        isOpen={isErrorAlertOpen}
-        setIsOpen={setIsErrorAlertOpen}
-        content={errorContent}
-      />
-      )}
     </div>
   );
 };

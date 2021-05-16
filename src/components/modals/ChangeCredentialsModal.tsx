@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -10,7 +10,6 @@ import {
   useUserCredentialsUpdateCredentialMutation, UserCredentialsUpdateCredentialApiArg,
 } from '../../gen/auth.api.generated';
 import { PasswordFields } from './AddNewUserModal';
-import ErrorDialog from '../ErrorDialog';
 
 type ChildComponentProps = {
   isModalOpen: boolean,
@@ -25,8 +24,6 @@ const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
 }: ChildComponentProps) => {
   const [formState, setFormState] = useState(user);
   const [credentials, setCredentials] = useState({ password: '', passwordHint: '' });
-  const [isErrorAlertOpen, setIsErrorAlertOpen] = useState(false);
-  const [errorContent, setErrorContent] = useState('');
 
   React.useEffect(() => {
     setFormState(user);
@@ -34,14 +31,8 @@ const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
 
   const [
     updateCredentials,
-    { error, isLoading },
+    { isLoading },
   ] = useUserCredentialsUpdateCredentialMutation();
-
-  useEffect(() => {
-    // @ts-ignore
-    setErrorContent(error?.message);
-    setIsErrorAlertOpen(true);
-  }, [error]);
 
   const handleChange = ({
     target: { name, value },
@@ -81,13 +72,6 @@ const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
           </DialogActions>
         </form>
       </Dialog>
-      {(error) && (
-        <ErrorDialog
-          isOpen={isErrorAlertOpen}
-          setIsOpen={setIsErrorAlertOpen}
-          content={errorContent}
-        />
-      )}
     </div>
   );
 };
