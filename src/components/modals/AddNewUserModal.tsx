@@ -22,11 +22,22 @@ import {
 } from '../../service/auth.api';
 
 type PasswordComponentProps = {
-  handleCredentialsChange: (event: ChangeEvent<HTMLInputElement>) => void,
+  handlePasswordChange: (event: ChangeEvent<HTMLInputElement>) => void,
+  handleRepeatPasswordChange: (event: ChangeEvent<HTMLInputElement>) => void,
+};
+
+const passwordValidation = (target: EventTarget & HTMLInputElement, value: string) => {
+  if (target.value === value) {
+    target.setCustomValidity('');
+    target.reportValidity();
+  } else {
+    target.setCustomValidity('Passwörter stimmen nicht überein');
+    target.reportValidity();
+  }
 };
 
 const PasswordFields : React.FC<PasswordComponentProps> = (
-  { handleCredentialsChange } : PasswordComponentProps,
+  { handlePasswordChange, handleRepeatPasswordChange } : PasswordComponentProps,
 ) => (
   <>
     <TextField
@@ -36,7 +47,7 @@ const PasswordFields : React.FC<PasswordComponentProps> = (
       variant="standard"
       type="password"
       required
-      onChange={handleCredentialsChange}
+      onChange={handlePasswordChange}
       inputProps={{ minLength: 8 }}
     />
 
@@ -47,13 +58,13 @@ const PasswordFields : React.FC<PasswordComponentProps> = (
       variant="standard"
       type="password"
       required
-      onChange={handleCredentialsChange}
+      onChange={handleRepeatPasswordChange}
       inputProps={{ minLength: 8 }}
     />
   </>
 );
 
-export { PasswordFields };
+export { PasswordFields, passwordValidation };
 
 type ChildComponentProps = {
   isModalOpen: boolean,
@@ -83,6 +94,7 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   };
 
   const [formState, setFormState] = useState(enrichUser(user));
+  const [repeatPassword, setRepeatPassword] = useState('');
   const [currentRoles, setCurrentRoles] = useState(roleDto);
   const arg: UsersGetUserApiArg = {
     userId: user.id,
@@ -112,11 +124,15 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>) => setFormState((prev) => ({ ...prev, [name]: value }));
 
-  const handleCredentialsChange = ({
-    target: { name, value },
-  }: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     // eslint-disable-next-line max-len
-    setFormState((prev) => ({ ...prev, credentials: { ...prev.credentials, [name]: value } as ManageCredentialRequest }));
+    setFormState((prev) => ({ ...prev, credentials: { ...prev.credentials, password: target.value } as ManageCredentialRequest }));
+    passwordValidation(target, repeatPassword);
+  };
+
+  const handleRepeatPasswordChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    setRepeatPassword(target.value);
+    if (formState.credentials) passwordValidation(target, formState.credentials?.password);
   };
 
   const handleClose = () => {
@@ -223,7 +239,13 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
               getOptionSelected={(option, value) => option.name === value.name}
               value={currentRoles}
             />
-            {!formState.id && <PasswordFields handleCredentialsChange={handleCredentialsChange} />}
+            {!formState.id
+            && (
+            <PasswordFields
+              handlePasswordChange={handlePasswordChange}
+              handleRepeatPasswordChange={handleRepeatPasswordChange}
+            />
+            )}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>

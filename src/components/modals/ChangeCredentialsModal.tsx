@@ -9,7 +9,7 @@ import {
   UserOverview,
   useUserCredentialsUpdateCredentialMutation, UserCredentialsUpdateCredentialApiArg,
 } from '../../gen/auth.api.generated';
-import { PasswordFields } from './AddNewUserModal';
+import { PasswordFields, passwordValidation } from './AddNewUserModal';
 
 type ChildComponentProps = {
   isModalOpen: boolean,
@@ -24,6 +24,7 @@ const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
 }: ChildComponentProps) => {
   const [formState, setFormState] = useState(user);
   const [credentials, setCredentials] = useState({ password: '', passwordHint: '' });
+  const [repeatPassword, setRepeatPassword] = useState('');
 
   React.useEffect(() => {
     setFormState(user);
@@ -34,9 +35,15 @@ const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
     { isLoading },
   ] = useUserCredentialsUpdateCredentialMutation();
 
-  const handleChange = ({
-    target: { name, value },
-  }: React.ChangeEvent<HTMLInputElement>) => setCredentials((prev) => ({ ...prev, [name]: value }));
+  const handlePasswordChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    setCredentials((prev) => ({ ...prev, password: target.value }));
+    passwordValidation(target, repeatPassword);
+  };
+
+  const handleRepeatPasswordChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    setRepeatPassword(target.value);
+    passwordValidation(target, credentials.password);
+  };
 
   const handleClose = () => {
     setIsModalOpen(false);
@@ -60,7 +67,12 @@ const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
           <DialogContent>
             { isLoading
               ? <CircularProgress />
-              : <PasswordFields handleCredentialsChange={handleChange} />}
+              : (
+                <PasswordFields
+                  handleRepeatPasswordChange={handleRepeatPasswordChange}
+                  handlePasswordChange={handlePasswordChange}
+                />
+              )}
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>
