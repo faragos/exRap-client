@@ -9,7 +9,8 @@ import { api as timeTrackApi } from '../service/timeTrack.api';
 import authInfoReducer, { clearUser } from './authInfo/reducers';
 
 const rtkQueryErrorLogger = () => (next: Function) => (action: Action) => {
-  if (isRejected(action)) {
+  // Queries which are in the cache get aborted and needed to be filtered.
+  if (isRejected(action) && action.error.message !== 'Aborted due to condition callback returning false.') {
     toast.error(action.error.message, {
       position: 'top-right',
       autoClose: false,
