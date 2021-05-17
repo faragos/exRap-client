@@ -59,7 +59,7 @@ afterEach(cleanup);
 
 test('add new timeslot', async () => {
   loadPage(initalTimeSlot);
-  const projectsInput = await screen.findByLabelText('Projects');
+  const projectsInput = await screen.findByLabelText(/Projects/);
   userEvent.type(projectsInput, 'project1');
 
   const commentInput = await screen.findByLabelText('Kommentar');

@@ -10,6 +10,7 @@ import TimePicker from '@material-ui/lab/TimePicker';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import deLocale from 'date-fns/locale/de';
+
 import {
   useProjectsGetProjectsQuery,
   useProjectTimeslotsAddTimeslotMutation, useProjectTimeslotsDeleteTimeslotMutation,
@@ -62,8 +63,12 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
     return date;
   };
 
+  function isValidDate(d: Date) {
+    return !Number.isNaN(d.getHours()) && !Number.isNaN(d.getMinutes());
+  }
+
   const handleStartChange = (start: Date | null) => {
-    if (start) {
+    if (start && isValidDate(start)) {
       const startDate = fixDateChange(timeSlot.start, start);
       if (!startDate) return;
       setTimeSlot({ ...timeSlot, start: startDate.toISOString() });
@@ -83,49 +88,41 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   };
 
   const [addTimeslot] = useProjectTimeslotsAddTimeslotMutation();
-  const [updateTimeslot] = useProjectTimeslotsUpdateTimeslotMutation();
+  const [
+    updateTimeslot,
+  ] = useProjectTimeslotsUpdateTimeslotMutation();
 
   const handleSave = () => {
     if (timeSlot.id) {
-      try {
-        const updateArgs: ProjectTimeslotsUpdateTimeslotApiArg = {
-          timeslotId: timeSlot.id,
-          projectId: timeSlot.project.key || 0,
-          manageTimeSlotRequest: timeSlot,
-        };
-        updateTimeslot(updateArgs);
-      } catch (e) {
-        console.log(e);
-      }
+      const updateArgs: ProjectTimeslotsUpdateTimeslotApiArg = {
+        timeslotId: timeSlot.id,
+        projectId: timeSlot.project.key || 0,
+        manageTimeSlotRequest: timeSlot,
+      };
+      updateTimeslot(updateArgs);
     } else {
-      try {
-        const addArgs: ProjectTimeslotsAddTimeslotApiArg = {
-          projectId: timeSlot.project.key || 0,
-          manageTimeSlotRequest: timeSlot,
-        };
-        addTimeslot(addArgs);
-      } catch (e) {
-        console.log(e);
-      }
+      const addArgs: ProjectTimeslotsAddTimeslotApiArg = {
+        projectId: timeSlot.project.key || 0,
+        manageTimeSlotRequest: timeSlot,
+      };
+      addTimeslot(addArgs);
     }
     setIsModalOpen(false);
   };
 
-  const [deleteTimeSlot] = useProjectTimeslotsDeleteTimeslotMutation();
+  const [
+    deleteTimeSlot,
+  ] = useProjectTimeslotsDeleteTimeslotMutation();
   const confirmDeleteTimeslot = () => {
     if (!timeSlot.project.key) return;
 
-    try {
-      const args: ProjectTimeslotsDeleteTimeslotApiArg = {
-        timeslotId: timeSlot.id,
-        projectId: timeSlot.project.key,
-      };
-      deleteTimeSlot(args);
-      setIsDeleteAlertOpen(false);
-      setIsModalOpen(false);
-    } catch (e) {
-      console.log(e);
-    }
+    const args: ProjectTimeslotsDeleteTimeslotApiArg = {
+      timeslotId: timeSlot.id,
+      projectId: timeSlot.project.key,
+    };
+    deleteTimeSlot(args);
+    setIsDeleteAlertOpen(false);
+    setIsModalOpen(false);
   };
 
   const handleDelete = () => {
@@ -151,7 +148,7 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
             getOptionLabel={(option: ProjectOverview) => option.name}
             /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
             /* eslint-disable-next-line react/jsx-props-no-spreading */
-            renderInput={(params: any) => <TextField {...params} label="Projects" variant="outlined" />}
+            renderInput={(params: any) => <TextField {...params} label="Projects" variant="outlined" required />}
             onChange={selectProjectHandler}
             value={getProjectFromTimeSlot()}
           />

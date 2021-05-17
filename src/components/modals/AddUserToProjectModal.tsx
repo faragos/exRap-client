@@ -8,6 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Autocomplete from '@material-ui/core/Autocomplete';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import {
+  CircularProgress,
   IconButton, Table, TableBody, TableCell, TableRow,
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -49,11 +50,14 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
   };
 
   const usersArg: UsersGetUsersApiArg = {};
-  const { data: users = [] } = useUsersGetUsersQuery(usersArg);
-
+  const {
+    data: users = [],
+    isLoading: usersIsLoading,
+  } = useUsersGetUsersQuery(usersArg);
   const contributorsArg: ProjectContributorsGetContributorsApiArg = { projectId: project.id };
   const {
     data: usersInProject = [],
+    isLoading: contributorsIsLoading,
   } = useProjectContributorsGetContributorsQuery(contributorsArg);
 
   // Differenzmenge - A\B - A ohne B
@@ -74,6 +78,7 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
 
   const [
     addUserToProjectMutation,
+    { isLoading: addContributorIsLoading },
   ] = useProjectContributorsAddContributorMutation();
 
   const addUserToProject = (
@@ -94,6 +99,7 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
 
   const [
     removeContributor,
+    { isLoading: removeContributorIsLoading },
   ] = useProjectContributorsRemoveContributorMutation();
 
   const deleteContributorHandler = (user: UserOverview) => {
@@ -114,21 +120,29 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
           {' '}
           { project.name }
         </DialogTitle>
-        <DialogContent className={classes.root}>
-          <Autocomplete
-            id="addUser"
-            options={getPossibleContributors(users, usersInProject)}
-            getOptionLabel={(option) => option.userName}
-            filterSelectedOptions
-            /* props need to be forwarded https://material-ui.com/components/autocomplete/#checkboxes */
-            /* eslint-disable-next-line react/jsx-props-no-spreading */
-            renderInput={(params) => (<TextField {...params} variant="standard" label="Mitarbeiter hinzufügen" placeholder="Mitarbeiter" />)}
-            onChange={addUserToProject}
-            getOptionSelected={(option, value) => option.userName === value.userName}
-          />
-          <Table>
-            <TableBody>
-              {
+
+        { usersIsLoading
+          || contributorsIsLoading
+          || addContributorIsLoading
+          || removeContributorIsLoading
+          ? <CircularProgress />
+          : (
+            <DialogContent className={classes.root}>
+              <Autocomplete
+                id="addUser"
+                options={getPossibleContributors(users, usersInProject)}
+                getOptionLabel={(option) => option.userName}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  /* props need to be forwarded https://material-ui.com/components/autocomplete/#checkboxes */
+                  /* eslint-disable-next-line react/jsx-props-no-spreading */
+                  <TextField {...params} variant="standard" label="Mitarbeiter hinzufügen" placeholder="Mitarbeiter" />)}
+                onChange={addUserToProject}
+                getOptionSelected={(option, value) => option.userName === value.userName}
+              />
+              <Table>
+                <TableBody>
+                  {
                 mapTimeToAuthUser().map((item) => (
                   <TableRow key={item.userName}>
                     <TableCell>{item.firstName}</TableCell>
@@ -141,10 +155,11 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
                     </TableCell>
                   </TableRow>
                 ))
-                }
-            </TableBody>
-          </Table>
-        </DialogContent>
+              }
+                </TableBody>
+              </Table>
+            </DialogContent>
+          )}
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Schliessen
