@@ -27,13 +27,11 @@ type PasswordComponentProps = {
 };
 
 const passwordValidation = (target: EventTarget & HTMLInputElement, value: string) => {
-  if (target.value === value) {
-    target.setCustomValidity('');
-    target.reportValidity();
-  } else {
-    target.setCustomValidity('Passwörter stimmen nicht überein');
-    target.reportValidity();
+  let validText = '';
+  if (target.value !== value) {
+    validText = 'Passwörter stimmen nicht überein';
   }
+  target.setCustomValidity(validText);
 };
 
 const PasswordFields : React.FC<PasswordComponentProps> = (
@@ -94,7 +92,6 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   };
 
   const [formState, setFormState] = useState(enrichUser(user));
-  const [repeatPassword, setRepeatPassword] = useState('');
   const [currentRoles, setCurrentRoles] = useState(roleDto);
   const arg: UsersGetUserApiArg = {
     userId: user.id,
@@ -127,11 +124,9 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   const handlePasswordChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     // eslint-disable-next-line max-len
     setFormState((prev) => ({ ...prev, credentials: { ...prev.credentials, password: target.value } as ManageCredentialRequest }));
-    passwordValidation(target, repeatPassword);
   };
 
   const handleRepeatPasswordChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    setRepeatPassword(target.value);
     if (formState.credentials) passwordValidation(target, formState.credentials?.password);
   };
 

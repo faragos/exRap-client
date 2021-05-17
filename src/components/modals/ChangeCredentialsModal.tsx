@@ -24,7 +24,6 @@ const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
 }: ChildComponentProps) => {
   const [formState, setFormState] = useState(user);
   const [credentials, setCredentials] = useState({ password: '', passwordHint: '' });
-  const [repeatPassword, setRepeatPassword] = useState('');
 
   React.useEffect(() => {
     setFormState(user);
@@ -37,11 +36,9 @@ const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
 
   const handlePasswordChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     setCredentials((prev) => ({ ...prev, password: target.value }));
-    passwordValidation(target, repeatPassword);
   };
 
   const handleRepeatPasswordChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    setRepeatPassword(target.value);
     passwordValidation(target, credentials.password);
   };
 
