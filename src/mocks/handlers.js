@@ -1,5 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { rest } from 'msw';
+import jwt from 'jsonwebtoken';
 
 const roles = [
   {
@@ -135,10 +136,17 @@ const createProject = (data) => ({
 const handlers = [
   rest.post('/auth/api/Login', (req, res, ctx) => {
     if (req.body.userName === 'test-user' && req.body.password === 'test-password') {
+      const token = jwt.sign({
+        name: 'test-user',
+        role: 'Admin',
+        nbf: Date.now() / 1000,
+        exp: Date.now() / 1000 + (60 * 30),
+        iat: Date.now() / 1000,
+      }, 'secret');
       return res(
         ctx.status(200),
         ctx.json({
-          token: 'fake-token',
+          token,
         }),
       );
     }
