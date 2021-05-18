@@ -53,7 +53,7 @@ test('create new User', async () => {
 
   userEvent.click(screen.getByText('Speichern'));
 
-  const testUserName = await screen.findByText(/test user1/);
+  const testUserName = await screen.findByText('test user1');
   const testUserInitial = await screen.findByText('tusr1');
 
   expect(testUserName).toBeInTheDocument();
