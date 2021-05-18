@@ -59,22 +59,14 @@ const ProjectFormModal : React.FC<ChildComponentProps> = ({
   const handleSave = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     if (projectForm.id) {
-      try {
-        const param: ProjectsUpdateProjectApiArg = {
-          projectId: projectForm.id,
-          manageProjectRequest: projectForm,
-        };
-        updateProject(param);
-      } catch (err) {
-        console.log(err);
-      }
+      const param: ProjectsUpdateProjectApiArg = {
+        projectId: projectForm.id,
+        manageProjectRequest: projectForm,
+      };
+      updateProject(param);
     } else {
-      try {
-        const param: ProjectsCreateProjectApiArg = { manageProjectRequest: projectForm };
-        createProject(param);
-      } catch (err) {
-        console.log(err);
-      }
+      const param: ProjectsCreateProjectApiArg = { manageProjectRequest: projectForm };
+      createProject(param);
     }
     setIsModalOpen(false);
   };

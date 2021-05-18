@@ -1,6 +1,8 @@
 import React from 'react';
 import {
-  Table, TableBody, TableCell, TableContainer, TableRow, Typography,
+  CircularProgress,
+  Table, TableBody, TableCell, TableRow,
+   TableContainer, Typography,
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -11,8 +13,14 @@ import printSpentTime from '../utils/utils';
 
 const Dashboard : React.FC = () => {
   const authInfo = useAppSelector((state) => state.authInfo);
-  const { data: contributorProjects } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Contributor' });
-  const { data: managerProjects } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Manager' });
+  const {
+    data: contributorProjects,
+    isLoading: contributorIsLoading,
+  } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Contributor' });
+  const {
+    data: managerProjects,
+    isLoading: managerIsLoading,
+  } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Manager' });
 
   const projectsOverview = [
     {
@@ -61,25 +69,33 @@ const Dashboard : React.FC = () => {
     <div>
       <h1> Dashboard </h1>
 
-      <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell colSpan={3}>Meine Projekte</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {
+      { contributorIsLoading
+        ? <CircularProgress />
+        : (
+          <Table className={classes.table} style={{ width: 300 }}>
+            <TableHead>
+              <TableRow>
+                <TableCell colSpan={3}>Meine Projekte</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {
             contributorProjects?.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>
                   {item.name}
                 </TableCell>
-                <TableCell align="right">{printSpentTime(item.contributorsSpentMinutes?.[authInfo.username])}</TableCell>
+                <TableCell
+                  align="right"
+                >
+                  {printSpentTime(item.contributorsSpentMinutes?.[authInfo.username])}
+                </TableCell>
               </TableRow>
             ))
-                }
-        </TableBody>
-      </Table>
+          }
+            </TableBody>
+          </Table>
+        )}
 
       <TableContainer className={classes.table}>
         <Typography variant="h6">Projekt/Mitarbeiter-Verlauf</Typography>
@@ -92,15 +108,15 @@ const Dashboard : React.FC = () => {
           </TableHead>
           <TableBody>
             {
-        projectsOverview.map((item) => (
-          <TableRow key={item.id}>
-            <TableCell>
-              {item.year}
-            </TableCell>
-            <TableCell align="center">{item.projects / item.users}</TableCell>
-          </TableRow>
-        ))
-      }
+              projectsOverview.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      {item.year}
+                    </TableCell>
+                    <TableCell align="center">{item.projects / item.users}</TableCell>
+                  </TableRow>
+              ))
+            }
           </TableBody>
         </Table>
       </TableContainer>
@@ -118,29 +134,32 @@ const Dashboard : React.FC = () => {
           <TableBody>
             {
               projectsOverview.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    {item.year}
-                  </TableCell>
-                  <TableCell align="center">{item.projects}</TableCell>
-                  <TableCell align="right">{item.users}</TableCell>
-                </TableRow>
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      {item.year}
+                    </TableCell>
+                    <TableCell align="center">{item.projects}</TableCell>
+                    <TableCell align="right">{item.users}</TableCell>
+                  </TableRow>
               ))
             }
           </TableBody>
         </Table>
       </TableContainer>
 
-      <Table className={classes.table}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Projektname</TableCell>
-            <TableCell align="center">Anzahl Mitarbeiter</TableCell>
-            <TableCell align="right">H</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {
+      { managerIsLoading
+        ? <CircularProgress />
+        : (
+          <Table className={classes.table} style={{ width: 350, float: 'right' }}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Projektname</TableCell>
+                <TableCell align="center">Anzahl Mitarbeiter</TableCell>
+                <TableCell align="right">H</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {
             managerProjects?.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>
@@ -150,9 +169,10 @@ const Dashboard : React.FC = () => {
                 <TableCell align="right">{printSpentTime(item.totalSpentMinutes)}</TableCell>
               </TableRow>
             ))
-                }
-        </TableBody>
-      </Table>
+          }
+            </TableBody>
+          </Table>
+        )}
     </div>
   );
 };
