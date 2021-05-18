@@ -1,4 +1,6 @@
-import { render, screen } from '@testing-library/react';
+import {
+  queryByText, render, screen, waitFor, waitForElementToBeRemoved,
+} from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import userEvent from '@testing-library/user-event';
@@ -136,9 +138,9 @@ test('delete Project', async () => {
 
   userEvent.click(screen.getByText('Löschen'));
 
-  const deletedProjectName = await screen.findByText(/project1/i);
-  // TODO project should not be visible
-  expect(deletedProjectName).toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.queryByText(/project1/i)).not.toBeInTheDocument();
+  });
 
   userEvent.click(buttons[0]);
   const deleteProjectModalText = await screen.findByText(/Projekt beenden/i);
