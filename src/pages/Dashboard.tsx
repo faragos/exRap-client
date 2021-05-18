@@ -74,14 +74,16 @@ const Dashboard : React.FC = () => {
         ? <CircularProgress />
         : (currentUser?.roles?.includes('ProjectContributor')
           && (
-          <Table className={classes.table} style={{ width: 300 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell colSpan={3}>Meine Projekte</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {
+          <TableContainer className={classes.table}>
+            <Typography variant="h6">Meine Projekte</Typography>
+            <Table className={classes.table} style={{ width: 300 }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell colSpan={3}>Projekt</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
                 sortOwnProjects()?.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>
@@ -95,8 +97,9 @@ const Dashboard : React.FC = () => {
                   </TableRow>
                 ))
           }
-            </TableBody>
-          </Table>
+              </TableBody>
+            </Table>
+          </TableContainer>
           )
         )}
 
@@ -132,16 +135,18 @@ const Dashboard : React.FC = () => {
         ? <CircularProgress />
         : (currentUser?.roles?.includes('ProjectManager')
           && (
-          <Table className={classes.table} style={{ width: 350, float: 'right' }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Projektname</TableCell>
-                <TableCell align="center">Anzahl Mitarbeiter</TableCell>
-                <TableCell align="right">H</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {
+          <TableContainer className={classes.table}>
+            <Typography variant="h6">Projektleitung</Typography>
+            <Table className={classes.table} style={{ width: 350, float: 'right' }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Projekt</TableCell>
+                  <TableCell align="center">Anzahl Mitarbeiter</TableCell>
+                  <TableCell align="right">H</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
             managerProjects?.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>
@@ -152,10 +157,12 @@ const Dashboard : React.FC = () => {
               </TableRow>
             ))
           }
-            </TableBody>
-          </Table>
+              </TableBody>
+            </Table>
+          </TableContainer>
           ))}
     </div>
   );
 };
+
 export default Dashboard;
