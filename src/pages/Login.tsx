@@ -43,7 +43,6 @@ const Login : React.FC = () => {
       history.push('/');
     } catch (e) {
       setLoading(false);
-      console.error('Login failed');
     }
   };
 

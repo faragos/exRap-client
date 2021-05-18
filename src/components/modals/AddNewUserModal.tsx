@@ -1,4 +1,6 @@
-import React, { ChangeEvent, SyntheticEvent, useState } from 'react';
+import React, {
+  ChangeEvent, SyntheticEvent, useState,
+} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -20,11 +22,20 @@ import {
 } from '../../service/auth.api';
 
 type PasswordComponentProps = {
-  handleCredentialsChange: (event: ChangeEvent<HTMLInputElement>) => void,
+  handlePasswordChange: (event: ChangeEvent<HTMLInputElement>) => void,
+  handleRepeatPasswordChange: (event: ChangeEvent<HTMLInputElement>) => void,
+};
+
+const passwordValidation = (target: EventTarget & HTMLInputElement, value: string) => {
+  let validText = '';
+  if (target.value !== value) {
+    validText = 'Passwörter stimmen nicht überein';
+  }
+  target.setCustomValidity(validText);
 };
 
 const PasswordFields : React.FC<PasswordComponentProps> = (
-  { handleCredentialsChange } : PasswordComponentProps,
+  { handlePasswordChange, handleRepeatPasswordChange } : PasswordComponentProps,
 ) => (
   <>
     <TextField
@@ -34,7 +45,8 @@ const PasswordFields : React.FC<PasswordComponentProps> = (
       variant="standard"
       type="password"
       required
-      onChange={handleCredentialsChange}
+      onChange={handlePasswordChange}
+      inputProps={{ minLength: 8 }}
     />
 
     <TextField
@@ -44,12 +56,13 @@ const PasswordFields : React.FC<PasswordComponentProps> = (
       variant="standard"
       type="password"
       required
-      onChange={handleCredentialsChange}
+      onChange={handleRepeatPasswordChange}
+      inputProps={{ minLength: 8 }}
     />
   </>
 );
 
-export { PasswordFields };
+export { PasswordFields, passwordValidation };
 
 type ChildComponentProps = {
   isModalOpen: boolean,
@@ -108,11 +121,13 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>) => setFormState((prev) => ({ ...prev, [name]: value }));
 
-  const handleCredentialsChange = ({
-    target: { name, value },
-  }: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     // eslint-disable-next-line max-len
-    setFormState((prev) => ({ ...prev, credentials: { ...prev.credentials, [name]: value } as ManageCredentialRequest }));
+    setFormState((prev) => ({ ...prev, credentials: { ...prev.credentials, password: target.value } as ManageCredentialRequest }));
+  };
+
+  const handleRepeatPasswordChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    if (formState.credentials) passwordValidation(target, formState.credentials?.password);
   };
 
   const handleClose = () => {
@@ -133,25 +148,17 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     if (formState?.id) {
-      try {
-        const param: UsersUpdateUserApiArg = {
-          userId: formState.id,
-          manageUserRequest: formState,
-        };
-        prepareUpdateRoles(formState.id);
-        updateUser(param);
-      } catch (err) {
-        console.log(err);
-      }
+      const param: UsersUpdateUserApiArg = {
+        userId: formState.id,
+        manageUserRequest: formState,
+      };
+      prepareUpdateRoles(formState.id);
+      updateUser(param);
     } else {
-      try {
-        const param: UsersCreateUserApiArg = { createUserRequest: formState };
-        const result = await createUser(param).unwrap();
-        if (result) {
-          prepareUpdateRoles(result.id);
-        }
-      } catch (err) {
-        console.log(err);
+      const param: UsersCreateUserApiArg = { createUserRequest: formState };
+      const result = await createUser(param).unwrap();
+      if (result) {
+        prepareUpdateRoles(result.id);
       }
     }
     setIsModalOpen(false);
@@ -164,74 +171,88 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   };
 
   return (
-    <Dialog open={isModalOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
-      <form onSubmit={handleSubmit}>
-        <DialogTitle id="form-dialog-title">Neuer Mitarbeiter erfassen</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            id="firstName"
-            name="firstName"
-            label="Vorname"
-            variant="standard"
-            placeholder="Max"
-            value={formState.firstName}
-            onChange={handleChange}
-          />
-          <TextField
-            id="name"
-            name="name"
-            label="Nachname"
-            variant="standard"
-            placeholder="Muster"
-            value={formState.name}
-            onChange={handleChange}
-          />
-          <TextField
-            id="userName"
-            name="userName"
-            label="Kürzel"
-            variant="standard"
-            placeholder="abc"
-            value={formState.userName}
-            onChange={handleChange}
-            fullWidth
-          />
-          <TextField
-            id="mailAddress"
-            name="mailAddress"
-            label="Mail"
-            variant="standard"
-            placeholder="example@test.ch"
-            value={formState.mailAddress}
-            onChange={handleChange}
-            fullWidth
-          />
-          <Autocomplete
-            multiple
-            id="addRole"
-            options={roles}
-            getOptionLabel={(option) => option.name}
-            filterSelectedOptions
+    <div>
+
+      <Dialog open={isModalOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <form onSubmit={handleSubmit}>
+          <DialogTitle id="form-dialog-title">Neuer Mitarbeiter erfassen</DialogTitle>
+          <DialogContent>
+            <TextField
+              autoFocus
+              id="firstName"
+              name="firstName"
+              label="Vorname"
+              variant="standard"
+              placeholder="Max"
+              value={formState.firstName}
+              onChange={handleChange}
+              required
+            />
+            <TextField
+              id="name"
+              name="name"
+              label="Nachname"
+              variant="standard"
+              placeholder="Muster"
+              value={formState.name}
+              onChange={handleChange}
+              required
+            />
+            <TextField
+              id="userName"
+              name="userName"
+              label="Kürzel"
+              variant="standard"
+              placeholder="abc"
+              value={formState.userName}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+            <TextField
+              id="mailAddress"
+              name="mailAddress"
+              label="Mail"
+              variant="standard"
+              placeholder="example@test.ch"
+              value={formState.mailAddress}
+              onChange={handleChange}
+              fullWidth
+              required
+              type="email"
+            />
+            <Autocomplete
+              multiple
+              id="addRole"
+              options={roles}
+              getOptionLabel={(option) => option.name}
+              filterSelectedOptions
               /* props need to be forwarded https://material-ui.com/components/autocomplete/#checkboxes */
               /* eslint-disable-next-line react/jsx-props-no-spreading */
-            renderInput={(params) => (<TextField {...params} variant="standard" label="Rolle hinzufügen" placeholder="Rollen" />)}
-            onChange={addRoleHandler}
-            getOptionSelected={(option, value) => option.name === value.name}
-            value={currentRoles}
-          />
-          {!formState.id && <PasswordFields handleCredentialsChange={handleCredentialsChange} />}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>
-            Abbrechen
-          </Button>
-          <Button type="submit" color="primary" variant="contained">
-            Speichern
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+              renderInput={(params) => (<TextField {...params} variant="standard" label="Rolle hinzufügen" placeholder="Rollen" />)}
+              onChange={addRoleHandler}
+              getOptionSelected={(option, value) => option.name === value.name}
+              value={currentRoles}
+            />
+            {!formState.id
+            && (
+            <PasswordFields
+              handlePasswordChange={handlePasswordChange}
+              handleRepeatPasswordChange={handleRepeatPasswordChange}
+            />
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>
+              Abbrechen
+            </Button>
+            <Button type="submit" color="primary" variant="contained">
+              Speichern
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+    </div>
   );
 };
 export default AddNewUserModal;
