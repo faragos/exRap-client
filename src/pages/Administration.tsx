@@ -130,10 +130,8 @@ const Administration : React.FC = () => {
         gridTemplateColumns: 'minmax(200px, 300px) minmax(200px, 300px)',
       },
     },
-    newUserButton: {
-    },
     search: {
-      paddingTop: '10px',
+      marginTop: '10px',
       paddingBottom: '10px',
     },
   }));
@@ -159,7 +157,7 @@ const Administration : React.FC = () => {
               ),
             }}
           />
-          <Button variant="contained" color="primary" className={classes.newUserButton} onClick={addNewUserHandler}>
+          <Button variant="contained" color="primary" onClick={addNewUserHandler}>
             Neuer Mitarbeiter erfassen
           </Button>
         </Toolbar>
