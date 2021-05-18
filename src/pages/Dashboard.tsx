@@ -2,7 +2,7 @@ import React from 'react';
 import {
   CircularProgress,
   Table, TableBody, TableCell, TableRow,
-   TableContainer, Typography,
+  TableContainer, Typography,
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,41 +10,31 @@ import TableHead from '@material-ui/core/TableHead';
 import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
 import { useAppSelector } from '../hooks';
 import printSpentTime from '../utils/utils';
+import { UsersGetUsersApiArg } from '../gen/auth.api.generated';
+import { useUsersGetUsersQuery } from '../service/auth.api';
 
 const Dashboard : React.FC = () => {
   const authInfo = useAppSelector((state) => state.authInfo);
+
   const {
     data: contributorProjects,
     isLoading: contributorIsLoading,
   } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Contributor' });
+
   const {
     data: managerProjects,
     isLoading: managerIsLoading,
   } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Manager' });
 
-  const projectsOverview = [
-    {
-      id: 1,
-      year: 2019,
-      users: 20,
-      projects: 4,
-    }, {
-      id: 2,
-      year: 2020,
-      users: 23,
-      projects: 5,
-    }, {
-      id: 3,
-      year: 2021,
-      users: 30,
-      projects: 8,
-    }, {
-      id: 4,
-      year: 2022,
-      users: 24,
-      projects: 5,
-    },
-  ];
+  const {
+    data: allProjects,
+    isLoading: allIsLoading,
+  } = useProjectsGetProjectsQuery({ status: 'Active' });
+
+  const usersArg: UsersGetUsersApiArg = {};
+  const {
+    data: users = [],
+  } = useUsersGetUsersQuery(usersArg);
 
   const useStyles = makeStyles((theme) => ({
     table: {
@@ -68,7 +58,6 @@ const Dashboard : React.FC = () => {
   return (
     <div>
       <h1> Dashboard </h1>
-
       { contributorIsLoading
         ? <CircularProgress />
         : (
@@ -97,55 +86,31 @@ const Dashboard : React.FC = () => {
           </Table>
         )}
 
-      <TableContainer className={classes.table}>
-        <Typography variant="h6">Projekt/Mitarbeiter-Verlauf</Typography>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Jahr</TableCell>
-              <TableCell align="center">Projekte/Mitarbeiter</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {
-              projectsOverview.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>
-                      {item.year}
-                    </TableCell>
-                    <TableCell align="center">{item.projects / item.users}</TableCell>
-                  </TableRow>
-              ))
-            }
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      <TableContainer className={classes.table}>
-        <Typography variant="h6">Projektübersicht</Typography>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Jahr</TableCell>
-              <TableCell align="center">Anzahl Projekte</TableCell>
-              <TableCell align="right">Anzahl Mitarbeiter</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {
-              projectsOverview.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>
-                      {item.year}
-                    </TableCell>
-                    <TableCell align="center">{item.projects}</TableCell>
-                    <TableCell align="right">{item.users}</TableCell>
-                  </TableRow>
-              ))
-            }
-          </TableBody>
-        </Table>
-      </TableContainer>
+      { allIsLoading
+        ? <CircularProgress />
+        : (
+          <TableContainer className={classes.table}>
+            <Typography variant="h6">Firmenübersicht</Typography>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Jahr</TableCell>
+                  <TableCell align="center">Anzahl Projekte</TableCell>
+                  <TableCell align="right">Anzahl Mitarbeiter</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow key={new Date().getFullYear()}>
+                  <TableCell>
+                    {new Date().getFullYear()}
+                  </TableCell>
+                  <TableCell align="center">{allProjects?.length}</TableCell>
+                  <TableCell align="right">{users?.length}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
 
       { managerIsLoading
         ? <CircularProgress />
