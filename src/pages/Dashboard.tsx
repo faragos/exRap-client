@@ -36,6 +36,16 @@ const Dashboard : React.FC = () => {
     data: users = [],
   } = useUsersGetUsersQuery(usersArg);
 
+  const sortOwnProjects = () => contributorProjects?.slice().sort(
+    (a, b) => {
+      // eslint-disable-next-line max-len
+      if (a.contributorsSpentMinutes?.[authInfo.username] && b.contributorsSpentMinutes?.[authInfo.username]) {
+        // eslint-disable-next-line max-len
+        return b?.contributorsSpentMinutes?.[authInfo.username] - a?.contributorsSpentMinutes?.[authInfo.username];
+      }
+      return 0;
+    },
+  );
   const useStyles = makeStyles((theme) => ({
     table: {
       width: '45%',
@@ -69,18 +79,18 @@ const Dashboard : React.FC = () => {
             </TableHead>
             <TableBody>
               {
-            contributorProjects?.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>
-                  {item.name}
-                </TableCell>
-                <TableCell
-                  align="right"
-                >
-                  {printSpentTime(item.contributorsSpentMinutes?.[authInfo.username])}
-                </TableCell>
-              </TableRow>
-            ))
+                sortOwnProjects()?.map((item) => (
+                  <TableRow key={item.id}>
+                    <TableCell>
+                      {item.name}
+                    </TableCell>
+                    <TableCell
+                      align="right"
+                    >
+                      {printSpentTime(item.contributorsSpentMinutes?.[authInfo.username])}
+                    </TableCell>
+                  </TableRow>
+                ))
           }
             </TableBody>
           </Table>
