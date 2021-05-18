@@ -34,7 +34,8 @@ const useStyles = makeStyles((theme) => ({
       cursor: 'pointed',
     },
     '& tbody td:nth-child(4)': {
-      width: '25%',
+      width: '15%',
+      textAlign: 'end',
     },
   },
   toolbar: {

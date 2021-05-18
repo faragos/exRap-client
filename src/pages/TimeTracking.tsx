@@ -1,3 +1,4 @@
+import './TimeTracking.scss';
 import React, { useState } from 'react';
 import Calendar from '../components/Calendar';
 import RegisterTimeModal from '../components/modals/RegisterTimeModal';

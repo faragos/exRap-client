@@ -10,7 +10,10 @@ import TimePicker from '@material-ui/lab/TimePicker';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import deLocale from 'date-fns/locale/de';
+import DeleteIcon from '@material-ui/icons/Delete';
+import SaveIcon from '@material-ui/icons/Save';
 
+import { makeStyles } from '@material-ui/core/styles';
 import {
   useProjectsGetProjectsQuery,
   useProjectTimeslotsAddTimeslotMutation, useProjectTimeslotsDeleteTimeslotMutation,
@@ -24,6 +27,31 @@ import {
   TimeSlotOverview,
 } from '../../gen/timeTrack.api.generated';
 import AlertDialog from '../AlertDialog';
+
+const useStyles = makeStyles((theme) => ({
+  buttonRow: {
+    display: 'flex',
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+  },
+  deleteButton: {
+    marginRight: 'auto',
+  },
+  halfField: {
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: `calc(50% - ${theme.spacing(1)})`,
+    },
+  },
+  fieldRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+    },
+  },
+}));
 
 type ChildComponentProps = {
   isModalOpen: boolean,
@@ -137,6 +165,7 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
     setTimeSlot({ ...timeSlot, project: { key: project.id, value: project.name } });
   };
 
+  const classes = useStyles();
   return (
     <div>
       <Dialog open={isModalOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -153,20 +182,23 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
             value={getProjectFromTimeSlot()}
           />
           <LocalizationProvider dateAdapter={AdapterDateFns} locale={deLocale}>
-            <TimePicker
-              value={new Date(timeSlot.start)}
-              onChange={handleStartChange}
-                /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
-                /* eslint-disable-next-line react/jsx-props-no-spreading */
-              renderInput={(params: any) => <TextField {...params} margin="normal" />}
-            />
-            <TimePicker
-              value={new Date(timeSlot.end)}
-              onChange={handleEndChange}
-                /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
-                /* eslint-disable-next-line react/jsx-props-no-spreading */
-              renderInput={(params: any) => <TextField {...params} margin="normal" />}
-            />
+            <div className={classes.fieldRow}>
+              <TimePicker
+                value={new Date(timeSlot.start)}
+                onChange={handleStartChange}
+                  /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
+                  /* eslint-disable-next-line react/jsx-props-no-spreading */
+                renderInput={(params: any) => <TextField {...params} margin="normal" className={classes.halfField} />}
+                className={classes.halfField}
+              />
+              <TimePicker
+                value={new Date(timeSlot.end)}
+                onChange={handleEndChange}
+                  /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
+                  /* eslint-disable-next-line react/jsx-props-no-spreading */
+                renderInput={(params: any) => <TextField {...params} margin="normal" className={classes.halfField} />}
+              />
+            </div>
           </LocalizationProvider>
           <TextField
             margin="dense"
@@ -180,14 +212,14 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
             value={timeSlot.comment || ''}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDelete} color="primary" disabled={timeSlot.id === 0}>
+        <DialogActions className={classes.buttonRow}>
+          <Button onClick={handleDelete} color="secondary" variant="contained" disabled={timeSlot.id === 0} startIcon={<DeleteIcon />} className={classes.deleteButton}>
             Löschen
           </Button>
           <Button onClick={handleClose} color="primary">
             Abbrechen
           </Button>
-          <Button onClick={handleSave} color="primary">
+          <Button onClick={handleSave} color="primary" variant="contained" startIcon={<SaveIcon />}>
             Speichern
           </Button>
         </DialogActions>

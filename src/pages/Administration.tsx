@@ -95,7 +95,8 @@ const Administration : React.FC = () => {
         cursor: 'pointed',
       },
       '& tbody td:nth-child(4)': {
-        width: '25%',
+        width: '15%',
+        textAlign: 'end',
       },
     },
     toolbar: {
@@ -110,8 +111,6 @@ const Administration : React.FC = () => {
     newUserButton: {
     },
     search: {
-      paddingTop: '10px',
-      paddingBottom: '10px',
     },
   }));
 
