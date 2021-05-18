@@ -22,6 +22,8 @@ import ShowProjectTimeModal from '../components/modals/ShowProjectTimeModal';
 import { useProjectsGetProjectsQuery, useProjectsUpdateProjectMutation } from '../service/timeTrack.api';
 import { ProjectOverview, ProjectStatus, ProjectsUpdateProjectApiArg } from '../gen/timeTrack.api.generated';
 import AlertDialog from '../components/AlertDialog';
+import { AuthInfo } from '../store/authInfo/types';
+import { useAppSelector } from '../hooks';
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -54,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Projects : React.FC = () => {
   const classes = useStyles();
+  const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
   const [isFilterEnabled, setIsFilterEnabled] = useState(false);
   const {
     data,
@@ -120,6 +123,12 @@ const Projects : React.FC = () => {
     setIsShowProjectTimeModalOpen(true);
   };
 
+  const checkNewProjectPermission = () => currentUser?.roles?.includes('ProjectManager')
+      || currentUser?.roles?.includes('Admin');
+
+  const checkProjectPermissions = (project: ProjectOverview) => project.projectStatus === 'Active'
+        && checkNewProjectPermission();
+
   return (
     <div>
       <Grid>
@@ -153,6 +162,7 @@ const Projects : React.FC = () => {
             color="primary"
             className={classes.newProjectButton}
             onClick={addNewProjectHandler}
+            disabled={!checkNewProjectPermission()}
           >
             Neues Projekt erfassen
           </Button>
@@ -176,21 +186,21 @@ const Projects : React.FC = () => {
                     <IconButton
                       data-testid="addProjectButton"
                       onClick={() => addUserToProjectHandler(item)}
-                      disabled={item.projectStatus !== 'Active'}
+                      disabled={!checkProjectPermissions(item)}
                     >
                       <PersonAddIcon />
                     </IconButton>
                     <IconButton
                       data-testid="editProjectButton"
                       onClick={() => handleEditProject(item)}
-                      disabled={item.projectStatus !== 'Active'}
+                      disabled={!checkProjectPermissions(item)}
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
                       data-testid="deleteProjectButton"
                       onClick={() => deleteProject(item)}
-                      disabled={item.projectStatus !== 'Active'}
+                      disabled={!checkProjectPermissions(item)}
                     >
                       <DeleteIcon />
                     </IconButton>

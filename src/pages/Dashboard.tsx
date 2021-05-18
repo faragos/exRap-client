@@ -8,8 +8,10 @@ import TableHead from '@material-ui/core/TableHead';
 import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
 import { useAppSelector } from '../hooks';
 import printSpentTime from '../utils/utils';
+import { AuthInfo } from '../store/authInfo/types';
 
 const Dashboard : React.FC = () => {
+  const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
   const authInfo = useAppSelector((state) => state.authInfo);
   const {
     data: contributorProjects,
@@ -40,7 +42,8 @@ const Dashboard : React.FC = () => {
 
       { contributorIsLoading
         ? <CircularProgress />
-        : (
+        : (currentUser?.roles?.includes('ProjectContributor')
+          && (
           <Table className={classes.table} style={{ width: 300 }}>
             <TableHead>
               <TableRow>
@@ -64,11 +67,13 @@ const Dashboard : React.FC = () => {
           }
             </TableBody>
           </Table>
+          )
         )}
 
       { managerIsLoading
         ? <CircularProgress />
-        : (
+        : (currentUser?.roles?.includes('ProjectManager')
+          && (
           <Table className={classes.table} style={{ width: 350, float: 'right' }}>
             <TableHead>
               <TableRow>
@@ -91,7 +96,7 @@ const Dashboard : React.FC = () => {
           }
             </TableBody>
           </Table>
-        )}
+          ))}
     </div>
   );
 };
