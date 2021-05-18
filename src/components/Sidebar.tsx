@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import './Sidebar.scss';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -22,7 +22,7 @@ import {
   Redirect, Switch, useHistory,
 } from 'react-router-dom';
 import { clearUser } from '../store/authInfo/reducers';
-import { useAppDispatch } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import PrivateRoute from './PrivateRoute';
 import Dashboard from '../pages/Dashboard';
 import TimeTracking from '../pages/TimeTracking';
@@ -32,6 +32,8 @@ import logo from '../assets/exRap-logo.svg';
 import NotFound from '../pages/NotFound';
 import { useLoginRenewTokenQuery } from '../service/auth.api';
 import updateStore from '../utils/validateToken';
+import { AuthInfo } from '../store/authInfo/types';
+import ChangeCredentialsModal from './modals/ChangeCredentialsModal';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -92,6 +94,8 @@ export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const renewTime = 1200; // in s = 20min
   const { data } = useLoginRenewTokenQuery({}, { pollingInterval: renewTime * 1000 });
+  const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
+  const [isCredentialsModalOpen, setIsCredentialsModalOpen] = useState(false);
 
   useEffect(() => {
     if (data) updateStore(data.token, dispatch);
@@ -117,11 +121,18 @@ export default function Sidebar() {
     { fn: handleSignout, label: 'Ausloggen', icon: <ExitToAppIcon /> },
   ];
 
+  const handleChangePassword = () => {
+    setIsCredentialsModalOpen(true);
+  };
+
   const drawer = (
     <div>
       <div className="logo-container">
         <img src={logo} alt="Logo exRap" className="logo" />
       </div>
+      <Divider />
+      {currentUser.username}
+      <button type="button" onClick={handleChangePassword}>change my password</button>
       <Divider />
       <List>
         {pages.map((page) => (
@@ -202,6 +213,19 @@ export default function Sidebar() {
           <Route path="*" component={NotFound} />
         </Switch>
       </main>
+      <ChangeCredentialsModal
+        isModalOpen={isCredentialsModalOpen}
+        setIsModalOpen={setIsCredentialsModalOpen}
+        user={
+          {
+            userName: 'as',
+            id: 0,
+            name: 'a',
+            mailAddress: '',
+            firstName: '',
+          }
+}
+      />
     </div>
   );
 }
