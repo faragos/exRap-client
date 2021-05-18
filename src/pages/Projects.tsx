@@ -26,8 +26,16 @@ import ShowProjectTimeModal from '../components/modals/ShowProjectTimeModal';
 import { useProjectsGetProjectsQuery, useProjectsUpdateProjectMutation } from '../service/timeTrack.api';
 import { ProjectOverview, ProjectStatus, ProjectsUpdateProjectApiArg } from '../gen/timeTrack.api.generated';
 import AlertDialog from '../components/AlertDialog';
+import { AuthInfo } from '../store/authInfo/types';
+import { useAppSelector } from '../hooks';
 
 const Projects : React.FC = () => {
+  const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
+  const [isFilterEnabled, setIsFilterEnabled] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [isAddUserToProjectModalOpen, setIsAddUserToProjectModalOpen] = useState(false);
+  const [isShowProjectTimeModalOpen, setIsShowProjectTimeModalOpen] = useState(false);
   const dtoProject: ProjectOverview = {
     id: 0,
     name: '',
@@ -37,11 +45,6 @@ const Projects : React.FC = () => {
     projectStatus: 'Active',
   };
 
-  const [isFilterEnabled, setIsFilterEnabled] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-  const [isAddUserToProjectModalOpen, setIsAddUserToProjectModalOpen] = useState(false);
-  const [isShowProjectTimeModalOpen, setIsShowProjectTimeModalOpen] = useState(false);
   const [filterValue, setFilterValue] = useState<string | null>();
   const [currentProject, setCurrentProject] = useState(dtoProject);
 
@@ -145,6 +148,12 @@ const Projects : React.FC = () => {
 
   const classes = useStyles();
 
+  const checkNewProjectPermission = () => currentUser?.roles?.includes('ProjectManager')
+      || currentUser?.roles?.includes('Admin');
+
+  const checkProjectPermissions = (project: ProjectOverview) => project.projectStatus === 'Active'
+        && checkNewProjectPermission();
+
   return (
     <div>
       <Grid>
@@ -178,6 +187,7 @@ const Projects : React.FC = () => {
             variant="contained"
             color="primary"
             onClick={addNewProjectHandler}
+            disabled={!checkNewProjectPermission()}
           >
             Neues Projekt erfassen
           </Button>
@@ -201,21 +211,21 @@ const Projects : React.FC = () => {
                         <IconButton
                           data-testid="addProjectButton"
                           onClick={() => addUserToProjectHandler(item)}
-                          disabled={item.projectStatus !== 'Active'}
+                          disabled={!checkProjectPermissions(item)}
                         >
                           <PersonAddIcon />
                         </IconButton>
                         <IconButton
                           data-testid="editProjectButton"
                           onClick={() => handleEditProject(item)}
-                          disabled={item.projectStatus !== 'Active'}
+                          disabled={!checkProjectPermissions(item)}
                         >
                           <EditIcon />
                         </IconButton>
                         <IconButton
                           data-testid="deleteProjectButton"
                           onClick={() => deleteProject(item)}
-                          disabled={item.projectStatus !== 'Active'}
+                          disabled={!checkProjectPermissions(item)}
                         >
                           <DeleteIcon />
                         </IconButton>

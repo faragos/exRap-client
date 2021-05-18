@@ -81,7 +81,6 @@ const Calendar: React.FC<ChildComponentProps> = ({
       <FullCalendar
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
         initialView={matches ? 'timeGridWeek' : 'timeGridDay'}
-        weekends={false}
         allDaySlot={false}
         slotMinTime="05:00:00"
         slotMaxTime="22:00:00"

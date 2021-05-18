@@ -10,10 +10,12 @@ import TableHead from '@material-ui/core/TableHead';
 import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
 import { useAppSelector } from '../hooks';
 import printSpentTime from '../utils/utils';
+import { AuthInfo } from '../store/authInfo/types';
 import { UsersGetUsersApiArg } from '../gen/auth.api.generated';
 import { useUsersGetUsersQuery } from '../service/auth.api';
 
 const Dashboard : React.FC = () => {
+  const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
   const authInfo = useAppSelector((state) => state.authInfo);
 
   const {
@@ -70,15 +72,18 @@ const Dashboard : React.FC = () => {
       <h1> Dashboard </h1>
       { contributorIsLoading
         ? <CircularProgress />
-        : (
-          <Table className={classes.table} style={{ width: 300 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell colSpan={3}>Meine Projekte</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {
+        : (currentUser?.roles?.includes('ProjectContributor')
+          && (
+          <TableContainer className={classes.table}>
+            <Typography variant="h6">Meine Projekte</Typography>
+            <Table className={classes.table} style={{ width: 300 }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell colSpan={3}>Projekt</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
                 sortOwnProjects()?.map((item) => (
                   <TableRow key={item.id}>
                     <TableCell>
@@ -92,13 +97,16 @@ const Dashboard : React.FC = () => {
                   </TableRow>
                 ))
           }
-            </TableBody>
-          </Table>
+              </TableBody>
+            </Table>
+          </TableContainer>
+          )
         )}
 
       { allIsLoading
         ? <CircularProgress />
-        : (
+        : (currentUser?.roles?.includes('SeniorManager')
+          && (
           <TableContainer className={classes.table}>
             <Typography variant="h6">Firmenübersicht</Typography>
             <Table>
@@ -120,21 +128,25 @@ const Dashboard : React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
+          )
         )}
 
       { managerIsLoading
         ? <CircularProgress />
-        : (
-          <Table className={classes.table} style={{ width: 350, float: 'right' }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Projektname</TableCell>
-                <TableCell align="center">Anzahl Mitarbeiter</TableCell>
-                <TableCell align="right">H</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {
+        : (currentUser?.roles?.includes('ProjectManager')
+          && (
+          <TableContainer className={classes.table}>
+            <Typography variant="h6">Projektleitung</Typography>
+            <Table className={classes.table} style={{ width: 350, float: 'right' }}>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Projekt</TableCell>
+                  <TableCell align="center">Anzahl Mitarbeiter</TableCell>
+                  <TableCell align="right">H</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {
             managerProjects?.map((item) => (
               <TableRow key={item.id}>
                 <TableCell>
@@ -145,10 +157,12 @@ const Dashboard : React.FC = () => {
               </TableRow>
             ))
           }
-            </TableBody>
-          </Table>
-        )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          ))}
     </div>
   );
 };
+
 export default Dashboard;

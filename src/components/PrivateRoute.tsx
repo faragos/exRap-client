@@ -11,7 +11,7 @@ interface PrivateRouteProps {
 const PrivateRoute : React.FC<PrivateRouteProps> = ({ component, path }) => {
   const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
 
-  if (currentUser.isAuthenticated) {
+  if ((currentUser.isAuthenticated && currentUser?.roles?.includes('Admin')) || (currentUser.isAuthenticated && path !== '/administration')) {
     // if the user is authenticated, just render the component
     return (
       <Route

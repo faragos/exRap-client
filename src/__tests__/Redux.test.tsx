@@ -1,4 +1,5 @@
 import { cleanup } from '@testing-library/react';
+import jwt from 'jsonwebtoken';
 import store from '../store/store';
 import {
   setCredentials,
@@ -6,17 +7,25 @@ import {
 } from '../store/authInfo/reducers';
 
 afterEach(cleanup);
-
-// TODO: move this tests to page tests like a user input
+let token: string;
+beforeAll(() => {
+  token = jwt.sign({
+    name: 'test-user',
+    role: 'Admin',
+    nbf: Date.now() / 1000,
+    exp: Date.now() / 1000 + (60 * 30),
+    iat: Date.now() / 1000,
+  }, 'secret');
+});
 test('set user credantials to redux store', () => {
   const testAuthInfo = {
     username: 'TestUser',
-    token: 'asdfewrabaer5t24q5g',
+    token,
     isAuthenticated: true,
   };
   const expectedAuthInfo = {
     username: 'TestUser',
-    token: 'asdfewrabaer5t24q5g',
+    token,
     isAuthenticated: true,
   };
   store.dispatch(setCredentials(testAuthInfo));
@@ -27,7 +36,7 @@ test('set user credantials to redux store', () => {
 test('logoutUser', () => {
   const testAuthInfo = {
     username: 'TestUser',
-    token: 'asdfewrabaer5t24q5g',
+    token,
     isAuthenticated: true,
   };
   const emptyAuthInfo = {

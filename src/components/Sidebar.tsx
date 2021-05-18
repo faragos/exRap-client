@@ -22,7 +22,7 @@ import {
   Redirect, Switch, useHistory,
 } from 'react-router-dom';
 import { clearUser } from '../store/authInfo/reducers';
-import { useAppDispatch } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import PrivateRoute from './PrivateRoute';
 import Dashboard from '../pages/Dashboard';
 import TimeTracking from '../pages/TimeTracking';
@@ -32,6 +32,7 @@ import logo from '../assets/exRap-logo.svg';
 import NotFound from '../pages/NotFound';
 import { useLoginRenewTokenQuery } from '../service/auth.api';
 import updateStore from '../utils/validateToken';
+import { AuthInfo } from '../store/authInfo/types';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -92,6 +93,7 @@ export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const renewTime = 1200; // in s = 20min
   const { data } = useLoginRenewTokenQuery({}, { pollingInterval: renewTime * 1000 });
+  const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
 
   useEffect(() => {
     if (data) updateStore(data.token, dispatch);
@@ -110,8 +112,11 @@ export default function Sidebar() {
     { uri: '/dashboard', label: 'Mein Dashboard', icon: <DashboardIcon /> },
     { uri: '/timetracking', label: 'Meine Zeiterfassung', icon: <AccessTimeIcon /> },
     { uri: '/projects', label: 'Projekte', icon: <AccountTreeIcon /> },
-    { uri: '/administration', label: 'Administration', icon: <SettingsIcon /> },
   ];
+
+  if (currentUser?.roles?.includes('Admin')) {
+    pages.push({ uri: '/administration', label: 'Administration', icon: <SettingsIcon /> });
+  }
 
   const secondaryPages : NavigationAction[] = [
     { fn: handleSignout, label: 'Ausloggen', icon: <ExitToAppIcon /> },
