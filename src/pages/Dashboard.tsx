@@ -102,7 +102,8 @@ const Dashboard : React.FC = () => {
 
       { allIsLoading
         ? <CircularProgress />
-        : (
+        : (currentUser?.roles?.includes('SeniorManager')
+          && (
           <TableContainer className={classes.table}>
             <Typography variant="h6">Firmenübersicht</Typography>
             <Table>
@@ -124,6 +125,7 @@ const Dashboard : React.FC = () => {
               </TableBody>
             </Table>
           </TableContainer>
+          )
         )}
 
       { managerIsLoading
