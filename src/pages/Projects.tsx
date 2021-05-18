@@ -147,35 +147,6 @@ const Projects : React.FC = () => {
     return projects;
   };
 
-  const useStyles = makeStyles((theme) => ({
-    table: {
-      marginTop: theme.spacing(3),
-      '& tbody td': {
-        fontWeight: '300',
-      },
-      '& tbody tr:hover': {
-        backgroundColor: '#fffbf2',
-        cursor: 'pointed',
-      },
-      '& tbody td:nth-child(4)': {
-        width: '25%',
-      },
-    },
-    toolbar: {
-      display: 'grid',
-      gridGap: '20px',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      justifyContent: 'space-between',
-      [theme.breakpoints.up('md')]: {
-        gridTemplateColumns: 'minmax(200px, 300px) 1fr minmax(200px, 300px)',
-      },
-    },
-    search: {
-      marginTop: '10px',
-      paddingBottom: '10px',
-    },
-  }));
-
   const classes = useStyles();
 
   const checkNewProjectPermission = () => currentUser?.roles?.includes('ProjectManager')
@@ -194,7 +165,6 @@ const Projects : React.FC = () => {
             type="string"
             label="Suche Projekte"
             onChange={handleSearch}
-            className={classes.search}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
