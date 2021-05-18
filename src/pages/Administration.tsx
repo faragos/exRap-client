@@ -18,7 +18,10 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import {
-  UserOverview, UsersGetUsersApiArg, UsersUpdateUserApiArg, useUsersUpdateUserMutation,
+  UserOverview,
+  UsersGetUsersApiArg,
+  UsersUpdateUserApiArg,
+  useUsersUpdateUserMutation,
   UserStatus,
 } from '../gen/auth.api.generated';
 import { useUsersGetUsersQuery } from '../service/auth.api';
@@ -41,6 +44,7 @@ const Administration : React.FC = () => {
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [isCredentialsModalOpen, setIsCredentialsModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [filterValue, setFilterValue] = useState<string | null>();
 
   const usersArg: UsersGetUsersApiArg = {};
   const {
@@ -84,7 +88,7 @@ const Administration : React.FC = () => {
     setCurrentUser(user);
     setIsDeleteAlertOpen(false);
   };
-  const [filterValue, setFilterValue] = useState<string | null>();
+
   const handleSearch = (searchedValue: { target: { value: string; }; } | null) => {
     if (searchedValue?.target.value) {
       setFilterValue(searchedValue.target.value);
@@ -167,27 +171,27 @@ const Administration : React.FC = () => {
                 <TableBody>
                   {
                     getFilteredUsers().map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell>
-                        {item.firstName}
-                        {' '}
-                        {item.name}
-                      </TableCell>
-                      <TableCell>{item.userName}</TableCell>
-                      <TableCell>{item.roles?.join(', ')}</TableCell>
-                      <TableCell>
-                        <IconButton data-testid="editUserButton" onClick={() => editUser(item)}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton data-testid="editPasswordButton" onClick={() => editCredentials(item)}>
-                          <VpnKeyIcon />
-                        </IconButton>
-                        <IconButton data-testid="deleteUserButton" onClick={() => deleteUser(item)}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))
+                      <TableRow key={item.id}>
+                        <TableCell>
+                          {item.firstName}
+                          {' '}
+                          {item.name}
+                        </TableCell>
+                        <TableCell>{item.userName}</TableCell>
+                        <TableCell>{item.roles?.join(', ')}</TableCell>
+                        <TableCell>
+                          <IconButton data-testid="editUserButton" onClick={() => editUser(item)}>
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton data-testid="editPasswordButton" onClick={() => editCredentials(item)}>
+                            <VpnKeyIcon />
+                          </IconButton>
+                          <IconButton data-testid="deleteUserButton" onClick={() => deleteUser(item)}>
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))
                 }
                 </TableBody>
               </Table>

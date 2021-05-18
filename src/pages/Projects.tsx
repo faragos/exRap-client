@@ -19,6 +19,7 @@ import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
+import SearchIcon from '@material-ui/icons/Search';
 import ProjectFormModal from '../components/modals/ProjectFormModal';
 import AddUserToProjectModal from '../components/modals/AddUserToProjectModal';
 import ShowProjectTimeModal from '../components/modals/ShowProjectTimeModal';
@@ -58,14 +59,18 @@ const useStyles = makeStyles((theme) => ({
 const Projects : React.FC = () => {
   const classes = useStyles();
   const [isFilterEnabled, setIsFilterEnabled] = useState(false);
+
   const {
-    data,
+    data: projects = [],
     isLoading: projectsIsLoading,
   } = useProjectsGetProjectsQuery({ status: isFilterEnabled ? undefined : 'Active' });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isAddUserToProjectModalOpen, setIsAddUserToProjectModalOpen] = useState(false);
   const [isShowProjectTimeModalOpen, setIsShowProjectTimeModalOpen] = useState(false);
+  const [filterValue, setFilterValue] = useState<string | null>();
+
   const dtoProject: ProjectOverview = {
     id: 0,
     name: '',
@@ -123,13 +128,33 @@ const Projects : React.FC = () => {
     setIsShowProjectTimeModalOpen(true);
   };
 
+  const handleSearch = (searchedValue: { target: { value: string; }; } | null) => {
+    if (searchedValue?.target.value) {
+      setFilterValue(searchedValue.target.value);
+    } else {
+      setFilterValue(null);
+    }
+  };
+
+  const getFilteredProjects = () => {
+    if (filterValue) {
+      return projects.filter(
+        (project) => project.name.toLowerCase().includes(filterValue.toLowerCase())
+            || project.initial.toLowerCase().includes(filterValue.toLowerCase()),
+      );
+    }
+    return projects;
+  };
+
   return (
     <div>
       <Grid>
         <h1> Projects </h1>
         <Toolbar className={classes.toolbar}>
           <TextField
+            type="string"
             label="Suche Projekte"
+            onChange={handleSearch}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -165,39 +190,39 @@ const Projects : React.FC = () => {
             <Table className={classes.table}>
               <TableBody>
                 {
-                  projects.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.initial}</TableCell>
-                  <TableCell>{item.description}</TableCell>
-                  <TableCell>
-                    <IconButton data-testid="showTimeButton" onClick={() => showProjectTimeHandler(item)}>
-                      <EqualizerIcon />
-                    </IconButton>
-                    <IconButton
-                      data-testid="addProjectButton"
-                      onClick={() => addUserToProjectHandler(item)}
-                      disabled={item.projectStatus !== 'Active'}
-                    >
-                      <PersonAddIcon />
-                    </IconButton>
-                    <IconButton
-                      data-testid="editProjectButton"
-                      onClick={() => handleEditProject(item)}
-                      disabled={item.projectStatus !== 'Active'}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      data-testid="deleteProjectButton"
-                      onClick={() => deleteProject(item)}
-                      disabled={item.projectStatus !== 'Active'}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
+                  getFilteredProjects().map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.initial}</TableCell>
+                      <TableCell>{item.description}</TableCell>
+                      <TableCell>
+                        <IconButton data-testid="showTimeButton" onClick={() => showProjectTimeHandler(item)}>
+                          <EqualizerIcon />
+                        </IconButton>
+                        <IconButton
+                          data-testid="addProjectButton"
+                          onClick={() => addUserToProjectHandler(item)}
+                          disabled={item.projectStatus !== 'Active'}
+                        >
+                          <PersonAddIcon />
+                        </IconButton>
+                        <IconButton
+                          data-testid="editProjectButton"
+                          onClick={() => handleEditProject(item)}
+                          disabled={item.projectStatus !== 'Active'}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          data-testid="deleteProjectButton"
+                          onClick={() => deleteProject(item)}
+                          disabled={item.projectStatus !== 'Active'}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
             }
               </TableBody>
             </Table>
