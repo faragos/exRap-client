@@ -1,10 +1,14 @@
-import { render, screen } from '@testing-library/react';
+import {
+  render, screen, waitFor,
+} from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import userEvent from '@testing-library/user-event';
+import jwt from 'jsonwebtoken';
 import Project from '../pages/Projects';
 import store from '../store/store';
 import server from '../mocks/server';
+import { setCredentials } from '../store/authInfo/reducers';
 
 // Establish API mocking before all tests.
 beforeAll(() => server.listen());
@@ -15,6 +19,14 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 beforeEach(() => {
+  const token = jwt.sign({
+    name: 'test-user',
+    role: 'Admin',
+    nbf: Date.now() / 1000,
+    exp: Date.now() / 1000 + (60 * 30),
+    iat: Date.now() / 1000,
+  }, 'secret');
+  store.dispatch(setCredentials({ username: 'test-user', token, isAuthenticated: true }));
   render(<Provider store={store}><Project /></Provider>);
 });
 
@@ -126,9 +138,9 @@ test('delete Project', async () => {
 
   userEvent.click(screen.getByText('Löschen'));
 
-  const deletedProjectName = await screen.findByText(/project1/i);
-  // TODO project should not be visible
-  expect(deletedProjectName).toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.queryByText(/project1/i)).not.toBeInTheDocument();
+  });
 
   userEvent.click(buttons[0]);
   const deleteProjectModalText = await screen.findByText(/Projekt beenden/i);
