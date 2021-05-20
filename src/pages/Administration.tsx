@@ -101,7 +101,8 @@ const Administration : React.FC = () => {
     if (filterValue) {
       return users.filter(
         (user) => user.name.toLowerCase().includes(filterValue.toLowerCase())
-          || user.firstName.toLowerCase().includes(filterValue.toLowerCase()),
+          || user.firstName.toLowerCase().includes(filterValue.toLowerCase())
+          || user.roles?.join(', ').toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
     return users;

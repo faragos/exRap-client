@@ -5,7 +5,7 @@ import {
   TableContainer, Typography,
 } from '@material-ui/core';
 
-import { makeStyles } from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles';
 import TableHead from '@material-ui/core/TableHead';
 import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
 import { useAppSelector } from '../hooks';
@@ -48,13 +48,15 @@ const Dashboard : React.FC = () => {
       return 0;
     },
   );
-  const useStyles = makeStyles((theme) => ({
+
+  const useStyles = makeStyles(() => createStyles({
+    container: {
+      boxSizing: 'border-box',
+      display: 'grid',
+      gridGap: '20px',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
+    },
     table: {
-      width: '45%',
-      height: '45%',
-      float: 'left',
-      margin: 10,
-      marginTop: theme.spacing(3),
       '& tbody td': {
         fontWeight: '300',
       },
@@ -70,97 +72,99 @@ const Dashboard : React.FC = () => {
   return (
     <div>
       <h1> Dashboard </h1>
-      { contributorIsLoading
-        ? <CircularProgress />
-        : (currentUser?.roles?.includes('ProjectContributor')
-          && (
-          <TableContainer className={classes.table}>
-            <Typography variant="h6">Meine Projekte</Typography>
-            <Table className={classes.table} style={{ width: 300 }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell colSpan={3}>Projekt</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {
-                sortOwnProjects()?.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell>
-                      {item.name}
-                    </TableCell>
-                    <TableCell
-                      align="right"
-                    >
-                      {printSpentTime(item.contributorsSpentMinutes?.[authInfo.username])}
-                    </TableCell>
+      <div className={classes.container}>
+        { contributorIsLoading
+          ? <CircularProgress />
+          : (currentUser?.roles?.includes('ProjectContributor')
+            && (
+            <TableContainer className={classes.table}>
+              <Typography variant="h6">Meine Projekte</Typography>
+              <Table className={classes.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell colSpan={3}>Projekt</TableCell>
                   </TableRow>
-                ))
-          }
-              </TableBody>
-            </Table>
-          </TableContainer>
-          )
-        )}
+                </TableHead>
+                <TableBody>
+                  {
+                  sortOwnProjects()?.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell>
+                        {item.name}
+                      </TableCell>
+                      <TableCell
+                        align="right"
+                      >
+                        {printSpentTime(item.contributorsSpentMinutes?.[authInfo.username])}
+                      </TableCell>
+                    </TableRow>
+                  ))
+            }
+                </TableBody>
+              </Table>
+            </TableContainer>
+            )
+          )}
 
-      { allIsLoading
-        ? <CircularProgress />
-        : (currentUser?.roles?.includes('SeniorManager')
-          && (
-          <TableContainer className={classes.table}>
-            <Typography variant="h6">Firmenübersicht</Typography>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Jahr</TableCell>
-                  <TableCell align="center">Anzahl Projekte</TableCell>
-                  <TableCell align="right">Anzahl Mitarbeiter</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow key={new Date().getFullYear()}>
+        { allIsLoading
+          ? <CircularProgress />
+          : (currentUser?.roles?.includes('SeniorManager')
+            && (
+            <TableContainer className={classes.table}>
+              <Typography variant="h6">Firmenübersicht</Typography>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Jahr</TableCell>
+                    <TableCell align="center">Anzahl Projekte</TableCell>
+                    <TableCell align="right">Anzahl Mitarbeiter</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  <TableRow key={new Date().getFullYear()}>
+                    <TableCell>
+                      {new Date().getFullYear()}
+                    </TableCell>
+                    <TableCell align="center">{allProjects?.length}</TableCell>
+                    <TableCell align="right">{users?.length}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+            )
+          )}
+
+        { managerIsLoading
+          ? <CircularProgress />
+          : (currentUser?.roles?.includes('ProjectManager')
+            && (
+            <TableContainer className={classes.table}>
+              <Typography variant="h6">Projektleitung</Typography>
+              <Table className={classes.table}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Projekt</TableCell>
+                    <TableCell align="center">Anzahl Mitarbeiter</TableCell>
+                    <TableCell align="right">H</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {
+              managerProjects?.map((item) => (
+                <TableRow key={item.id}>
                   <TableCell>
-                    {new Date().getFullYear()}
+                    {item.name}
                   </TableCell>
-                  <TableCell align="center">{allProjects?.length}</TableCell>
-                  <TableCell align="right">{users?.length}</TableCell>
+                  <TableCell align="center">{Object.keys(item.contributorsSpentMinutes || {}).length}</TableCell>
+                  <TableCell align="right">{printSpentTime(item.totalSpentMinutes)}</TableCell>
                 </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-          )
-        )}
-
-      { managerIsLoading
-        ? <CircularProgress />
-        : (currentUser?.roles?.includes('ProjectManager')
-          && (
-          <TableContainer className={classes.table}>
-            <Typography variant="h6">Projektleitung</Typography>
-            <Table className={classes.table} style={{ width: 350, float: 'right' }}>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Projekt</TableCell>
-                  <TableCell align="center">Anzahl Mitarbeiter</TableCell>
-                  <TableCell align="right">H</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {
-            managerProjects?.map((item) => (
-              <TableRow key={item.id}>
-                <TableCell>
-                  {item.name}
-                </TableCell>
-                <TableCell align="center">{Object.keys(item.contributorsSpentMinutes || {}).length}</TableCell>
-                <TableCell align="right">{printSpentTime(item.totalSpentMinutes)}</TableCell>
-              </TableRow>
-            ))
-          }
-              </TableBody>
-            </Table>
-          </TableContainer>
-          ))}
+              ))
+            }
+                </TableBody>
+              </Table>
+            </TableContainer>
+            ))}
+      </div>
     </div>
   );
 };

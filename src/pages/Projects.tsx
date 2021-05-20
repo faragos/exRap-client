@@ -141,7 +141,8 @@ const Projects : React.FC = () => {
     if (filterValue) {
       return projects.filter(
         (project) => project.name.toLowerCase().includes(filterValue.toLowerCase())
-            || project.initial.toLowerCase().includes(filterValue.toLowerCase()),
+            || project.initial.toLowerCase().includes(filterValue.toLowerCase())
+            || project.description?.toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
     return projects;
