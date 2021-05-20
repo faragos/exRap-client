@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -29,6 +29,36 @@ import AlertDialog from '../components/AlertDialog';
 import { AuthInfo } from '../store/authInfo/types';
 import { useAppSelector } from '../hooks';
 
+const useStyles = makeStyles((theme) => ({
+  table: {
+    marginTop: theme.spacing(3),
+    '& tbody td': {
+      fontWeight: '300',
+    },
+    '& tbody tr:hover': {
+      backgroundColor: '#fffbf2',
+      cursor: 'pointed',
+    },
+    '& tbody td:nth-child(4)': {
+      width: '15%',
+      textAlign: 'end',
+    },
+  },
+  toolbar: {
+    display: 'grid',
+    gridGap: '20px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+    justifyContent: 'space-between',
+    [theme.breakpoints.up('md')]: {
+      gridTemplateColumns: 'minmax(200px, 300px) 1fr minmax(200px, 300px)',
+    },
+  },
+  newProjectButton: {
+  },
+  finishedCheckBox: {
+  },
+}));
+
 const Projects : React.FC = () => {
   const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
   const [isFilterEnabled, setIsFilterEnabled] = useState(false);
@@ -47,6 +77,10 @@ const Projects : React.FC = () => {
 
   const [filterValue, setFilterValue] = useState<string | null>();
   const [currentProject, setCurrentProject] = useState(dtoProject);
+
+  useEffect(() => {
+    document.title = 'exRap - Projects';
+  }, []);
 
   const {
     data: projects = [],
@@ -111,40 +145,12 @@ const Projects : React.FC = () => {
     if (filterValue) {
       return projects.filter(
         (project) => project.name.toLowerCase().includes(filterValue.toLowerCase())
-            || project.initial.toLowerCase().includes(filterValue.toLowerCase()),
+            || project.initial.toLowerCase().includes(filterValue.toLowerCase())
+            || project.description?.toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
     return projects;
   };
-
-  const useStyles = makeStyles((theme) => ({
-    table: {
-      marginTop: theme.spacing(3),
-      '& tbody td': {
-        fontWeight: '300',
-      },
-      '& tbody tr:hover': {
-        backgroundColor: '#fffbf2',
-        cursor: 'pointed',
-      },
-      '& tbody td:nth-child(4)': {
-        width: '25%',
-      },
-    },
-    toolbar: {
-      display: 'grid',
-      gridGap: '20px',
-      gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-      justifyContent: 'space-between',
-      [theme.breakpoints.up('md')]: {
-        gridTemplateColumns: 'minmax(200px, 300px) 1fr minmax(200px, 300px)',
-      },
-    },
-    search: {
-      marginTop: '10px',
-      paddingBottom: '10px',
-    },
-  }));
 
   const classes = useStyles();
 
@@ -164,7 +170,6 @@ const Projects : React.FC = () => {
             type="string"
             label="Suche Projekte"
             onChange={handleSearch}
-            className={classes.search}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">

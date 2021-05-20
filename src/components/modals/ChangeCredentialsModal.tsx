@@ -5,6 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { CircularProgress } from '@material-ui/core';
+import SaveIcon from '@material-ui/icons/Save';
 import {
   UserOverview,
   useUserCredentialsUpdateCredentialMutation, UserCredentialsUpdateCredentialApiArg,
@@ -75,7 +76,7 @@ const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
             <Button onClick={handleClose}>
               Abbrechen
             </Button>
-            <Button type="submit" color="primary" variant="contained">
+            <Button type="submit" color="primary" variant="contained" startIcon={<SaveIcon />}>
               Speichern
             </Button>
           </DialogActions>

@@ -6,6 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import SaveIcon from '@material-ui/icons/Save';
 import {
   useProjectsCreateProjectMutation, useProjectsUpdateProjectMutation,
 } from '../../service/timeTrack.api';
@@ -119,7 +120,7 @@ const ProjectFormModal : React.FC<ChildComponentProps> = ({
             <Button onClick={handleClose} color="primary">
               Abbrechen
             </Button>
-            <Button color="primary" type="submit">
+            <Button type="submit" color="primary" variant="contained" startIcon={<SaveIcon />}>
               Speichern
             </Button>
           </DialogActions>

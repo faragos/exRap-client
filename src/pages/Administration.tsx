@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -39,6 +39,10 @@ const Administration : React.FC = () => {
     status: 'Restricted',
     roles: [''],
   };
+
+  useEffect(() => {
+    document.title = 'exRap - Administration';
+  }, []);
 
   const [currentUser, setCurrentUser] = useState(dtoUser);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
@@ -101,7 +105,8 @@ const Administration : React.FC = () => {
     if (filterValue) {
       return users.filter(
         (user) => user.name.toLowerCase().includes(filterValue.toLowerCase())
-          || user.firstName.toLowerCase().includes(filterValue.toLowerCase()),
+          || user.firstName.toLowerCase().includes(filterValue.toLowerCase())
+          || user.roles?.join(', ').toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
     return users;
@@ -117,8 +122,15 @@ const Administration : React.FC = () => {
         backgroundColor: '#fffbf2',
         cursor: 'pointed',
       },
+      '& tbody td:nth-child(3)': {
+        display: 'none',
+        [theme.breakpoints.up('sm')]: {
+          display: 'table-cell',
+        },
+      },
       '& tbody td:nth-child(4)': {
-        width: '25%',
+        width: '15%',
+        textAlign: 'end',
       },
     },
     toolbar: {
@@ -131,8 +143,6 @@ const Administration : React.FC = () => {
       },
     },
     search: {
-      marginTop: '10px',
-      paddingBottom: '10px',
     },
   }));
 
@@ -165,34 +175,36 @@ const Administration : React.FC = () => {
           usersIsLoading || deleteUserIsLoading
             ? <CircularProgress />
             : (
-              <Table className={classes.table}>
-                <TableBody>
-                  {
-                    getFilteredUsers().map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell>
-                          {item.firstName}
-                          {' '}
-                          {item.name}
-                        </TableCell>
-                        <TableCell>{item.userName}</TableCell>
-                        <TableCell>{item.roles?.join(', ')}</TableCell>
-                        <TableCell>
-                          <IconButton data-testid="editUserButton" onClick={() => editUser(item)}>
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton data-testid="editPasswordButton" onClick={() => editCredentials(item)}>
-                            <VpnKeyIcon />
-                          </IconButton>
-                          <IconButton data-testid="deleteUserButton" onClick={() => deleteUser(item)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                }
-                </TableBody>
-              </Table>
+              <div>
+                <Table className={classes.table}>
+                  <TableBody>
+                    {
+                      getFilteredUsers().map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell>
+                            {item.firstName}
+                            {' '}
+                            {item.name}
+                          </TableCell>
+                          <TableCell>{item.userName}</TableCell>
+                          <TableCell>{item.roles?.join(', ')}</TableCell>
+                          <TableCell>
+                            <IconButton data-testid="editUserButton" onClick={() => editUser(item)}>
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton data-testid="editPasswordButton" onClick={() => editCredentials(item)}>
+                              <VpnKeyIcon />
+                            </IconButton>
+                            <IconButton data-testid="deleteUserButton" onClick={() => deleteUser(item)}>
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                  }
+                  </TableBody>
+                </Table>
+              </div>
             )
         }
       </Grid>

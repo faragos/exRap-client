@@ -5,6 +5,14 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --fc-button-bg-color: #a1887f;
+  --fc-button-border-color: #a1887f;
+  --fc-button-active-bg-color: #725b53;
+  --fc-button-active-border-color: #725b53;
+  --fc-button-text-color: #000;
+  --fc-button-hover-bg-color: #725b53;
+  --fc-button-hover-border-color: #725b53;
 }
 
 code {
