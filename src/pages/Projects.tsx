@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -77,6 +77,10 @@ const Projects : React.FC = () => {
 
   const [filterValue, setFilterValue] = useState<string | null>();
   const [currentProject, setCurrentProject] = useState(dtoProject);
+
+  useEffect(() => {
+    document.title = 'exRap - Projects';
+  }, []);
 
   const {
     data: projects = [],

@@ -1,5 +1,5 @@
 import './TimeTracking.scss';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Calendar from '../components/Calendar';
 import RegisterTimeModal from '../components/modals/RegisterTimeModal';
 import { TimeSlotOverview } from '../gen/timeTrack.api.generated';
@@ -17,6 +17,10 @@ const TimeTracking : React.FC = () => {
     },
   };
   const [timeSlot, setTimeSlot] = useState(timeSlotDto);
+
+  useEffect(() => {
+    document.title = 'exRap - Timetracking';
+  }, []);
 
   return (
     <div>

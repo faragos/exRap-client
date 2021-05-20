@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   CircularProgress,
   Table, TableBody, TableCell, TableRow,
@@ -17,6 +17,10 @@ import { useUsersGetUsersQuery } from '../service/auth.api';
 const Dashboard : React.FC = () => {
   const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
   const authInfo = useAppSelector((state) => state.authInfo);
+
+  useEffect(() => {
+    document.title = 'exRap - Dashboard';
+  }, []);
 
   const {
     data: contributorProjects,

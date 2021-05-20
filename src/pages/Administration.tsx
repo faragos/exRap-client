@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -39,6 +39,10 @@ const Administration : React.FC = () => {
     status: 'Restricted',
     roles: [''],
   };
+
+  useEffect(() => {
+    document.title = 'exRap - Administration';
+  }, []);
 
   const [currentUser, setCurrentUser] = useState(dtoUser);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
