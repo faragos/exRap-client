@@ -130,7 +130,13 @@ export default function Sidebar() {
       <Divider />
       <List>
         {pages.map((page) => (
-          <ListItem button to={page.uri} component={Link} key={page.uri}>
+          <ListItem
+            button
+            to={page.uri}
+            component={Link}
+            key={page.uri}
+            onClick={handleDrawerToggle}
+          >
             <ListItemIcon>
               {page.icon}
             </ListItemIcon>

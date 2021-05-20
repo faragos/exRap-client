@@ -122,6 +122,12 @@ const Administration : React.FC = () => {
         backgroundColor: '#fffbf2',
         cursor: 'pointed',
       },
+      '& tbody td:nth-child(3)': {
+        display: 'none',
+        [theme.breakpoints.up('sm')]: {
+          display: 'table-cell',
+        },
+      },
       '& tbody td:nth-child(4)': {
         width: '15%',
         textAlign: 'end',
@@ -169,34 +175,36 @@ const Administration : React.FC = () => {
           usersIsLoading || deleteUserIsLoading
             ? <CircularProgress />
             : (
-              <Table className={classes.table}>
-                <TableBody>
-                  {
-                    getFilteredUsers().map((item) => (
-                      <TableRow key={item.id}>
-                        <TableCell>
-                          {item.firstName}
-                          {' '}
-                          {item.name}
-                        </TableCell>
-                        <TableCell>{item.userName}</TableCell>
-                        <TableCell>{item.roles?.join(', ')}</TableCell>
-                        <TableCell>
-                          <IconButton data-testid="editUserButton" onClick={() => editUser(item)}>
-                            <EditIcon />
-                          </IconButton>
-                          <IconButton data-testid="editPasswordButton" onClick={() => editCredentials(item)}>
-                            <VpnKeyIcon />
-                          </IconButton>
-                          <IconButton data-testid="deleteUserButton" onClick={() => deleteUser(item)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                }
-                </TableBody>
-              </Table>
+              <div>
+                <Table className={classes.table}>
+                  <TableBody>
+                    {
+                      getFilteredUsers().map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell>
+                            {item.firstName}
+                            {' '}
+                            {item.name}
+                          </TableCell>
+                          <TableCell>{item.userName}</TableCell>
+                          <TableCell>{item.roles?.join(', ')}</TableCell>
+                          <TableCell>
+                            <IconButton data-testid="editUserButton" onClick={() => editUser(item)}>
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton data-testid="editPasswordButton" onClick={() => editCredentials(item)}>
+                              <VpnKeyIcon />
+                            </IconButton>
+                            <IconButton data-testid="deleteUserButton" onClick={() => deleteUser(item)}>
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                  }
+                  </TableBody>
+                </Table>
+              </div>
             )
         }
       </Grid>
