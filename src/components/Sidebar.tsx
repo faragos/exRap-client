@@ -108,6 +108,10 @@ export default function Sidebar() {
     setMobileOpen(!mobileOpen);
   };
 
+  const closeDrawer = () => {
+    setMobileOpen(false);
+  };
+
   const pages : Page[] = [
     { uri: '/dashboard', label: 'Mein Dashboard', icon: <DashboardIcon /> },
     { uri: '/timetracking', label: 'Meine Zeiterfassung', icon: <AccessTimeIcon /> },
@@ -135,7 +139,7 @@ export default function Sidebar() {
             to={page.uri}
             component={Link}
             key={page.uri}
-            onClick={handleDrawerToggle}
+            onClick={closeDrawer}
           >
             <ListItemIcon>
               {page.icon}
