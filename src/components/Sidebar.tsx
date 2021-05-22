@@ -10,6 +10,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
@@ -21,6 +22,7 @@ import {
   Route,
   Redirect, Switch, useHistory,
 } from 'react-router-dom';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import { clearUser } from '../store/authInfo/reducers';
 import { useAppDispatch, useAppSelector } from '../hooks';
 import PrivateRoute from './PrivateRoute';
@@ -74,6 +76,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       marginTop: '0',
     },
   },
+  userItem: {
+    backgroundColor: theme.palette.primary.main,
+  },
 }));
 
 type Page = {
@@ -117,6 +122,10 @@ export default function Sidebar() {
     setMobileOpen(false);
   };
 
+  const handleChangePassword = () => {
+    setIsCredentialsModalOpen(true);
+  };
+
   const pages : Page[] = [
     { uri: '/dashboard', label: 'Mein Dashboard', icon: <DashboardIcon /> },
     { uri: '/projects', label: 'Projekte', icon: <AccountTreeIcon /> },
@@ -132,11 +141,8 @@ export default function Sidebar() {
 
   const secondaryPages : NavigationAction[] = [
     { fn: handleSignout, label: 'Ausloggen', icon: <ExitToAppIcon /> },
+    { fn: handleChangePassword, label: 'Passwort ändern', icon: <VpnKeyIcon /> },
   ];
-
-  const handleChangePassword = () => {
-    setIsCredentialsModalOpen(true);
-  };
 
   const drawer = (
     <div>
@@ -144,8 +150,14 @@ export default function Sidebar() {
         <img src={logo} alt="Logo exRap" className="logo" />
       </div>
       <Divider />
-      {currentUser.username}
-      <button type="button" onClick={handleChangePassword}>change my password</button>
+      <List className={classes.userItem}>
+        <ListItem>
+          <ListItemIcon>
+            <AccountCircleIcon />
+          </ListItemIcon>
+          <ListItemText primary={currentUser.username} />
+        </ListItem>
+      </List>
       <Divider />
       <List>
         {pages.map((page) => (
