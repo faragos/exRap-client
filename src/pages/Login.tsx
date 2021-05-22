@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Login.scss';
 import { useHistory } from 'react-router-dom';
 import {
@@ -23,6 +23,10 @@ const Login : React.FC = () => {
     login,
     { error },
   ] = useLoginLoginMutation();
+
+  useEffect(() => {
+    document.title = 'exRap - Login';
+  }, []);
 
   const handleChange = ({
     target: { name, value },

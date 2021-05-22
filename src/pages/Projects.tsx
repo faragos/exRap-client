@@ -1,27 +1,33 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
   TableRow,
   TableCell,
   Toolbar,
+  Grid,
+  Button,
+  IconButton,
+  FormControlLabel,
+  Checkbox,
   TextField,
   InputAdornment,
-  Grid,
-  Button, IconButton, FormControlLabel, Checkbox, CircularProgress,
+  CircularProgress,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import SearchIcon from '@material-ui/icons/Search';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EqualizerIcon from '@material-ui/icons/Equalizer';
+import SearchIcon from '@material-ui/icons/Search';
 import ProjectFormModal from '../components/modals/ProjectFormModal';
 import AddUserToProjectModal from '../components/modals/AddUserToProjectModal';
 import ShowProjectTimeModal from '../components/modals/ShowProjectTimeModal';
 import { useProjectsGetProjectsQuery, useProjectsUpdateProjectMutation } from '../service/timeTrack.api';
 import { ProjectOverview, ProjectStatus, ProjectsUpdateProjectApiArg } from '../gen/timeTrack.api.generated';
 import AlertDialog from '../components/AlertDialog';
+import { AuthInfo } from '../store/authInfo/types';
+import { useAppSelector } from '../hooks';
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -34,7 +40,8 @@ const useStyles = makeStyles((theme) => ({
       cursor: 'pointed',
     },
     '& tbody td:nth-child(4)': {
-      width: '25%',
+      width: '15%',
+      textAlign: 'end',
     },
   },
   toolbar: {
@@ -53,12 +60,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Projects : React.FC = () => {
-  const classes = useStyles();
+  const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
   const [isFilterEnabled, setIsFilterEnabled] = useState(false);
-  const {
-    data,
-    isLoading: projectsIsLoading,
-  } = useProjectsGetProjectsQuery({ status: isFilterEnabled ? undefined : 'Active' });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const [isAddUserToProjectModalOpen, setIsAddUserToProjectModalOpen] = useState(false);
@@ -72,10 +75,20 @@ const Projects : React.FC = () => {
     projectStatus: 'Active',
   };
 
+  const [filterValue, setFilterValue] = useState<string | null>();
+  const [currentProject, setCurrentProject] = useState(dtoProject);
+
+  useEffect(() => {
+    document.title = 'exRap - Projects';
+  }, []);
+
+  const {
+    data: projects = [],
+    isLoading: projectsIsLoading,
+  } = useProjectsGetProjectsQuery({ status: isFilterEnabled ? undefined : 'Active' });
+
   const deleteDialogTitle = 'Projekt beenden';
   const deleteDialogContent = 'Wollen Sie das Projekt wirklich beenden?';
-
-  const [currentProject, setCurrentProject] = useState(dtoProject);
 
   const addNewProjectHandler = () => {
     setCurrentProject(dtoProject);
@@ -120,15 +133,43 @@ const Projects : React.FC = () => {
     setIsShowProjectTimeModalOpen(true);
   };
 
+  const handleSearch = (searchedValue: { target: { value: string; }; } | null) => {
+    if (searchedValue?.target.value) {
+      setFilterValue(searchedValue.target.value);
+    } else {
+      setFilterValue(null);
+    }
+  };
+
+  const getFilteredProjects = () => {
+    if (filterValue) {
+      return projects.filter(
+        (project) => project.name.toLowerCase().includes(filterValue.toLowerCase())
+            || project.initial.toLowerCase().includes(filterValue.toLowerCase())
+            || project.description?.toLowerCase().includes(filterValue.toLowerCase()),
+      );
+    }
+    return projects;
+  };
+
+  const classes = useStyles();
+
+  const checkNewProjectPermission = () => currentUser?.roles?.includes('ProjectManager')
+      || currentUser?.roles?.includes('Admin');
+
+  const checkProjectPermissions = (project: ProjectOverview) => project.projectStatus === 'Active'
+        && checkNewProjectPermission();
+
   return (
     <div>
       <Grid>
         <h1> Projects </h1>
+
         <Toolbar className={classes.toolbar}>
           <TextField
-            name="Suche"
-            label="Suche"
-            type="text"
+            type="string"
+            label="Suche Projekte"
+            onChange={handleSearch}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -138,7 +179,6 @@ const Projects : React.FC = () => {
             }}
           />
           <FormControlLabel
-            className={classes.finishedCheckBox}
             control={(
               <Checkbox
                 name="checkedB"
@@ -151,8 +191,8 @@ const Projects : React.FC = () => {
           <Button
             variant="contained"
             color="primary"
-            className={classes.newProjectButton}
             onClick={addNewProjectHandler}
+            disabled={!checkNewProjectPermission()}
           >
             Neues Projekt erfassen
           </Button>
@@ -164,39 +204,39 @@ const Projects : React.FC = () => {
             <Table className={classes.table}>
               <TableBody>
                 {
-              data?.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>{item.name}</TableCell>
-                  <TableCell>{item.initial}</TableCell>
-                  <TableCell>{item.description}</TableCell>
-                  <TableCell>
-                    <IconButton data-testid="showTimeButton" onClick={() => showProjectTimeHandler(item)}>
-                      <EqualizerIcon />
-                    </IconButton>
-                    <IconButton
-                      data-testid="addProjectButton"
-                      onClick={() => addUserToProjectHandler(item)}
-                      disabled={item.projectStatus !== 'Active'}
-                    >
-                      <PersonAddIcon />
-                    </IconButton>
-                    <IconButton
-                      data-testid="editProjectButton"
-                      onClick={() => handleEditProject(item)}
-                      disabled={item.projectStatus !== 'Active'}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <IconButton
-                      data-testid="deleteProjectButton"
-                      onClick={() => deleteProject(item)}
-                      disabled={item.projectStatus !== 'Active'}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
+                  getFilteredProjects().map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell>{item.name}</TableCell>
+                      <TableCell>{item.initial}</TableCell>
+                      <TableCell>{item.description}</TableCell>
+                      <TableCell>
+                        <IconButton data-testid="showTimeButton" onClick={() => showProjectTimeHandler(item)}>
+                          <EqualizerIcon />
+                        </IconButton>
+                        <IconButton
+                          data-testid="addProjectButton"
+                          onClick={() => addUserToProjectHandler(item)}
+                          disabled={!checkProjectPermissions(item)}
+                        >
+                          <PersonAddIcon />
+                        </IconButton>
+                        <IconButton
+                          data-testid="editProjectButton"
+                          onClick={() => handleEditProject(item)}
+                          disabled={!checkProjectPermissions(item)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton
+                          data-testid="deleteProjectButton"
+                          onClick={() => deleteProject(item)}
+                          disabled={!checkProjectPermissions(item)}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
             }
               </TableBody>
             </Table>

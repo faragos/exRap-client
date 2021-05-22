@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -9,7 +9,8 @@ import {
   InputAdornment,
   Grid,
   Button,
-  IconButton, CircularProgress,
+  IconButton,
+  CircularProgress,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
@@ -17,7 +18,10 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import {
-  UserOverview, UsersGetUsersApiArg, UsersUpdateUserApiArg, useUsersUpdateUserMutation,
+  UserOverview,
+  UsersGetUsersApiArg,
+  UsersUpdateUserApiArg,
+  useUsersUpdateUserMutation,
   UserStatus,
 } from '../gen/auth.api.generated';
 import { useUsersGetUsersQuery } from '../service/auth.api';
@@ -36,10 +40,15 @@ const Administration : React.FC = () => {
     roles: [''],
   };
 
+  useEffect(() => {
+    document.title = 'exRap - Administration';
+  }, []);
+
   const [currentUser, setCurrentUser] = useState(dtoUser);
   const [isUserModalOpen, setIsUserModalOpen] = useState(false);
   const [isCredentialsModalOpen, setIsCredentialsModalOpen] = useState(false);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [filterValue, setFilterValue] = useState<string | null>();
 
   const usersArg: UsersGetUsersApiArg = {};
   const {
@@ -84,6 +93,25 @@ const Administration : React.FC = () => {
     setIsDeleteAlertOpen(false);
   };
 
+  const handleSearch = (searchedValue: { target: { value: string; }; } | null) => {
+    if (searchedValue?.target.value) {
+      setFilterValue(searchedValue.target.value);
+    } else {
+      setFilterValue(null);
+    }
+  };
+
+  const getFilteredUsers = () => {
+    if (filterValue) {
+      return users.filter(
+        (user) => user.name.toLowerCase().includes(filterValue.toLowerCase())
+          || user.firstName.toLowerCase().includes(filterValue.toLowerCase())
+          || user.roles?.join(', ').toLowerCase().includes(filterValue.toLowerCase()),
+      );
+    }
+    return users;
+  };
+
   const useStyles = makeStyles((theme) => ({
     table: {
       marginTop: theme.spacing(3),
@@ -94,8 +122,15 @@ const Administration : React.FC = () => {
         backgroundColor: '#fffbf2',
         cursor: 'pointed',
       },
+      '& tbody td:nth-child(3)': {
+        display: 'none',
+        [theme.breakpoints.up('sm')]: {
+          display: 'table-cell',
+        },
+      },
       '& tbody td:nth-child(4)': {
-        width: '25%',
+        width: '15%',
+        textAlign: 'end',
       },
     },
     toolbar: {
@@ -107,11 +142,7 @@ const Administration : React.FC = () => {
         gridTemplateColumns: 'minmax(200px, 300px) minmax(200px, 300px)',
       },
     },
-    newUserButton: {
-    },
     search: {
-      paddingTop: '10px',
-      paddingBottom: '10px',
     },
   }));
 
@@ -124,9 +155,9 @@ const Administration : React.FC = () => {
 
         <Toolbar className={classes.toolbar}>
           <TextField
-            name="Suche"
-            label="Suche"
-            type="text"
+            type="string"
+            label="Suche Mitarbeiter"
+            onChange={handleSearch}
             className={classes.search}
             InputProps={{
               startAdornment: (
@@ -136,7 +167,7 @@ const Administration : React.FC = () => {
               ),
             }}
           />
-          <Button variant="contained" color="primary" className={classes.newUserButton} onClick={addNewUserHandler}>
+          <Button variant="contained" color="primary" onClick={addNewUserHandler}>
             Neuer Mitarbeiter erfassen
           </Button>
         </Toolbar>
@@ -144,34 +175,36 @@ const Administration : React.FC = () => {
           usersIsLoading || deleteUserIsLoading
             ? <CircularProgress />
             : (
-              <Table className={classes.table}>
-                <TableBody>
-                  {
-                  users.map((item) => (
-                    <TableRow key={item.id}>
-                      <TableCell>
-                        {item.firstName}
-                        {' '}
-                        {item.name}
-                      </TableCell>
-                      <TableCell>{item.userName}</TableCell>
-                      <TableCell>{item.roles?.join(', ')}</TableCell>
-                      <TableCell>
-                        <IconButton data-testid="editUserButton" onClick={() => editUser(item)}>
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton data-testid="editPasswordButton" onClick={() => editCredentials(item)}>
-                          <VpnKeyIcon />
-                        </IconButton>
-                        <IconButton data-testid="deleteUserButton" onClick={() => deleteUser(item)}>
-                          <DeleteIcon />
-                        </IconButton>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                }
-                </TableBody>
-              </Table>
+              <div>
+                <Table className={classes.table}>
+                  <TableBody>
+                    {
+                      getFilteredUsers().map((item) => (
+                        <TableRow key={item.id}>
+                          <TableCell>
+                            {item.firstName}
+                            {' '}
+                            {item.name}
+                          </TableCell>
+                          <TableCell>{item.userName}</TableCell>
+                          <TableCell>{item.roles?.join(', ')}</TableCell>
+                          <TableCell>
+                            <IconButton data-testid="editUserButton" onClick={() => editUser(item)}>
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton data-testid="editPasswordButton" onClick={() => editCredentials(item)}>
+                              <VpnKeyIcon />
+                            </IconButton>
+                            <IconButton data-testid="deleteUserButton" onClick={() => deleteUser(item)}>
+                              <DeleteIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                  }
+                  </TableBody>
+                </Table>
+              </div>
             )
         }
       </Grid>

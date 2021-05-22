@@ -110,12 +110,19 @@ export default function Sidebar() {
     setMobileOpen(!mobileOpen);
   };
 
+  const closeDrawer = () => {
+    setMobileOpen(false);
+  };
+
   const pages : Page[] = [
     { uri: '/dashboard', label: 'Mein Dashboard', icon: <DashboardIcon /> },
     { uri: '/timetracking', label: 'Meine Zeiterfassung', icon: <AccessTimeIcon /> },
     { uri: '/projects', label: 'Projekte', icon: <AccountTreeIcon /> },
-    { uri: '/administration', label: 'Administration', icon: <SettingsIcon /> },
   ];
+
+  if (currentUser?.roles?.includes('Admin')) {
+    pages.push({ uri: '/administration', label: 'Administration', icon: <SettingsIcon /> });
+  }
 
   const secondaryPages : NavigationAction[] = [
     { fn: handleSignout, label: 'Ausloggen', icon: <ExitToAppIcon /> },
@@ -136,7 +143,13 @@ export default function Sidebar() {
       <Divider />
       <List>
         {pages.map((page) => (
-          <ListItem button to={page.uri} component={Link} key={page.uri}>
+          <ListItem
+            button
+            to={page.uri}
+            component={Link}
+            key={page.uri}
+            onClick={closeDrawer}
+          >
             <ListItemIcon>
               {page.icon}
             </ListItemIcon>
