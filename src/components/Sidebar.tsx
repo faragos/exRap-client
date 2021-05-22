@@ -30,10 +30,11 @@ import Projects from '../pages/Projects';
 import Administration from '../pages/Administration';
 import logo from '../assets/exRap-logo.svg';
 import NotFound from '../pages/NotFound';
-import { useLoginRenewTokenQuery } from '../service/auth.api';
+import { useLoginRenewTokenQuery, useUsersGetUserQuery } from '../service/auth.api';
 import updateStore from '../utils/validateToken';
 import { AuthInfo } from '../store/authInfo/types';
 import ChangeCredentialsModal from './modals/ChangeCredentialsModal';
+import { UserOverview } from '../gen/auth.api.generated';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -96,6 +97,8 @@ export default function Sidebar() {
   const { data } = useLoginRenewTokenQuery({}, { pollingInterval: renewTime * 1000 });
   const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
   const [isCredentialsModalOpen, setIsCredentialsModalOpen] = useState(false);
+
+  const { data: user } = useUsersGetUserQuery({ userId: currentUser.userid || 0 });
 
   useEffect(() => {
     if (data) updateStore(data.token, dispatch);
@@ -229,15 +232,7 @@ export default function Sidebar() {
       <ChangeCredentialsModal
         isModalOpen={isCredentialsModalOpen}
         setIsModalOpen={setIsCredentialsModalOpen}
-        user={
-          {
-            userName: 'as',
-            id: 0,
-            name: 'a',
-            mailAddress: '',
-            firstName: '',
-          }
-}
+        user={user as UserOverview}
       />
     </div>
   );
