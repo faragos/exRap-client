@@ -119,9 +119,12 @@ export default function Sidebar() {
 
   const pages : Page[] = [
     { uri: '/dashboard', label: 'Mein Dashboard', icon: <DashboardIcon /> },
-    { uri: '/timetracking', label: 'Meine Zeiterfassung', icon: <AccessTimeIcon /> },
     { uri: '/projects', label: 'Projekte', icon: <AccountTreeIcon /> },
   ];
+
+  if (currentUser?.roles?.includes('ProjectContributor')) {
+    pages.splice(1, 0, { uri: '/timetracking', label: 'Meine Zeiterfassung', icon: <AccessTimeIcon /> });
+  }
 
   if (currentUser?.roles?.includes('Admin')) {
     pages.push({ uri: '/administration', label: 'Administration', icon: <SettingsIcon /> });
