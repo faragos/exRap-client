@@ -14,7 +14,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
 import { ProjectOverview } from '../../gen/timeTrack.api.generated';
-import printSpentTime from '../../utils/utils';
+import printSpentTime from '../../utils/printSpentTime';
 
 const useStyles = makeStyles({
   table: {

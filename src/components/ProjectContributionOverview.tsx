@@ -5,9 +5,10 @@ import {
 } from '@material-ui/core';
 import TableHead from '@material-ui/core/TableHead';
 import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
-import printSpentTime, { sortOwnProjects } from '../utils/utils';
 import { useAppSelector } from '../hooks';
 import dashboardComponentStyles from '../styles/dashboardComponentStyles';
+import sortOwnProjects from '../utils/sortOwnProjects';
+import printSpentTime from '../utils/printSpentTime';
 
 const ProjectContributionOverview : React.FC = () => {
   const authInfo = useAppSelector((state) => state.authInfo);

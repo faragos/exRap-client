@@ -5,7 +5,7 @@ import {
 } from '@material-ui/core';
 import TableHead from '@material-ui/core/TableHead';
 import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
-import printSpentTime from '../utils/utils';
+import printSpentTime from '../utils/printSpentTime';
 import dashboardComponentStyles from '../styles/dashboardComponentStyles';
 
 const ProjectManagerOverview : React.FC = () => {
