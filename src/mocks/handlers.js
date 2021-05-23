@@ -230,7 +230,9 @@ const handlers = [
   rest.delete('/time/api/Projects/:projectId/timeslots/:timeslotId', (req, res, xtc) => res(
     xtc.status(200),
   )),
-
+  rest.get('*', (req, res, ctx) => res(ctx.status(200))),
+  rest.put('*', (req, res, ctx) => res(ctx.status(200))),
+  rest.post('*', (req, res, ctx) => res(ctx.status(200))),
 ];
 
 export default handlers;

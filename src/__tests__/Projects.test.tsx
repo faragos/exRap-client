@@ -65,7 +65,6 @@ test('create new Project', async () => {
   userEvent.click(screen.getByText('Speichern'));
 
   const testProjectName = await screen.findByText(/test-project/);
-  // const testProjectName = await screen.getByRole('cell', { name: /test-project/i });
   const testProjectInitial = await screen.findByText('t2');
   const testProjectComment = await screen.findByText(/test-comment/);
 
@@ -100,7 +99,6 @@ test('render edit Project Component', async () => {
 
   const addUserToProjectModalText = await screen.findByText(/Projektname/i);
   const contributor = await screen.findByText(/project1/i);
-  // screen.debug(undefined, 300000);
   expect(addUserToProjectModalText).toBeInTheDocument();
   expect(contributor).toBeInTheDocument();
 });
@@ -146,19 +144,3 @@ test('delete Project', async () => {
   const deleteProjectModalText = await screen.findByText(/Projekt beenden/i);
   expect(deleteProjectModalText).toBeInTheDocument();
 });
-
-/* Example how to render AddUserToProject Modal -> Pls Test Modal seperated
-test('render add Person Component2', async () => {
-  const project: ProjectOverview = {
-    id: 1,
-    name: 'project1',
-    initial: 'p1',
-    description: 'p1 dsc',
-    timeBudget: 0,
-    projectStatus: 'Active',
-  };
-  render(
-  <Provider store={store}>
-    <AddUserToProjectModal isModalOpen setIsModalOpen={() => true} project={project} />
-  </Provider>);
-}); */
