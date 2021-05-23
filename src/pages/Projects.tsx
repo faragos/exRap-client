@@ -58,7 +58,10 @@ const useStyles = makeStyles((theme) => ({
   finishedCheckBox: {
   },
 }));
-
+/**
+ * Renders the project page
+ * @constructor
+ */
 const Projects : React.FC = () => {
   const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
   const [isFilterEnabled, setIsFilterEnabled] = useState(false);
@@ -172,9 +175,16 @@ const Projects : React.FC = () => {
 
   const classes = useStyles();
 
+  /**
+   * Returns a boolean if the user has permissions to create a new project
+   */
   const checkNewProjectPermission = () => currentUser?.roles?.includes('ProjectManager')
       || currentUser?.roles?.includes('Admin');
 
+  /**
+   * Returns a boolean if the user has permissions to edit a specific project
+   * @param project - selected project
+   */
   const checkProjectPermissions = (project: ProjectOverview) => {
     const managerProject = managerProjects.find((x) => x.id === project.id);
     return (currentUser?.roles?.includes('Admin')

@@ -1,6 +1,11 @@
 import { ProjectOverview } from '../gen/timeTrack.api.generated';
 import { AuthInfo } from '../store/authInfo/types';
 
+/**
+ * Sorts contributor projects descending (spend time)
+ * @param contributorProjects - all projects as a contributor from a user
+ * @param authInfo - user store info of current user
+ */
 const sortOwnProjects = (
   contributorProjects: ProjectOverview[] | undefined,
   authInfo: AuthInfo,

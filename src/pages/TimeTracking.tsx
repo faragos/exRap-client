@@ -4,6 +4,10 @@ import Calendar from '../components/Calendar';
 import RegisterTimeModal from '../components/modals/RegisterTimeModal';
 import { TimeSlotOverview } from '../gen/timeTrack.api.generated';
 
+/**
+ * Renders the TimeTrack page
+ * @constructor
+ */
 const TimeTracking : React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const timeSlotDto: TimeSlotOverview = {

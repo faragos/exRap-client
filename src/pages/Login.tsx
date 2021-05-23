@@ -11,6 +11,10 @@ import { AuthInfo } from '../store/authInfo/types';
 import { useAppDispatch } from '../hooks';
 import logo from '../assets/exRap-logo.svg';
 
+/**
+ * Renders the login page
+ * @constructor
+ */
 const Login : React.FC = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();

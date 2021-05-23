@@ -30,7 +30,13 @@ type ChildComponentProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   project: ProjectOverview,
 };
-
+/**
+ * Renders show project time modal
+ * @param setIsModalOpen - React hook state
+ * @param isModalOpen - React hook state
+ * @param project - current project object
+ * @constructor
+ */
 const ShowProjectTimeModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   isModalOpen,
@@ -42,6 +48,9 @@ const ShowProjectTimeModal : React.FC<ChildComponentProps> = ({
 
   const userTimeInProject: ReactJSXElement[] = [];
 
+  /**
+   * Creates HTML element for all users which have spend time
+   */
   Object.keys(project.contributorsSpentMinutes || {}).forEach((user) => {
     userTimeInProject.push(
       <TableRow key={user}>

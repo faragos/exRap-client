@@ -17,6 +17,17 @@ type AlertDialogProps = {
   buttonDisAgree?: string,
 };
 
+/**
+ * Renders a generic alert dialog
+ * @param isOpen - React hook state
+ * @param setIsOpen - React hook state
+ * @param handleConfirm - Handle confirm handler
+ * @param title - Title of the alert dialog
+ * @param content - Content of the alert dialog
+ * @param buttonAgree - Button agree text
+ * @param buttonDisAgree - Button disagree text
+ * @constructor
+ */
 const AlertDialog: React.FC<AlertDialogProps> = ({
   isOpen,
   setIsOpen,

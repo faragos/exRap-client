@@ -93,6 +93,10 @@ interface NavigationAction {
   fn: () => void,
 }
 
+/**
+ * Renders the sidebar
+ * @constructor
+ */
 export default function Sidebar() {
   const history = useHistory();
   const dispatch = useAppDispatch();

@@ -9,6 +9,10 @@ import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
 import { UsersGetUsersApiArg } from '../gen/auth.api.generated';
 import { useUsersGetUsersQuery } from '../service/auth.api';
 
+/**
+ * Renders the company overview
+ * @constructor
+ */
 const CompanyOverview : React.FC = () => {
   const {
     data: allProjects,
