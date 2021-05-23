@@ -10,6 +10,10 @@ import dashboardComponentStyles from '../styles/dashboardComponentStyles';
 import sortOwnProjects from '../utils/sortOwnProjects';
 import printSpentTime from '../utils/printSpentTime';
 
+/**
+ * Renders project contribution overview
+ * @constructor
+ */
 const ProjectContributionOverview : React.FC = () => {
   const authInfo = useAppSelector((state) => state.authInfo);
   const {

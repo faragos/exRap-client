@@ -1,3 +1,7 @@
+/**
+ * Converts minutes to day, hours and minutes
+ * @param min - minutes
+ */
 const minutesToDaysHoursMinutes = (min: number | undefined) => {
   if (!min || min < 0) {
     return {
@@ -15,7 +19,10 @@ const minutesToDaysHoursMinutes = (min: number | undefined) => {
     minutes,
   };
 };
-
+/**
+ * Takes minutes and returns a string in the following format "X day, Y hours, Z minutes"
+ * @param min - minutes
+ */
 const printSpentTime = (min: number | undefined) => {
   const time = minutesToDaysHoursMinutes(min);
   return `${time.days}d ${time.hours}h ${time.minutes}min`;

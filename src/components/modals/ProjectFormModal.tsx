@@ -29,7 +29,13 @@ type ChildComponentProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   project: ProjectOverview,
 };
-
+/**
+ * Renders the project form modal
+ * @param setIsModalOpen - React hook state
+ * @param isModalOpen - React hook state
+ * @param project - Current project object
+ * @constructor
+ */
 const ProjectFormModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   isModalOpen,

@@ -8,6 +8,12 @@ interface PrivateRouteProps {
   path: string
 }
 
+/**
+ * Renders the private route
+ * @param component - Component which will be rendered
+ * @param path - URL path
+ * @constructor
+ */
 const PrivateRoute : React.FC<PrivateRouteProps> = ({ component, path }) => {
   const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
 

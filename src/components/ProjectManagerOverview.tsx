@@ -8,6 +8,10 @@ import { useProjectsGetProjectsQuery } from '../service/timeTrack.api';
 import printSpentTime from '../utils/printSpentTime';
 import dashboardComponentStyles from '../styles/dashboardComponentStyles';
 
+/**
+ * Renders project manager overview
+ * @constructor
+ */
 const ProjectManagerOverview : React.FC = () => {
   const {
     data: managerProjects,

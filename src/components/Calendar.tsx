@@ -15,6 +15,12 @@ type ChildComponentProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   setTimeSlot: React.Dispatch<React.SetStateAction<TimeSlotOverview>>,
 };
+/**
+ * Renders the calendar
+ * @param setIsModalOpen - React hook state
+ * @param setTimeSlot - React hook state
+ * @constructor
+ */
 const Calendar: React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   setTimeSlot,
@@ -63,6 +69,9 @@ const Calendar: React.FC<ChildComponentProps> = ({
     });
     setIsModalOpen(true);
   };
+  /**
+   * Maps the timeslot objects to Event Object from fullcalendar
+   */
   const timeSlotsToEventObject = () => timeslots.map((event) => ({
     id: event.id.toString(),
     title: event.project.value || '',

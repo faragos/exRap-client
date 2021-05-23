@@ -25,7 +25,9 @@ import {
   ProjectOverview,
   UserOverview,
 } from '../../gen/timeTrack.api.generated';
-
+/**
+ * Style definition
+ */
 const useStyles = makeStyles((theme: Theme) => createStyles({
   root: {
     '& > * + *': {
@@ -39,7 +41,13 @@ type ChildComponentProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   project: ProjectOverview,
 };
-
+/**
+ * Renders the add user to project modal
+ * @param setIsModalOpen - React hook state
+ * @param isModalOpen - React hook state
+ * @param project - current project object
+ * @constructor
+ */
 const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   isModalOpen,
@@ -60,7 +68,12 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
     isLoading: contributorsIsLoading,
   } = useProjectContributorsGetContributorsQuery(contributorsArg);
 
-  // Differenzmenge - A\B - A ohne B
+  /**
+   * Return a list of possible new contributors for the current project.
+   * Differenzmenge - A\B - A without B
+   * @param userList - List of all Users
+   * @param contributorList - List of all contributors for current project
+   */
   const getPossibleContributors = (
     userList: UserOverview[],
     contributorList: UserOverview[],
@@ -71,7 +84,10 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
     result = userList.filter((u) => !contributorList.some((c) => c.userName === u.userName));
     return result;
   };
-
+  /**
+   * Returns a list of users.
+   * Maps time API User objects to Auth User object to have more informations.
+   */
   const mapTimeToAuthUser = () => users.filter(
     (u) => usersInProject.some((c) => c.userName === u.userName),
   );
