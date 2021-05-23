@@ -106,6 +106,7 @@ const Calendar: React.FC<ChildComponentProps> = ({
         contentHeight="auto"
         eventColor="#a1887f"
         eventTextColor="#000"
+        firstDay={1}
       />
     </div>
   );

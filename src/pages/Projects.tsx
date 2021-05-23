@@ -87,6 +87,16 @@ const Projects : React.FC = () => {
     isLoading: projectsIsLoading,
   } = useProjectsGetProjectsQuery({ status: isFilterEnabled ? undefined : 'Active' });
 
+  const {
+    data: managerProjects = [],
+    isLoading: managerProjectsIsLoading,
+  } = useProjectsGetProjectsQuery({ status: isFilterEnabled ? undefined : 'Active', role: 'Manager' });
+
+  const {
+    data: contributorProjects = [],
+    isLoading: contributorProjectsIsLoading,
+  } = useProjectsGetProjectsQuery({ status: isFilterEnabled ? undefined : 'Active', role: 'Contributor' });
+
   const deleteDialogTitle = 'Projekt beenden';
   const deleteDialogContent = 'Wollen Sie das Projekt wirklich beenden?';
 
@@ -142,14 +152,22 @@ const Projects : React.FC = () => {
   };
 
   const getFilteredProjects = () => {
+    let newProjects;
+    if (currentUser?.roles?.includes('Admin')) {
+      newProjects = projects;
+    } else if (currentUser?.roles?.includes('ProjectManager')) {
+      newProjects = managerProjects.concat(contributorProjects);
+    } else {
+      newProjects = contributorProjects;
+    }
     if (filterValue) {
-      return projects.filter(
+      return newProjects.filter(
         (project) => project.name.toLowerCase().includes(filterValue.toLowerCase())
             || project.initial.toLowerCase().includes(filterValue.toLowerCase())
             || project.description?.toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
-    return projects;
+    return newProjects;
   };
 
   const classes = useStyles();
@@ -157,8 +175,11 @@ const Projects : React.FC = () => {
   const checkNewProjectPermission = () => currentUser?.roles?.includes('ProjectManager')
       || currentUser?.roles?.includes('Admin');
 
-  const checkProjectPermissions = (project: ProjectOverview) => project.projectStatus === 'Active'
-        && checkNewProjectPermission();
+  const checkProjectPermissions = (project: ProjectOverview) => {
+    const managerProject = managerProjects.find((x) => x.id === project.id);
+    return (currentUser?.roles?.includes('Admin')
+        || managerProject) && project.projectStatus === 'Active';
+  };
 
   return (
     <div>
@@ -198,7 +219,8 @@ const Projects : React.FC = () => {
           </Button>
         </Toolbar>
 
-        { projectsIsLoading || updateProjectIsLoading
+        {/* eslint-disable-next-line max-len */}
+        { projectsIsLoading || managerProjectsIsLoading || contributorProjectsIsLoading || updateProjectIsLoading
           ? <CircularProgress />
           : (
             <Table className={classes.table}>

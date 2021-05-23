@@ -66,7 +66,7 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   setTimeSlot,
   isModalOpen,
 }: ChildComponentProps) => {
-  const { data: projects = [] } = useProjectsGetProjectsQuery({ status: 'Active' });
+  const { data: projects = [] } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Contributor' });
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const deleteTitle = 'Zeiteintrag';
   const deleteContent = 'Wollen sie den Zeiteintrag wirklich löschen?';

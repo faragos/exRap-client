@@ -138,7 +138,7 @@ const handlers = [
     if (req.body.userName === 'test-user' && req.body.password === 'test-password') {
       const token = jwt.sign({
         name: 'test-user',
-        role: 'Admin',
+        role: ['Admin', 'ProjectContributor'],
         nbf: Date.now() / 1000,
         exp: Date.now() / 1000 + (60 * 30),
         iat: Date.now() / 1000,
