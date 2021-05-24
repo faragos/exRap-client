@@ -60,12 +60,12 @@ let projectData = [
     projectStatus: 'Active',
     projectManager: [
       {
-        userName: 'testuser',
+        userName: 'tu',
       },
     ],
     contributors: [
       {
-        userName: 'testuser',
+        userName: 'tu',
       },
     ],
     timeSlots: [],
@@ -79,12 +79,12 @@ let projectData = [
     projectStatus: 'Active',
     projectManager: [
       {
-        userName: 'testuser',
+        userName: 'tu',
       },
     ],
     contributors: [
       {
-        userName: 'testuser2',
+        userName: 'tu2',
       },
     ],
     timeSlots: [],
@@ -98,12 +98,12 @@ let projectData = [
     projectStatus: 'Finished',
     projectManager: [
       {
-        userName: 'testuser',
+        userName: 'tu',
       },
     ],
     contributors: [
       {
-        userName: 'testuser3',
+        userName: 'tu3',
       },
     ],
     timeSlots: [],
@@ -224,6 +224,17 @@ const handlers = [
     return res(
       xtc.status(200),
       xtc.json(currentProject.contributors),
+    );
+  }),
+  rest.post('/time/api/Projects/:projectId/contributors', (req, res, xtc) => {
+    const { projectId } = req.params;
+    projectData.forEach((p) => {
+      if (p.id === parseInt(projectId, 10)) {
+        p.contributors.push({ userName: req.body.userName });
+      }
+    });
+    return res(
+      xtc.status(200),
     );
   }),
   rest.delete('/time/api/Projects/:projectId/timeslots/:timeslotId', (req, res, xtc) => res(

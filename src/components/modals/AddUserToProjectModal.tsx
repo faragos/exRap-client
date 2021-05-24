@@ -149,7 +149,7 @@ const AddUserToProjectModal : React.FC<ChildComponentProps> = ({
                     <TableCell>{item.name}</TableCell>
                     <TableCell>{item.userName}</TableCell>
                     <TableCell>
-                      <IconButton onClick={() => deleteContributorHandler(item)}>
+                      <IconButton data-testid="deleteContributorButton" onClick={() => deleteContributorHandler(item)}>
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>

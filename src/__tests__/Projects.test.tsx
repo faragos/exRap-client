@@ -86,11 +86,21 @@ test('render add User Component', async () => {
 test('add User to Project', async () => {
   const buttons = await screen.findAllByTestId('addProjectButton');
   userEvent.click(buttons[0]);
-
-  userEvent.type(await screen.findByLabelText(/Mitarbeiter hinzufügen/), 'tu');
-
-  const testUserNameInProject = await screen.findByText('tu');
+  userEvent.click(await screen.findByLabelText('Open'));
+  userEvent.click(await screen.findByText('tu2'));
+  const testUserNameInProject = await screen.findByText('tu2');
   expect(testUserNameInProject).toBeInTheDocument();
+});
+
+test('remove user from project', async () => {
+  const buttons = await screen.findAllByTestId('addProjectButton');
+  userEvent.click(buttons[0]);
+  await new Promise((r) => setTimeout(r, 2000));
+  const deleteContributor = await screen.findByTestId('deleteContributorButton');
+  userEvent.click(deleteContributor);
+  await waitFor(() => {
+    expect(screen.queryByText('tu')).not.toBeInTheDocument();
+  });
 });
 
 test('search project project1', async () => {
