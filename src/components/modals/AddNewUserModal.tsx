@@ -220,6 +220,7 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
                 onChange={handleChange}
                 className={classes.halfField}
                 required
+                inputProps={{ maxLength: 50 }}
               />
               <TextField
                 id="name"
@@ -231,6 +232,7 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
                 onChange={handleChange}
                 className={classes.halfField}
                 required
+                inputProps={{ maxLength: 50 }}
               />
             </div>
             <TextField
@@ -243,6 +245,7 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
               onChange={handleChange}
               fullWidth
               required
+              inputProps={{ maxLength: 6 }}
             />
             <TextField
               id="mailAddress"
