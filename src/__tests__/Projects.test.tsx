@@ -87,7 +87,7 @@ test('add User to Project', async () => {
   const buttons = await screen.findAllByTestId('addProjectButton');
   userEvent.click(buttons[0]);
 
-  userEvent.type(screen.getByLabelText(/Mitarbeiter hinzufügen/), 'testuser');
+  userEvent.type(await screen.findByLabelText(/Mitarbeiter hinzufügen/), 'testuser');
 
   const testUserNameInProject = await screen.findByText('testuser');
   expect(testUserNameInProject).toBeInTheDocument();
@@ -143,4 +143,22 @@ test('delete Project', async () => {
   userEvent.click(buttons[0]);
   const deleteProjectModalText = await screen.findByText(/Projekt beenden/i);
   expect(deleteProjectModalText).toBeInTheDocument();
+});
+
+test('render show project time modal', async () => {
+  const buttons = await screen.findAllByTestId('showTimeButton');
+  userEvent.click(buttons[0]);
+  const projectTimeModal = await screen.findByText('Projektübersicht');
+  expect(projectTimeModal).toBeInTheDocument();
+});
+
+test('search project project1', async () => {
+  const searchbar = await screen.findByLabelText('search-input');
+  userEvent.type(searchbar, 'project1');
+  const project1 = await screen.findByText('project1');
+
+  expect(project1).toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.queryByText('project2')).not.toBeInTheDocument();
+  });
 });

@@ -156,7 +156,7 @@ const handlers = [
   }),
   rest.get('/auth/api/Users', (req, res, xtc) => res(
     xtc.status(200),
-    xtc.json(userData),
+    xtc.json(userData.filter((user) => user.status !== 'Deleted')),
   )),
   rest.post('/auth/api/Users', (req, res, xtc) => {
     userData.push(createUser(req.body));
@@ -166,7 +166,7 @@ const handlers = [
   }),
   rest.put('/auth/api/Users/:userId', (req, res, xtc) => {
     const { userId } = req.params;
-
+    console.log(req.body);
     userData = userData.map(
       (user) => {
         if (user.id === parseInt(userId, 10)) {

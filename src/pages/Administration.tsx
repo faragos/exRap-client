@@ -160,6 +160,7 @@ const Administration : React.FC = () => {
             onChange={handleSearch}
             className={classes.search}
             InputProps={{
+              'aria-label': 'search-input',
               startAdornment: (
                 <InputAdornment position="start">
                   <SearchIcon />
