@@ -86,7 +86,6 @@ test('render add User Component', async () => {
 test('remove user from project', async () => {
   const buttons = await screen.findAllByTestId('addProjectButton');
   userEvent.click(buttons[0]);
-  await new Promise((r) => setTimeout(r, 2000));
   const deleteContributor = await screen.findByTestId('deleteContributorButton');
   userEvent.click(deleteContributor);
   await waitFor(() => {
