@@ -59,7 +59,14 @@ type ChildComponentProps = {
   timeSlot: TimeSlotOverview,
   setTimeSlot: React.Dispatch<React.SetStateAction<TimeSlotOverview>>,
 };
-
+/**
+ * Renders the register time modal
+ * @param setIsModalOpen - React hook state
+ * @param timeSlot- React hook state
+ * @param setTimeSlot- React hook state
+ * @param isModalOpen- React hook state
+ * @constructor
+ */
 const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   timeSlot,
@@ -74,11 +81,21 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   const handleClose = () => {
     setIsModalOpen(false);
   };
+  /**
+   * Returns the selected project from the timeslot
+   */
   const getProjectFromTimeSlot = () : ProjectOverview | null => projects
     .find((project) => project.id === timeSlot.project.key) || null;
 
   // TimePicker has Problem with Time Changes, it resets the Date to current Date
   // This is a Workaround
+  /**
+   * TimePicker has Problem with Time Changes, it resets the Date to current Date
+   * This is a Workaround.
+   * Return the new correct date.
+   * @param currentDate
+   * @param newDate
+   */
   const fixDateChange = (currentDate: string, newDate: Date): Date | null => {
     const h = newDate.getHours();
     const m = newDate.getMinutes();
@@ -91,6 +108,10 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
     return date;
   };
 
+  /**
+   * Checks if a date is valid.
+   * @param d - Date
+   */
   function isValidDate(d: Date) {
     return !Number.isNaN(d.getHours()) && !Number.isNaN(d.getMinutes());
   }

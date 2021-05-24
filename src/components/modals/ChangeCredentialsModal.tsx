@@ -17,7 +17,13 @@ type ChildComponentProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   user: UserOverview,
 };
-
+/**
+ * Renders change credentials modal
+ * @param setIsModalOpen - React hook state
+ * @param isModalOpen - React hook state
+ * @param user - current user object
+ * @constructor
+ */
 const ChangeCredentialsModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   isModalOpen,

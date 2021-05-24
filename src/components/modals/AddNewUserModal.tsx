@@ -23,6 +23,9 @@ import {
   useUsersCreateUserMutation, useUsersGetUserQuery,
 } from '../../service/auth.api';
 
+/**
+ * Style definition
+ */
 const useStyles = makeStyles((theme) => ({
   halfField: {
     width: '100%',
@@ -50,6 +53,11 @@ type PasswordComponentProps = {
   handleRepeatPasswordChange: (event: ChangeEvent<HTMLInputElement>) => void,
 };
 
+/**
+ * Validates if the repeated password is the same as the password
+ * @param target - repeat password input element
+ * @param value - password value of the password element
+ */
 const passwordValidation = (target: EventTarget & HTMLInputElement, value: string) => {
   let validText = '';
   if (target.value !== value) {
@@ -58,6 +66,12 @@ const passwordValidation = (target: EventTarget & HTMLInputElement, value: strin
   target.setCustomValidity(validText);
 };
 
+/**
+ * Renders the password fields
+ * @param handlePasswordChange - password change handler
+ * @param handleRepeatPasswordChange - repeat password change handler
+ * @constructor
+ */
 const PasswordFields : React.FC<PasswordComponentProps> = (
   { handlePasswordChange, handleRepeatPasswordChange } : PasswordComponentProps,
 ) => {
@@ -99,6 +113,13 @@ type ChildComponentProps = {
   user: UserOverview,
 };
 
+/**
+ * Renders add new user modal
+ * @param setIsModalOpen - React hook state
+ * @param isModalOpen - React hook state
+ * @param user - current user object
+ * @constructor
+ */
 const AddNewUserModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   isModalOpen,
@@ -115,6 +136,10 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   const classes = useStyles();
 
   const roleDto: RoleOverview[] = [];
+  /**
+   * Returns the roles of the current user or an empty role array.
+   * @param currentFullUser - current user object
+   */
   const getRoles = (currentFullUser? : UserInformation) : RoleOverview[] => {
     if (currentFullUser?.roles && currentFullUser.roles.length > 0) {
       return currentFullUser.roles;
@@ -164,7 +189,10 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   const handleClose = () => {
     setIsModalOpen(false);
   };
-
+  /**
+   * Updates the roles of the user
+   * @param id - current user id
+   */
   const prepareUpdateRoles = (id : number) => {
     if (formState.roles) {
       const finalRoles = currentRoles.map((r) => r.name);
@@ -175,7 +203,10 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
       updateRoles(args);
     }
   };
-
+  /**
+   * Handles the submit uf a new user / edit user.
+   * @param event - form event object
+   */
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     if (formState?.id) {
@@ -203,7 +234,6 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
 
   return (
     <div>
-
       <Dialog open={isModalOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
         <form onSubmit={handleSubmit}>
           <DialogTitle id="form-dialog-title">Neuer Mitarbeiter erfassen</DialogTitle>

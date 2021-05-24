@@ -8,6 +8,9 @@ import { api as authApi } from '../service/auth.api';
 import { api as timeTrackApi } from '../service/timeTrack.api';
 import authInfoReducer, { clearUser } from './authInfo/reducers';
 
+/**
+ * Centralized rtk Query Error Logger Middleware
+ */
 const rtkQueryErrorLogger = () => (next: Function) => (action: Action) => {
   // Queries which are in the cache get aborted and needed to be filtered.
   if (isRejected(action) && action.error.message !== 'Aborted due to condition callback returning false.') {

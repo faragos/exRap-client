@@ -29,6 +29,10 @@ import AddNewUserModal from '../components/modals/AddNewUserModal';
 import AlertDialog from '../components/AlertDialog';
 import ChangeCredentialsModal from '../components/modals/ChangeCredentialsModal';
 
+/**
+ * Renders the administraion page
+ * @constructor
+ */
 const Administration : React.FC = () => {
   const dtoUser: UserOverview = {
     id: 0,

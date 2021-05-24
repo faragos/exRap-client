@@ -14,7 +14,10 @@ const dashboardStyles = makeStyles(() => createStyles({
     gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
   },
 }));
-
+/**
+ * Renders the dashboard page
+ * @constructor
+ */
 const Dashboard : React.FC = () => {
   const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
 
