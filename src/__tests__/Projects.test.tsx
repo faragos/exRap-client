@@ -93,6 +93,17 @@ test('add User to Project', async () => {
   expect(testUserNameInProject).toBeInTheDocument();
 });
 
+test('search project project1', async () => {
+  const searchbar = await screen.findByLabelText('search-input');
+  userEvent.type(searchbar, 'project1');
+  const project1 = await screen.findByText('project1');
+
+  expect(project1).toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.queryByText('project2')).not.toBeInTheDocument();
+  });
+});
+
 test('render edit Project Component', async () => {
   const buttons = await screen.findAllByTestId('editProjectButton');
   userEvent.click(buttons[0]);
@@ -150,15 +161,4 @@ test('render show project time modal', async () => {
   userEvent.click(buttons[0]);
   const projectTimeModal = await screen.findByText('Projektübersicht');
   expect(projectTimeModal).toBeInTheDocument();
-});
-
-test('search project project1', async () => {
-  const searchbar = await screen.findByLabelText('search-input');
-  userEvent.type(searchbar, 'project1');
-  const project1 = await screen.findByText('project1');
-
-  expect(project1).toBeInTheDocument();
-  await waitFor(() => {
-    expect(screen.queryByText('project2')).not.toBeInTheDocument();
-  });
 });
