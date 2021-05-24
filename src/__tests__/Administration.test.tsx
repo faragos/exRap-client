@@ -82,13 +82,13 @@ test('edit User', async () => {
 
   userEvent.type(screen.getByLabelText(/Vorname/), '-edit');
   userEvent.type(screen.getByLabelText(/Nachname/), '-edit');
-  userEvent.type(screen.getByLabelText(/Kürzel/), '-edit');
+  userEvent.type(screen.getByLabelText(/Kürzel/), 'edit');
 
   userEvent.click(screen.getByText('Speichern'));
 
   const editFirstname = await screen.findByText(/Test-edit/);
   const editLastname = await screen.findByText(/User-edit/);
-  const editInitial = await screen.findByText('testuser-edit');
+  const editInitial = await screen.findByText('tuedit');
 
   expect(editFirstname).toBeInTheDocument();
   expect(editLastname).toBeInTheDocument();
@@ -131,11 +131,11 @@ test('delete testuser', async () => {
 test('search user testuser2', async () => {
   const searchbar = await screen.findByLabelText('search-input');
   userEvent.type(searchbar, 'User2');
-  const testuser2 = await screen.findByText('testuser2');
+  const testuser2 = await screen.findByText('tu2');
 
   expect(testuser2).toBeInTheDocument();
   await waitFor(() => {
-    expect(screen.queryByText('testuser')).not.toBeInTheDocument();
-    expect(screen.queryByText('testuser3')).not.toBeInTheDocument();
+    expect(screen.queryByText('tu')).not.toBeInTheDocument();
+    expect(screen.queryByText('tu3')).not.toBeInTheDocument();
   });
 });

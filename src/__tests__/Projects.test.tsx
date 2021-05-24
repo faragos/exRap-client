@@ -78,7 +78,7 @@ test('render add User Component', async () => {
   userEvent.click(buttons[0]);
 
   const addUserToProjectModalText = await screen.findByText(/Mitarbeiterverwaltung project1/i);
-  const contributor = await screen.findByText(/testUser/i);
+  const contributor = await screen.findByText(/tu/i);
   expect(addUserToProjectModalText).toBeInTheDocument();
   expect(contributor).toBeInTheDocument();
 });
@@ -87,9 +87,9 @@ test('add User to Project', async () => {
   const buttons = await screen.findAllByTestId('addProjectButton');
   userEvent.click(buttons[0]);
 
-  userEvent.type(await screen.findByLabelText(/Mitarbeiter hinzufügen/), 'testuser');
+  userEvent.type(await screen.findByLabelText(/Mitarbeiter hinzufügen/), 'tu');
 
-  const testUserNameInProject = await screen.findByText('testuser');
+  const testUserNameInProject = await screen.findByText('tu');
   expect(testUserNameInProject).toBeInTheDocument();
 });
 

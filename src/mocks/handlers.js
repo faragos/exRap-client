@@ -23,7 +23,7 @@ const roles = [
 let userData = [
   {
     id: 1,
-    userName: 'testuser',
+    userName: 'tu',
     name: 'User',
     firstName: 'Test',
     mailAddress: 'user@example.com',
@@ -32,7 +32,7 @@ let userData = [
   },
   {
     id: 2,
-    userName: 'testuser2',
+    userName: 'tu2',
     name: 'User2',
     firstName: 'Test2',
     mailAddress: 'user2@example.com',
@@ -41,7 +41,7 @@ let userData = [
   },
   {
     id: 3,
-    userName: 'testuser3',
+    userName: 'tu3',
     name: 'User3',
     firstName: 'Test3',
     mailAddress: 'user3@example.com',
@@ -166,7 +166,6 @@ const handlers = [
   }),
   rest.put('/auth/api/Users/:userId', (req, res, xtc) => {
     const { userId } = req.params;
-    console.log(req.body);
     userData = userData.map(
       (user) => {
         if (user.id === parseInt(userId, 10)) {
