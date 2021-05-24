@@ -83,15 +83,6 @@ test('render add User Component', async () => {
   expect(contributor).toBeInTheDocument();
 });
 
-test('add User to Project', async () => {
-  const buttons = await screen.findAllByTestId('addProjectButton');
-  userEvent.click(buttons[0]);
-  userEvent.click(await screen.findByLabelText('Open'));
-  userEvent.click(await screen.findByText('tu2'));
-  const testUserNameInProject = await screen.findByText('tu2');
-  expect(testUserNameInProject).toBeInTheDocument();
-});
-
 test('remove user from project', async () => {
   const buttons = await screen.findAllByTestId('addProjectButton');
   userEvent.click(buttons[0]);
@@ -101,6 +92,15 @@ test('remove user from project', async () => {
   await waitFor(() => {
     expect(screen.queryByText('tu')).not.toBeInTheDocument();
   });
+});
+
+test('add User to Project', async () => {
+  const buttons = await screen.findAllByTestId('addProjectButton');
+  userEvent.click(buttons[0]);
+  userEvent.click(await screen.findByLabelText('Open'));
+  userEvent.click(await screen.findByText('tu2'));
+  const testUserNameInProject = await screen.findByText('tu2');
+  expect(testUserNameInProject).toBeInTheDocument();
 });
 
 test('search project project1', async () => {
