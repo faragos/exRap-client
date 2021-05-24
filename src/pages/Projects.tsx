@@ -202,6 +202,7 @@ const Projects : React.FC = () => {
             label="Suche Projekte"
             onChange={handleSearch}
             InputProps={{
+              'aria-label': 'search-input',
               startAdornment: (
                 <InputAdornment position="start">
                   <SearchIcon />

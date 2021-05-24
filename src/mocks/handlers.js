@@ -23,7 +23,7 @@ const roles = [
 let userData = [
   {
     id: 1,
-    userName: 'testuser',
+    userName: 'tu',
     name: 'User',
     firstName: 'Test',
     mailAddress: 'user@example.com',
@@ -32,7 +32,7 @@ let userData = [
   },
   {
     id: 2,
-    userName: 'testuser2',
+    userName: 'tu2',
     name: 'User2',
     firstName: 'Test2',
     mailAddress: 'user2@example.com',
@@ -41,7 +41,7 @@ let userData = [
   },
   {
     id: 3,
-    userName: 'testuser3',
+    userName: 'tu3',
     name: 'User3',
     firstName: 'Test3',
     mailAddress: 'user3@example.com',
@@ -60,12 +60,12 @@ let projectData = [
     projectStatus: 'Active',
     projectManager: [
       {
-        userName: 'testuser',
+        userName: 'tu',
       },
     ],
     contributors: [
       {
-        userName: 'testuser',
+        userName: 'tu',
       },
     ],
     timeSlots: [],
@@ -79,12 +79,12 @@ let projectData = [
     projectStatus: 'Active',
     projectManager: [
       {
-        userName: 'testuser',
+        userName: 'tu',
       },
     ],
     contributors: [
       {
-        userName: 'testuser2',
+        userName: 'tu2',
       },
     ],
     timeSlots: [],
@@ -98,12 +98,12 @@ let projectData = [
     projectStatus: 'Finished',
     projectManager: [
       {
-        userName: 'testuser',
+        userName: 'tu',
       },
     ],
     contributors: [
       {
-        userName: 'testuser3',
+        userName: 'tu3',
       },
     ],
     timeSlots: [],
@@ -156,7 +156,7 @@ const handlers = [
   }),
   rest.get('/auth/api/Users', (req, res, xtc) => res(
     xtc.status(200),
-    xtc.json(userData),
+    xtc.json(userData.filter((user) => user.status !== 'Deleted')),
   )),
   rest.post('/auth/api/Users', (req, res, xtc) => {
     userData.push(createUser(req.body));
@@ -166,7 +166,6 @@ const handlers = [
   }),
   rest.put('/auth/api/Users/:userId', (req, res, xtc) => {
     const { userId } = req.params;
-
     userData = userData.map(
       (user) => {
         if (user.id === parseInt(userId, 10)) {
@@ -227,10 +226,23 @@ const handlers = [
       xtc.json(currentProject.contributors),
     );
   }),
+  rest.post('/time/api/Projects/:projectId/contributors', (req, res, xtc) => {
+    const { projectId } = req.params;
+    projectData.forEach((p) => {
+      if (p.id === parseInt(projectId, 10)) {
+        p.contributors.push({ userName: req.body.userName });
+      }
+    });
+    return res(
+      xtc.status(200),
+    );
+  }),
   rest.delete('/time/api/Projects/:projectId/timeslots/:timeslotId', (req, res, xtc) => res(
     xtc.status(200),
   )),
-
+  rest.get('*', (req, res, ctx) => res(ctx.status(200))),
+  rest.put('*', (req, res, ctx) => res(ctx.status(200))),
+  rest.post('*', (req, res, ctx) => res(ctx.status(200))),
 ];
 
 export default handlers;

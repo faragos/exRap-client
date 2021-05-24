@@ -68,18 +68,8 @@ test('add new timeslot', async () => {
   const saveButton = await screen.findByRole('button', { name: 'Speichern' });
   userEvent.click(saveButton);
 
-  // expect(commentInput.value).toEqual('test-comment');
   expect(setIsModalOpenMock).toBeCalledWith(false);
 }, 10000);
-
-test('update timeslot', async () => {
-  loadPage(timeSlotDto);
-  const timeInputs = await screen.findAllByLabelText(/Choose time/);
-  const startInput = timeInputs[0];
-  const endInput = timeInputs[1];
-  userEvent.type(startInput, '10:0');
-  userEvent.type(endInput, '12:0');
-});
 
 test('delete timeslot', async () => {
   loadPage(timeSlotDto);

@@ -84,8 +84,8 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   /**
    * Returns the selected project from the timeslot
    */
-  const getProjectFromTimeSlot = () : ProjectOverview | undefined => projects
-    .find((project) => project.id === timeSlot.project.key);
+  const getProjectFromTimeSlot = () : ProjectOverview | null => projects
+    .find((project) => project.id === timeSlot.project.key) || null;
 
   // TimePicker has Problem with Time Changes, it resets the Date to current Date
   // This is a Workaround
