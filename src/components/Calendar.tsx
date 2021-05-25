@@ -15,6 +15,12 @@ type ChildComponentProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   setTimeSlot: React.Dispatch<React.SetStateAction<TimeSlotOverview>>,
 };
+/**
+ * Renders the calendar
+ * @param setIsModalOpen - React hook state
+ * @param setTimeSlot - React hook state
+ * @constructor
+ */
 const Calendar: React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   setTimeSlot,
@@ -63,13 +69,14 @@ const Calendar: React.FC<ChildComponentProps> = ({
     });
     setIsModalOpen(true);
   };
+  /**
+   * Maps the timeslot objects to Event Object from fullcalendar
+   */
   const timeSlotsToEventObject = () => timeslots.map((event) => ({
     id: event.id.toString(),
     title: event.project.value || '',
-    // Workaround: adding 'z' for right time Format
-    start: new Date(`${event.start}z`),
-    // Workaround: adding 'z' for right time Format
-    end: new Date(`${event.end}z`),
+    start: new Date(event.start),
+    end: new Date(event.end),
     extendedProps: {
       projectId: event.project.key,
       comment: event.comment,
@@ -81,7 +88,6 @@ const Calendar: React.FC<ChildComponentProps> = ({
       <FullCalendar
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
         initialView={matches ? 'timeGridWeek' : 'timeGridDay'}
-        weekends={false}
         allDaySlot={false}
         slotMinTime="05:00:00"
         slotMaxTime="22:00:00"
@@ -105,6 +111,9 @@ const Calendar: React.FC<ChildComponentProps> = ({
         ref={calendarRef}
         stickyHeaderDates
         contentHeight="auto"
+        eventColor="#a1887f"
+        eventTextColor="#000"
+        firstDay={1}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
 import './Sidebar.scss';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,6 +10,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import AccountTreeIcon from '@material-ui/icons/AccountTree';
@@ -21,8 +22,9 @@ import {
   Route,
   Redirect, Switch, useHistory,
 } from 'react-router-dom';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import { clearUser } from '../store/authInfo/reducers';
-import { useAppDispatch } from '../hooks';
+import { useAppDispatch, useAppSelector } from '../hooks';
 import PrivateRoute from './PrivateRoute';
 import Dashboard from '../pages/Dashboard';
 import TimeTracking from '../pages/TimeTracking';
@@ -30,8 +32,11 @@ import Projects from '../pages/Projects';
 import Administration from '../pages/Administration';
 import logo from '../assets/exRap-logo.svg';
 import NotFound from '../pages/NotFound';
-import { useLoginRenewTokenQuery } from '../service/auth.api';
+import { useLoginRenewTokenQuery, useUsersGetUserQuery } from '../service/auth.api';
 import updateStore from '../utils/validateToken';
+import { AuthInfo } from '../store/authInfo/types';
+import ChangeCredentialsModal from './modals/ChangeCredentialsModal';
+import { UserOverview } from '../gen/auth.api.generated';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -71,6 +76,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
       marginTop: '0',
     },
   },
+  userItem: {
+    backgroundColor: theme.palette.primary.main,
+  },
 }));
 
 type Page = {
@@ -85,6 +93,10 @@ interface NavigationAction {
   fn: () => void,
 }
 
+/**
+ * Renders the sidebar
+ * @constructor
+ */
 export default function Sidebar() {
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -92,6 +104,10 @@ export default function Sidebar() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const renewTime = 1200; // in s = 20min
   const { data } = useLoginRenewTokenQuery({}, { pollingInterval: renewTime * 1000 });
+  const currentUser: AuthInfo = useAppSelector((state) => state.authInfo);
+  const [isCredentialsModalOpen, setIsCredentialsModalOpen] = useState(false);
+
+  const { data: user } = useUsersGetUserQuery({ userId: currentUser.userid || 0 });
 
   useEffect(() => {
     if (data) updateStore(data.token, dispatch);
@@ -106,15 +122,30 @@ export default function Sidebar() {
     setMobileOpen(!mobileOpen);
   };
 
+  const closeDrawer = () => {
+    setMobileOpen(false);
+  };
+
+  const handleChangePassword = () => {
+    setIsCredentialsModalOpen(true);
+  };
+
   const pages : Page[] = [
     { uri: '/dashboard', label: 'Mein Dashboard', icon: <DashboardIcon /> },
-    { uri: '/timetracking', label: 'Meine Zeiterfassung', icon: <AccessTimeIcon /> },
     { uri: '/projects', label: 'Projekte', icon: <AccountTreeIcon /> },
-    { uri: '/administration', label: 'Administration', icon: <SettingsIcon /> },
   ];
+
+  if (currentUser?.roles?.includes('ProjectContributor')) {
+    pages.splice(1, 0, { uri: '/timetracking', label: 'Meine Zeiterfassung', icon: <AccessTimeIcon /> });
+  }
+
+  if (currentUser?.roles?.includes('Admin')) {
+    pages.push({ uri: '/administration', label: 'Administration', icon: <SettingsIcon /> });
+  }
 
   const secondaryPages : NavigationAction[] = [
     { fn: handleSignout, label: 'Ausloggen', icon: <ExitToAppIcon /> },
+    { fn: handleChangePassword, label: 'Passwort ändern', icon: <VpnKeyIcon /> },
   ];
 
   const drawer = (
@@ -123,9 +154,24 @@ export default function Sidebar() {
         <img src={logo} alt="Logo exRap" className="logo" />
       </div>
       <Divider />
+      <List className={classes.userItem}>
+        <ListItem>
+          <ListItemIcon>
+            <AccountCircleIcon />
+          </ListItemIcon>
+          <ListItemText primary={currentUser.username} />
+        </ListItem>
+      </List>
+      <Divider />
       <List>
         {pages.map((page) => (
-          <ListItem button to={page.uri} component={Link} key={page.uri}>
+          <ListItem
+            button
+            to={page.uri}
+            component={Link}
+            key={page.uri}
+            onClick={closeDrawer}
+          >
             <ListItemIcon>
               {page.icon}
             </ListItemIcon>
@@ -202,6 +248,11 @@ export default function Sidebar() {
           <Route path="*" component={NotFound} />
         </Switch>
       </main>
+      <ChangeCredentialsModal
+        isModalOpen={isCredentialsModalOpen}
+        setIsModalOpen={setIsCredentialsModalOpen}
+        user={user as UserOverview}
+      />
     </div>
   );
 }

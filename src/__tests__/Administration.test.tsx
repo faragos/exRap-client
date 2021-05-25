@@ -1,5 +1,5 @@
 import {
-  render, screen,
+  render, screen, waitFor,
 } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -53,7 +53,7 @@ test('create new User', async () => {
 
   userEvent.click(screen.getByText('Speichern'));
 
-  const testUserName = await screen.findByText(/test user1/);
+  const testUserName = await screen.findByText('test user1');
   const testUserInitial = await screen.findByText('tusr1');
 
   expect(testUserName).toBeInTheDocument();
@@ -82,13 +82,13 @@ test('edit User', async () => {
 
   userEvent.type(screen.getByLabelText(/Vorname/), '-edit');
   userEvent.type(screen.getByLabelText(/Nachname/), '-edit');
-  userEvent.type(screen.getByLabelText(/Kürzel/), '-edit');
+  userEvent.type(screen.getByLabelText(/Kürzel/), 'edit');
 
   userEvent.click(screen.getByText('Speichern'));
 
   const editFirstname = await screen.findByText(/Test-edit/);
   const editLastname = await screen.findByText(/User-edit/);
-  const editInitial = await screen.findByText('testuser-edit');
+  const editInitial = await screen.findByText('tuedit');
 
   expect(editFirstname).toBeInTheDocument();
   expect(editLastname).toBeInTheDocument();
@@ -114,4 +114,28 @@ test('render delete User Component', async () => {
 
   const deleteUserModalText = await screen.findByText(/Löschbestätigung/i);
   expect(deleteUserModalText).toBeInTheDocument();
+});
+
+test('delete testuser', async () => {
+  const buttons = await screen.findAllByTestId('deleteUserButton');
+  userEvent.click(buttons[0]);
+
+  await screen.findByText(/Löschbestätigung/i);
+  userEvent.click(await screen.findByText('Löschen'));
+
+  await waitFor(() => {
+    expect(screen.queryByText('testuser')).not.toBeInTheDocument();
+  });
+});
+
+test('search user testuser2', async () => {
+  const searchbar = await screen.findByLabelText('search-input');
+  userEvent.type(searchbar, 'User2');
+  const testuser2 = await screen.findByText('tu2');
+
+  expect(testuser2).toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.queryByText('tu')).not.toBeInTheDocument();
+    expect(screen.queryByText('tu3')).not.toBeInTheDocument();
+  });
 });

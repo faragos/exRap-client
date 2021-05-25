@@ -6,6 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import SaveIcon from '@material-ui/icons/Save';
 import {
   useProjectsCreateProjectMutation, useProjectsUpdateProjectMutation,
 } from '../../service/timeTrack.api';
@@ -28,7 +29,13 @@ type ChildComponentProps = {
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   project: ProjectOverview,
 };
-
+/**
+ * Renders the project form modal
+ * @param setIsModalOpen - React hook state
+ * @param isModalOpen - React hook state
+ * @param project - Current project object
+ * @constructor
+ */
 const ProjectFormModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   isModalOpen,
@@ -59,22 +66,14 @@ const ProjectFormModal : React.FC<ChildComponentProps> = ({
   const handleSave = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     if (projectForm.id) {
-      try {
-        const param: ProjectsUpdateProjectApiArg = {
-          projectId: projectForm.id,
-          manageProjectRequest: projectForm,
-        };
-        updateProject(param);
-      } catch (err) {
-        console.log(err);
-      }
+      const param: ProjectsUpdateProjectApiArg = {
+        projectId: projectForm.id,
+        manageProjectRequest: projectForm,
+      };
+      updateProject(param);
     } else {
-      try {
-        const param: ProjectsCreateProjectApiArg = { manageProjectRequest: projectForm };
-        createProject(param);
-      } catch (err) {
-        console.log(err);
-      }
+      const param: ProjectsCreateProjectApiArg = { manageProjectRequest: projectForm };
+      createProject(param);
     }
     setIsModalOpen(false);
   };
@@ -127,7 +126,7 @@ const ProjectFormModal : React.FC<ChildComponentProps> = ({
             <Button onClick={handleClose} color="primary">
               Abbrechen
             </Button>
-            <Button color="primary" type="submit">
+            <Button type="submit" color="primary" variant="contained" startIcon={<SaveIcon />}>
               Speichern
             </Button>
           </DialogActions>

@@ -1,4 +1,6 @@
-import React, { ChangeEvent, SyntheticEvent, useState } from 'react';
+import React, {
+  ChangeEvent, SyntheticEvent, useState,
+} from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -6,6 +8,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Autocomplete from '@material-ui/core/Autocomplete';
+import { makeStyles } from '@material-ui/core/styles';
+import SaveIcon from '@material-ui/icons/Save';
 import {
   UserOverview,
   UsersCreateUserApiArg,
@@ -19,37 +23,89 @@ import {
   useUsersCreateUserMutation, useUsersGetUserQuery,
 } from '../../service/auth.api';
 
+/**
+ * Style definition
+ */
+const useStyles = makeStyles((theme) => ({
+  halfField: {
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: `calc(50% - ${theme.spacing(1)})`,
+    },
+  },
+  fieldRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+    },
+  },
+  root: {
+    '& > *': {
+      marginTop: theme.spacing(2),
+    },
+  },
+}));
+
 type PasswordComponentProps = {
-  handleCredentialsChange: (event: ChangeEvent<HTMLInputElement>) => void,
+  handlePasswordChange: (event: ChangeEvent<HTMLInputElement>) => void,
+  handleRepeatPasswordChange: (event: ChangeEvent<HTMLInputElement>) => void,
 };
 
+/**
+ * Validates if the repeated password is the same as the password
+ * @param target - repeat password input element
+ * @param value - password value of the password element
+ */
+const passwordValidation = (target: EventTarget & HTMLInputElement, value: string) => {
+  let validText = '';
+  if (target.value !== value) {
+    validText = 'Passwörter stimmen nicht überein';
+  }
+  target.setCustomValidity(validText);
+};
+
+/**
+ * Renders the password fields
+ * @param handlePasswordChange - password change handler
+ * @param handleRepeatPasswordChange - repeat password change handler
+ * @constructor
+ */
 const PasswordFields : React.FC<PasswordComponentProps> = (
-  { handleCredentialsChange } : PasswordComponentProps,
-) => (
-  <>
-    <TextField
-      name="password"
-      id="password"
-      label="Passwort"
-      variant="standard"
-      type="password"
-      required
-      onChange={handleCredentialsChange}
-    />
+  { handlePasswordChange, handleRepeatPasswordChange } : PasswordComponentProps,
+) => {
+  const classes = useStyles();
+  return (
+    <div className={classes.fieldRow}>
+      <TextField
+        name="password"
+        id="password"
+        label="Passwort"
+        variant="standard"
+        type="password"
+        required
+        onChange={handlePasswordChange}
+        inputProps={{ minLength: 8 }}
+        className={classes.halfField}
+      />
 
-    <TextField
-      name="passwordRepeat"
-      id="passwordRepeat"
-      label="Passwort wiederholen"
-      variant="standard"
-      type="password"
-      required
-      onChange={handleCredentialsChange}
-    />
-  </>
-);
+      <TextField
+        name="passwordRepeat"
+        id="passwordRepeat"
+        label="Passwort wiederholen"
+        variant="standard"
+        type="password"
+        required
+        onChange={handleRepeatPasswordChange}
+        inputProps={{ minLength: 8 }}
+        className={classes.halfField}
+      />
+    </div>
+  );
+};
 
-export { PasswordFields };
+export { PasswordFields, passwordValidation };
 
 type ChildComponentProps = {
   isModalOpen: boolean,
@@ -57,6 +113,13 @@ type ChildComponentProps = {
   user: UserOverview,
 };
 
+/**
+ * Renders add new user modal
+ * @param setIsModalOpen - React hook state
+ * @param isModalOpen - React hook state
+ * @param user - current user object
+ * @constructor
+ */
 const AddNewUserModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   isModalOpen,
@@ -70,7 +133,13 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
     },
   });
 
+  const classes = useStyles();
+
   const roleDto: RoleOverview[] = [];
+  /**
+   * Returns the roles of the current user or an empty role array.
+   * @param currentFullUser - current user object
+   */
   const getRoles = (currentFullUser? : UserInformation) : RoleOverview[] => {
     if (currentFullUser?.roles && currentFullUser.roles.length > 0) {
       return currentFullUser.roles;
@@ -108,17 +177,22 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
     target: { name, value },
   }: React.ChangeEvent<HTMLInputElement>) => setFormState((prev) => ({ ...prev, [name]: value }));
 
-  const handleCredentialsChange = ({
-    target: { name, value },
-  }: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePasswordChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     // eslint-disable-next-line max-len
-    setFormState((prev) => ({ ...prev, credentials: { ...prev.credentials, [name]: value } as ManageCredentialRequest }));
+    setFormState((prev) => ({ ...prev, credentials: { ...prev.credentials, password: target.value } as ManageCredentialRequest }));
+  };
+
+  const handleRepeatPasswordChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    if (formState.credentials) passwordValidation(target, formState.credentials?.password);
   };
 
   const handleClose = () => {
     setIsModalOpen(false);
   };
-
+  /**
+   * Updates the roles of the user
+   * @param id - current user id
+   */
   const prepareUpdateRoles = (id : number) => {
     if (formState.roles) {
       const finalRoles = currentRoles.map((r) => r.name);
@@ -129,29 +203,24 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
       updateRoles(args);
     }
   };
-
+  /**
+   * Handles the submit uf a new user / edit user.
+   * @param event - form event object
+   */
   const handleSubmit = async (event: { preventDefault: () => void; }) => {
     event.preventDefault();
     if (formState?.id) {
-      try {
-        const param: UsersUpdateUserApiArg = {
-          userId: formState.id,
-          manageUserRequest: formState,
-        };
-        prepareUpdateRoles(formState.id);
-        updateUser(param);
-      } catch (err) {
-        console.log(err);
-      }
+      const param: UsersUpdateUserApiArg = {
+        userId: formState.id,
+        manageUserRequest: formState,
+      };
+      prepareUpdateRoles(formState.id);
+      updateUser(param);
     } else {
-      try {
-        const param: UsersCreateUserApiArg = { createUserRequest: formState };
-        const result = await createUser(param).unwrap();
-        if (result) {
-          prepareUpdateRoles(result.id);
-        }
-      } catch (err) {
-        console.log(err);
+      const param: UsersCreateUserApiArg = { createUserRequest: formState };
+      const result = await createUser(param).unwrap();
+      if (result) {
+        prepareUpdateRoles(result.id);
       }
     }
     setIsModalOpen(false);
@@ -164,74 +233,94 @@ const AddNewUserModal : React.FC<ChildComponentProps> = ({
   };
 
   return (
-    <Dialog open={isModalOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
-      <form onSubmit={handleSubmit}>
-        <DialogTitle id="form-dialog-title">Neuer Mitarbeiter erfassen</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            id="firstName"
-            name="firstName"
-            label="Vorname"
-            variant="standard"
-            placeholder="Max"
-            value={formState.firstName}
-            onChange={handleChange}
-          />
-          <TextField
-            id="name"
-            name="name"
-            label="Nachname"
-            variant="standard"
-            placeholder="Muster"
-            value={formState.name}
-            onChange={handleChange}
-          />
-          <TextField
-            id="userName"
-            name="userName"
-            label="Kürzel"
-            variant="standard"
-            placeholder="abc"
-            value={formState.userName}
-            onChange={handleChange}
-            fullWidth
-          />
-          <TextField
-            id="mailAddress"
-            name="mailAddress"
-            label="Mail"
-            variant="standard"
-            placeholder="example@test.ch"
-            value={formState.mailAddress}
-            onChange={handleChange}
-            fullWidth
-          />
-          <Autocomplete
-            multiple
-            id="addRole"
-            options={roles}
-            getOptionLabel={(option) => option.name}
-            filterSelectedOptions
+    <div>
+      <Dialog open={isModalOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
+        <form onSubmit={handleSubmit}>
+          <DialogTitle id="form-dialog-title">Neuer Mitarbeiter erfassen</DialogTitle>
+          <DialogContent className={classes.root}>
+            <div className={classes.fieldRow}>
+              <TextField
+                autoFocus
+                id="firstName"
+                name="firstName"
+                label="Vorname"
+                variant="standard"
+                placeholder="Max"
+                value={formState.firstName}
+                onChange={handleChange}
+                className={classes.halfField}
+                required
+                inputProps={{ maxLength: 50 }}
+              />
+              <TextField
+                id="name"
+                name="name"
+                label="Nachname"
+                variant="standard"
+                placeholder="Muster"
+                value={formState.name}
+                onChange={handleChange}
+                className={classes.halfField}
+                required
+                inputProps={{ maxLength: 50 }}
+              />
+            </div>
+            <TextField
+              id="userName"
+              name="userName"
+              label="Kürzel"
+              variant="standard"
+              placeholder="abc"
+              value={formState.userName}
+              onChange={handleChange}
+              fullWidth
+              required
+              inputProps={{ maxLength: 6 }}
+            />
+            <TextField
+              id="mailAddress"
+              name="mailAddress"
+              label="Mail"
+              variant="standard"
+              placeholder="example@test.ch"
+              value={formState.mailAddress}
+              onChange={handleChange}
+              fullWidth
+              required
+              type="email"
+            />
+            <Autocomplete
+              multiple
+              id="addRole"
+              options={roles}
+              getOptionLabel={(option) => option.name}
+              filterSelectedOptions
               /* props need to be forwarded https://material-ui.com/components/autocomplete/#checkboxes */
               /* eslint-disable-next-line react/jsx-props-no-spreading */
-            renderInput={(params) => (<TextField {...params} variant="standard" label="Rolle hinzufügen" placeholder="Rollen" />)}
-            onChange={addRoleHandler}
-            getOptionSelected={(option, value) => option.name === value.name}
-            value={currentRoles}
-          />
-          {!formState.id && <PasswordFields handleCredentialsChange={handleCredentialsChange} />}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>
-            Abbrechen
-          </Button>
-          <Button type="submit" color="primary" variant="contained">
-            Speichern
-          </Button>
-        </DialogActions>
-      </form>
-    </Dialog>
+              renderInput={(params) => (<TextField {...params} variant="standard" label="Rolle hinzufügen" placeholder="Rollen" />)}
+              onChange={addRoleHandler}
+              getOptionSelected={(option, value) => option.name === value.name}
+              value={currentRoles}
+            />
+            {!formState.id
+            && (
+            <PasswordFields
+              handlePasswordChange={handlePasswordChange}
+              handleRepeatPasswordChange={handleRepeatPasswordChange}
+            />
+            )}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose}>
+              Abbrechen
+            </Button>
+            <Button type="submit" color="primary" variant="contained" startIcon={<SaveIcon />}>
+              Speichern
+            </Button>
+          </DialogActions>
+        </form>
+      </Dialog>
+    </div>
   );
 };
 export default AddNewUserModal;

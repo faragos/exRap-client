@@ -1,9 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import jwt_decode from 'jwt-decode';
 import { AuthInfo } from './types';
+import { JWTTokenData } from '../../types/types';
 
 const initialState: AuthInfo = {
   username: '',
+  userid: 0,
   token: '',
+  roles: '',
   isAuthenticated: false,
 };
 
@@ -12,15 +16,15 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setCredentials: (state, { payload: { username, token } }: PayloadAction<AuthInfo>) => {
+      const decodedToken: JWTTokenData = jwt_decode(token);
       state.username = username;
+      state.userid = parseInt(decodedToken.nameid, 10);
       state.token = token;
+      state.roles = decodedToken.role;
       state.isAuthenticated = true;
       sessionStorage.setItem('token', token);
     },
-    clearUser: (state) => {
-      state.username = '';
-      state.token = '';
-      state.isAuthenticated = false;
+    clearUser: () => {
       sessionStorage.clear();
     },
   },

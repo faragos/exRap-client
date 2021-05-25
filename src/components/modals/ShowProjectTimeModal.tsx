@@ -12,6 +12,9 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import { ReactJSXElement } from '@emotion/react/types/jsx-namespace';
+import { ProjectOverview } from '../../gen/timeTrack.api.generated';
+import printSpentTime from '../../utils/printSpentTime';
 
 const useStyles = makeStyles({
   table: {
@@ -25,47 +28,39 @@ const useStyles = makeStyles({
 type ChildComponentProps = {
   isModalOpen: boolean,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  project: ProjectOverview,
 };
-
+/**
+ * Renders show project time modal
+ * @param setIsModalOpen - React hook state
+ * @param isModalOpen - React hook state
+ * @param project - current project object
+ * @constructor
+ */
 const ShowProjectTimeModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   isModalOpen,
+  project,
 }: ChildComponentProps) => {
   const handleClose = () => {
     setIsModalOpen(false);
   };
 
-  function hoursRow(hours: number) {
-    return hours;
-  }
+  const userTimeInProject: ReactJSXElement[] = [];
 
-  function createRow(employeeName: string, employeeNameShort: string, hours: number) {
-    const hoursTotal = hoursRow(hours);
-    return {
-      employeeName, employeeNameShort, hours, hoursTotal,
-    };
-  }
-
-  interface Row {
-    employeeName: string;
-    employeeNameShort: string;
-    hours: number;
-    hoursTotal: number;
-  }
-
-  function subtotal(items: readonly Row[]) {
-    return items.map(({ hoursTotal }) => hoursTotal).reduce((sum, i) => sum + i, 0);
-  }
-
-  const rows = [
-    createRow('Amend Lesi', 'ale', 90),
-    createRow('Dominic Klinger', 'dki', 45),
-    createRow('Christian Bisig', 'cbi', 17),
-    createRow('Lukas Schlunegger', 'lsc', 20),
-    createRow('Marco Endres', 'men', 43),
-  ];
-
-  const invoiceTotal = subtotal(rows);
+  /**
+   * Creates HTML element for all users which have spend time
+   */
+  Object.keys(project.contributorsSpentMinutes || {}).forEach((user) => {
+    userTimeInProject.push(
+      <TableRow key={user}>
+        <TableCell>{user}</TableCell>
+        <TableCell align="right">
+          {printSpentTime(project.contributorsSpentMinutes?.[user])}
+        </TableCell>
+      </TableRow>,
+    );
+  });
 
   const classes = useStyles();
 
@@ -78,24 +73,16 @@ const ShowProjectTimeModal : React.FC<ChildComponentProps> = ({
             <Table className={classes.table} aria-label="spanning table">
               <TableHead>
                 <TableRow>
-                  <TableCell colSpan={2}>Mitarbeiter</TableCell>
-                  <TableCell align="right">H</TableCell>
+                  <TableCell colSpan={1}>Mitarbeiter</TableCell>
+                  <TableCell align="right">Aufgewendete Zeit</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
-                  <TableRow key={row.employeeName}>
-                    <TableCell>{row.employeeName}</TableCell>
-                    <TableCell>{row.employeeNameShort}</TableCell>
-                    <TableCell align="right">
-                      {row.hoursTotal}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                {userTimeInProject}
                 <TableRow>
-                  <TableCell colSpan={2}>Total</TableCell>
+                  <TableCell colSpan={1}>Total</TableCell>
                   <TableCell align="right">
-                    {invoiceTotal}
+                    {printSpentTime(project.totalSpentMinutes)}
                   </TableCell>
                 </TableRow>
               </TableBody>

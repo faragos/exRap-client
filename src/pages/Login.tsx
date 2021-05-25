@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Login.scss';
 import { useHistory } from 'react-router-dom';
 import {
@@ -11,6 +11,10 @@ import { AuthInfo } from '../store/authInfo/types';
 import { useAppDispatch } from '../hooks';
 import logo from '../assets/exRap-logo.svg';
 
+/**
+ * Renders the login page
+ * @constructor
+ */
 const Login : React.FC = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -23,6 +27,10 @@ const Login : React.FC = () => {
     login,
     { error },
   ] = useLoginLoginMutation();
+
+  useEffect(() => {
+    document.title = 'exRap - Login';
+  }, []);
 
   const handleChange = ({
     target: { name, value },
@@ -43,7 +51,6 @@ const Login : React.FC = () => {
       history.push('/');
     } catch (e) {
       setLoading(false);
-      console.error('Login failed');
     }
   };
 

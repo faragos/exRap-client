@@ -5,6 +5,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 type AlertDialogProps = {
   isOpen: boolean,
@@ -16,6 +17,17 @@ type AlertDialogProps = {
   buttonDisAgree?: string,
 };
 
+/**
+ * Renders a generic alert dialog
+ * @param isOpen - React hook state
+ * @param setIsOpen - React hook state
+ * @param handleConfirm - Handle confirm handler
+ * @param title - Title of the alert dialog
+ * @param content - Content of the alert dialog
+ * @param buttonAgree - Button agree text
+ * @param buttonDisAgree - Button disagree text
+ * @constructor
+ */
 const AlertDialog: React.FC<AlertDialogProps> = ({
   isOpen,
   setIsOpen,
@@ -47,7 +59,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
           <Button onClick={handleClose} color="primary">
             { buttonDisAgree }
           </Button>
-          <Button onClick={handleConfirm} color="primary" variant="contained" autoFocus>
+          <Button onClick={handleConfirm} color="primary" variant="contained" autoFocus startIcon={<DeleteIcon />}>
             { buttonAgree }
           </Button>
         </DialogActions>

@@ -1,10 +1,14 @@
-import { render, screen } from '@testing-library/react';
+import {
+  render, screen, waitFor,
+} from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import userEvent from '@testing-library/user-event';
+import jwt from 'jsonwebtoken';
 import Project from '../pages/Projects';
 import store from '../store/store';
 import server from '../mocks/server';
+import { setCredentials } from '../store/authInfo/reducers';
 
 // Establish API mocking before all tests.
 beforeAll(() => server.listen());
@@ -15,6 +19,14 @@ afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
 beforeEach(() => {
+  const token = jwt.sign({
+    name: 'test-user',
+    role: 'Admin',
+    nbf: Date.now() / 1000,
+    exp: Date.now() / 1000 + (60 * 30),
+    iat: Date.now() / 1000,
+  }, 'secret');
+  store.dispatch(setCredentials({ username: 'test-user', token, isAuthenticated: true }));
   render(<Provider store={store}><Project /></Provider>);
 });
 
@@ -53,7 +65,6 @@ test('create new Project', async () => {
   userEvent.click(screen.getByText('Speichern'));
 
   const testProjectName = await screen.findByText(/test-project/);
-  // const testProjectName = await screen.getByRole('cell', { name: /test-project/i });
   const testProjectInitial = await screen.findByText('t2');
   const testProjectComment = await screen.findByText(/test-comment/);
 
@@ -67,19 +78,39 @@ test('render add User Component', async () => {
   userEvent.click(buttons[0]);
 
   const addUserToProjectModalText = await screen.findByText(/Mitarbeiterverwaltung project1/i);
-  const contributor = await screen.findByText(/testUser/i);
+  const contributor = await screen.findByText(/tu/i);
   expect(addUserToProjectModalText).toBeInTheDocument();
   expect(contributor).toBeInTheDocument();
+});
+
+test('remove user from project', async () => {
+  const buttons = await screen.findAllByTestId('addProjectButton');
+  userEvent.click(buttons[0]);
+  const deleteContributor = await screen.findByTestId('deleteContributorButton');
+  userEvent.click(deleteContributor);
+  await waitFor(() => {
+    expect(screen.queryByText('tu')).not.toBeInTheDocument();
+  });
 });
 
 test('add User to Project', async () => {
   const buttons = await screen.findAllByTestId('addProjectButton');
   userEvent.click(buttons[0]);
-
-  userEvent.type(screen.getByLabelText(/Mitarbeiter hinzufügen/), 'testuser');
-
-  const testUserNameInProject = await screen.findByText('testuser');
+  userEvent.click(await screen.findByLabelText('Open'));
+  userEvent.click(await screen.findByText('tu2'));
+  const testUserNameInProject = await screen.findByText('tu2');
   expect(testUserNameInProject).toBeInTheDocument();
+});
+
+test('search project project1', async () => {
+  const searchbar = await screen.findByLabelText('search-input');
+  userEvent.type(searchbar, 'project1');
+  const project1 = await screen.findByText('project1');
+
+  expect(project1).toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.queryByText('project2')).not.toBeInTheDocument();
+  });
 });
 
 test('render edit Project Component', async () => {
@@ -88,7 +119,6 @@ test('render edit Project Component', async () => {
 
   const addUserToProjectModalText = await screen.findByText(/Projektname/i);
   const contributor = await screen.findByText(/project1/i);
-  // screen.debug(undefined, 300000);
   expect(addUserToProjectModalText).toBeInTheDocument();
   expect(contributor).toBeInTheDocument();
 });
@@ -126,27 +156,18 @@ test('delete Project', async () => {
 
   userEvent.click(screen.getByText('Löschen'));
 
-  const deletedProjectName = await screen.findByText(/project1/i);
-  // TODO project should not be visible
-  expect(deletedProjectName).toBeInTheDocument();
+  await waitFor(() => {
+    expect(screen.queryByText(/project1/i)).not.toBeInTheDocument();
+  });
 
   userEvent.click(buttons[0]);
   const deleteProjectModalText = await screen.findByText(/Projekt beenden/i);
   expect(deleteProjectModalText).toBeInTheDocument();
 });
 
-/* Example how to render AddUserToProject Modal -> Pls Test Modal seperated
-test('render add Person Component2', async () => {
-  const project: ProjectOverview = {
-    id: 1,
-    name: 'project1',
-    initial: 'p1',
-    description: 'p1 dsc',
-    timeBudget: 0,
-    projectStatus: 'Active',
-  };
-  render(
-  <Provider store={store}>
-    <AddUserToProjectModal isModalOpen setIsModalOpen={() => true} project={project} />
-  </Provider>);
-}); */
+test('render show project time modal', async () => {
+  const buttons = await screen.findAllByTestId('showTimeButton');
+  userEvent.click(buttons[0]);
+  const projectTimeModal = await screen.findByText('Projektübersicht');
+  expect(projectTimeModal).toBeInTheDocument();
+});

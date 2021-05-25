@@ -10,6 +10,10 @@ import TimePicker from '@material-ui/lab/TimePicker';
 import AdapterDateFns from '@material-ui/lab/AdapterDateFns';
 import LocalizationProvider from '@material-ui/lab/LocalizationProvider';
 import deLocale from 'date-fns/locale/de';
+import DeleteIcon from '@material-ui/icons/Delete';
+import SaveIcon from '@material-ui/icons/Save';
+
+import { makeStyles } from '@material-ui/core/styles';
 import {
   useProjectsGetProjectsQuery,
   useProjectTimeslotsAddTimeslotMutation, useProjectTimeslotsDeleteTimeslotMutation,
@@ -24,26 +28,52 @@ import {
 } from '../../gen/timeTrack.api.generated';
 import AlertDialog from '../AlertDialog';
 
+const useStyles = makeStyles((theme) => ({
+  buttonRow: {
+    display: 'flex',
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+  },
+  deleteButton: {
+    marginRight: 'auto',
+  },
+  halfField: {
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: `calc(50% - ${theme.spacing(1)})`,
+    },
+  },
+  fieldRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'column',
+    [theme.breakpoints.up('md')]: {
+      flexDirection: 'row',
+    },
+  },
+}));
+
 type ChildComponentProps = {
   isModalOpen: boolean,
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>,
   timeSlot: TimeSlotOverview,
   setTimeSlot: React.Dispatch<React.SetStateAction<TimeSlotOverview>>,
 };
-
+/**
+ * Renders the register time modal
+ * @param setIsModalOpen - React hook state
+ * @param timeSlot- React hook state
+ * @param setTimeSlot- React hook state
+ * @param isModalOpen- React hook state
+ * @constructor
+ */
 const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   setIsModalOpen,
   timeSlot,
   setTimeSlot,
   isModalOpen,
 }: ChildComponentProps) => {
-  const { data: projects = [] } = useProjectsGetProjectsQuery({ status: 'Active' });
-  const projectDto: ProjectOverview = {
-    id: 0,
-    initial: '',
-    name: '',
-  };
-  const [selectedProject, setSelectedProject] = useState(projectDto);
+  const { data: projects = [] } = useProjectsGetProjectsQuery({ status: 'Active', role: 'Contributor' });
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const deleteTitle = 'Zeiteintrag';
   const deleteContent = 'Wollen sie den Zeiteintrag wirklich löschen?';
@@ -51,11 +81,21 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
   const handleClose = () => {
     setIsModalOpen(false);
   };
-  const getProjectFromTimeSlot = () : ProjectOverview | undefined => projects
-    .find((project) => project.id === timeSlot.project.key);
+  /**
+   * Returns the selected project from the timeslot
+   */
+  const getProjectFromTimeSlot = () : ProjectOverview | null => projects
+    .find((project) => project.id === timeSlot.project.key) || null;
 
   // TimePicker has Problem with Time Changes, it resets the Date to current Date
   // This is a Workaround
+  /**
+   * TimePicker has Problem with Time Changes, it resets the Date to current Date
+   * This is a Workaround.
+   * Return the new correct date.
+   * @param currentDate
+   * @param newDate
+   */
   const fixDateChange = (currentDate: string, newDate: Date): Date | null => {
     const h = newDate.getHours();
     const m = newDate.getMinutes();
@@ -68,8 +108,16 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
     return date;
   };
 
+  /**
+   * Checks if a date is valid.
+   * @param d - Date
+   */
+  function isValidDate(d: Date) {
+    return !Number.isNaN(d.getHours()) && !Number.isNaN(d.getMinutes());
+  }
+
   const handleStartChange = (start: Date | null) => {
-    if (start) {
+    if (start && isValidDate(start)) {
       const startDate = fixDateChange(timeSlot.start, start);
       if (!startDate) return;
       setTimeSlot({ ...timeSlot, start: startDate.toISOString() });
@@ -84,50 +132,46 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
     }
   };
 
+  const handleCommentChange = (event: any) => {
+    setTimeSlot({ ...timeSlot, comment: event.target.value });
+  };
+
   const [addTimeslot] = useProjectTimeslotsAddTimeslotMutation();
-  const [updateTimeslot] = useProjectTimeslotsUpdateTimeslotMutation();
+  const [
+    updateTimeslot,
+  ] = useProjectTimeslotsUpdateTimeslotMutation();
 
   const handleSave = () => {
     if (timeSlot.id) {
-      try {
-        const updateArgs: ProjectTimeslotsUpdateTimeslotApiArg = {
-          timeslotId: timeSlot.id,
-          projectId: selectedProject.id,
-          manageTimeSlotRequest: timeSlot,
-        };
-        updateTimeslot(updateArgs);
-      } catch (e) {
-        console.log(e);
-      }
+      const updateArgs: ProjectTimeslotsUpdateTimeslotApiArg = {
+        timeslotId: timeSlot.id,
+        projectId: timeSlot.project.key || 0,
+        manageTimeSlotRequest: timeSlot,
+      };
+      updateTimeslot(updateArgs);
     } else {
-      try {
-        const addArgs: ProjectTimeslotsAddTimeslotApiArg = {
-          projectId: selectedProject.id,
-          manageTimeSlotRequest: timeSlot,
-        };
-        addTimeslot(addArgs);
-      } catch (e) {
-        console.log(e);
-      }
+      const addArgs: ProjectTimeslotsAddTimeslotApiArg = {
+        projectId: timeSlot.project.key || 0,
+        manageTimeSlotRequest: timeSlot,
+      };
+      addTimeslot(addArgs);
     }
     setIsModalOpen(false);
   };
 
-  const [deleteTimeSlot] = useProjectTimeslotsDeleteTimeslotMutation();
+  const [
+    deleteTimeSlot,
+  ] = useProjectTimeslotsDeleteTimeslotMutation();
   const confirmDeleteTimeslot = () => {
     if (!timeSlot.project.key) return;
 
-    try {
-      const args: ProjectTimeslotsDeleteTimeslotApiArg = {
-        timeslotId: timeSlot.id,
-        projectId: timeSlot.project.key,
-      };
-      deleteTimeSlot(args);
-      setIsDeleteAlertOpen(false);
-      setIsModalOpen(false);
-    } catch (e) {
-      console.log(e);
-    }
+    const args: ProjectTimeslotsDeleteTimeslotApiArg = {
+      timeslotId: timeSlot.id,
+      projectId: timeSlot.project.key,
+    };
+    deleteTimeSlot(args);
+    setIsDeleteAlertOpen(false);
+    setIsModalOpen(false);
   };
 
   const handleDelete = () => {
@@ -136,13 +180,13 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
 
   const selectProjectHandler = (
     event: SyntheticEvent<Element, Event>,
-    value: ProjectOverview | null,
+    project: ProjectOverview | null,
   ) => {
-    if (value === null) return;
-
-    setSelectedProject(value);
+    if (project === null) return;
+    setTimeSlot({ ...timeSlot, project: { key: project.id, value: project.name } });
   };
 
+  const classes = useStyles();
   return (
     <div>
       <Dialog open={isModalOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -154,28 +198,30 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
             getOptionLabel={(option: ProjectOverview) => option.name}
             /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
             /* eslint-disable-next-line react/jsx-props-no-spreading */
-            renderInput={(params: any) => <TextField {...params} label="Projects" variant="outlined" />}
+            renderInput={(params: any) => <TextField {...params} label="Projects" variant="outlined" required />}
             onChange={selectProjectHandler}
             value={getProjectFromTimeSlot()}
           />
           <LocalizationProvider dateAdapter={AdapterDateFns} locale={deLocale}>
-            <TimePicker
-              value={new Date(timeSlot.start)}
-              onChange={handleStartChange}
-                /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
-                /* eslint-disable-next-line react/jsx-props-no-spreading */
-              renderInput={(params: any) => <TextField {...params} margin="normal" />}
-            />
-            <TimePicker
-              value={new Date(timeSlot.end)}
-              onChange={handleEndChange}
-                /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
-                /* eslint-disable-next-line react/jsx-props-no-spreading */
-              renderInput={(params: any) => <TextField {...params} margin="normal" />}
-            />
+            <div className={classes.fieldRow}>
+              <TimePicker
+                value={new Date(timeSlot.start)}
+                onChange={handleStartChange}
+                  /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
+                  /* eslint-disable-next-line react/jsx-props-no-spreading */
+                renderInput={(params: any) => <TextField {...params} margin="normal" className={classes.halfField} />}
+                className={classes.halfField}
+              />
+              <TimePicker
+                value={new Date(timeSlot.end)}
+                onChange={handleEndChange}
+                  /* props need to be forwarded https://next.material-ui.com/api/time-picker/ */
+                  /* eslint-disable-next-line react/jsx-props-no-spreading */
+                renderInput={(params: any) => <TextField {...params} margin="normal" className={classes.halfField} />}
+              />
+            </div>
           </LocalizationProvider>
           <TextField
-            autoFocus
             margin="dense"
             id="comment"
             label="Kommentar"
@@ -183,16 +229,18 @@ const RegisterTimeModal : React.FC<ChildComponentProps> = ({
             multiline
             rows={4}
             variant="filled"
+            onChange={handleCommentChange}
+            value={timeSlot.comment || ''}
           />
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDelete} color="primary" disabled={timeSlot.id === 0}>
+        <DialogActions className={classes.buttonRow}>
+          <Button onClick={handleDelete} color="secondary" variant="contained" disabled={timeSlot.id === 0} startIcon={<DeleteIcon />} className={classes.deleteButton}>
             Löschen
           </Button>
           <Button onClick={handleClose} color="primary">
             Abbrechen
           </Button>
-          <Button onClick={handleSave} color="primary">
+          <Button onClick={handleSave} color="primary" variant="contained" startIcon={<SaveIcon />}>
             Speichern
           </Button>
         </DialogActions>
