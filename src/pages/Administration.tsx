@@ -40,7 +40,7 @@ const Administration : React.FC = () => {
     name: '',
     firstName: '',
     mailAddress: '',
-    status: 'Restricted',
+    status: 'Active',
     roles: [''],
   };
 
