@@ -75,10 +75,8 @@ const Calendar: React.FC<ChildComponentProps> = ({
   const timeSlotsToEventObject = () => timeslots.map((event) => ({
     id: event.id.toString(),
     title: event.project.value || '',
-    // Workaround: adding 'z' for right time Format
-    start: new Date(`${event.start}z`),
-    // Workaround: adding 'z' for right time Format
-    end: new Date(`${event.end}z`),
+    start: new Date(event.start),
+    end: new Date(event.end),
     extendedProps: {
       projectId: event.project.key,
       comment: event.comment,
